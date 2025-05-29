@@ -13,7 +13,7 @@ install-dependencies:
 
 #>> test commands 
 [working-directory: 'lib']
-@test-audio-synthesis:
+@test-audio-synthensis:
     cargo run --example audio
 
 #>> watch commands 

@@ -13,9 +13,15 @@ pub enum AudifyError {
     PiperSpeechSynthesizerInitializationError(PiperError),
     #[error("File Synthesize Error: {0}")]
     FileSynthesizeError(PiperError),
+    #[error("Error Initializing PiperSpeechSynthesizer: {0}")]
+    SynthesisError(String),
+    #[error("Invalid file path")]
+    PathResolutionError,
+    #[error("Incorrect file name")]
+    FileNameError,
 }
 
-impl serde::Serialize for AudioError {
+impl serde::Serialize for AudifyError {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::ser::Serializer,

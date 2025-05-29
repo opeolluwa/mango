@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 
 use crate::{MEDIA_DIR, MODEL_CONFIG_FILE};
-use libaudify::error::AudioError;
+use libaudify::error::AudifyError;
 use walkdir::WalkDir;
 
 use libaudify::core::Audify;
@@ -54,46 +54,51 @@ pub struct AudioSynthesisEvent {
 }
 
 #[tauri::command]
-pub fn synthesize_audio(pdf_path: &str, app_handle: AppHandle) -> Result<(), AudioError> {
+pub fn synthesize_audio(pdf_path: &str, app_handle: AppHandle) -> Result<(), AudifyError> {
     println!("Received PDF path: {pdf_path}");
 
     let config_path = app_handle
         .path()
         .resolve(*MODEL_CONFIG_FILE, BaseDirectory::Resource)
-        .map_err(|_| AudioError::PathResolutionError)?;
+        .map_err(|_| AudifyError::PathResolutionError)?;
 
     let config_path_str = config_path
         .to_str()
-        .ok_or(AudioError::PathResolutionError)?;
+        .ok_or(AudifyError::PathResolutionError)?;
 
     let audify_rs = Audify::new(config_path_str);
     let canonical_file_path = PathBuf::from(pdf_path);
     let file_name = canonical_file_path
         .file_name()
         .and_then(|f| f.to_str())
-        .ok_or(AudioError::FileNameError)?
+        .ok_or(AudifyError::FileNameError)
+        .unwrap()
         .to_string();
 
-    app_handle.emit(
-        "processing-audio",
-        AudioSynthesisEvent {
-            file_name: file_name.clone(),
-            ..Default::default()
-        },
-    )?;
+    app_handle
+        .emit(
+            "processing-audio",
+            AudioSynthesisEvent {
+                file_name: file_name.clone(),
+                ..Default::default()
+            },
+        )
+        .unwrap();
 
     let audio_output = format!("{}/{}.wav", MEDIA_DIR.as_str(), file_name);
     audify_rs
         .synthesize_pdf(pdf_path, &audio_output)
-        .map_err(|e| AudioError::SynthesisError(e.to_string()))?;
+        .map_err(|e| AudifyError::SynthesisError(e.to_string()))?;
 
-    app_handle.emit(
-        "finished-processing-audio",
-        AudioSynthesisEvent {
-            file_name,
-            audio_src: audio_output,
-        },
-    )?;
+    app_handle
+        .emit(
+            "finished-processing-audio",
+            AudioSynthesisEvent {
+                file_name,
+                audio_src: audio_output,
+            },
+        )
+        .unwrap();
 
     println!("Audio synthesis complete.");
 
