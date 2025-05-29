@@ -1,0 +1,116 @@
+use std::path::{Path, PathBuf};
+
+use crate::error::AudioError;
+use crate::{MEDIA_DIR, MODEL_CONFIG_FILE};
+use walkdir::WalkDir;
+
+use audify_rs::core::Audify;
+use serde::{Deserialize, Serialize};
+use tauri::path::BaseDirectory;
+use tauri::{AppHandle, Emitter, Manager};
+use ts_rs::TS;
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+#[derive(TS)]
+#[ts(export)]
+pub struct AudioBook {
+    pub file_name: String,
+    pub play_back_duration: u64,
+    pub audio_src: String,
+}
+
+impl AudioBook {
+    pub fn from_path(path: &Path) -> Option<Self> {
+        let path_buf = path.canonicalize().ok()?;
+        let file_name = path_buf.file_name()?.to_str()?.to_string();
+
+        // Remove ".wav" if it exists
+        let display_name = file_name.strip_suffix(".wav").unwrap_or(&file_name);
+
+        Some(Self {
+            file_name: display_name.to_string(),
+            play_back_duration: 45, // Consider computing real duration later
+            audio_src: file_name,
+        })
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+#[derive(TS)]
+#[ts(export)]
+pub struct AudioLibrary {
+    pub audio_books: Vec<AudioBook>,
+}
+
+
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+#[serde(rename_all = "camelCase")]
+#[derive(TS)]
+#[ts(export)]
+pub struct AudioSynthesisEvent {
+    pub file_name: String,
+    pub audio_src: String,
+}
+
+#[tauri::command]
+pub fn synthesize_audio(pdf_path: &str, app_handle: AppHandle) -> Result<(), AudioError> {
+    println!("Received PDF path: {pdf_path}");
+
+    let config_path = app_handle
+        .path()
+        .resolve(*MODEL_CONFIG_FILE, BaseDirectory::Resource)
+        .map_err(|_| AudioError::PathResolutionError)?;
+
+    let config_path_str = config_path
+        .to_str()
+        .ok_or(AudioError::PathResolutionError)?;
+
+    let audify_rs = Audify::new(config_path_str);
+    let canonical_file_path = PathBuf::from(pdf_path);
+    let file_name = canonical_file_path
+        .file_name()
+        .and_then(|f| f.to_str())
+        .ok_or(AudioError::FileNameError)?
+        .to_string();
+
+    app_handle.emit(
+        "processing-audio",
+        AudioSynthesisEvent {
+            file_name: file_name.clone(),
+            ..Default::default()
+        },
+    )?;
+
+    let audio_output = format!("{}/{}.wav", MEDIA_DIR.as_str(), file_name);
+    audify_rs
+        .synthesize_pdf(pdf_path, &audio_output)
+        .map_err(|e| AudioError::SynthesisError(e.to_string()))?;
+
+    app_handle.emit(
+        "finished-processing-audio",
+        AudioSynthesisEvent {
+            file_name,
+            audio_src: audio_output,
+        },
+    )?;
+
+    println!("Audio synthesis complete.");
+
+    Ok(())
+}
+
+#[tauri::command]
+pub fn read_library() -> AudioLibrary {
+    let mut audio_books = WalkDir::new(&format!("{}/", MEDIA_DIR.as_str()))
+        .into_iter()
+        .filter_map(|entry| entry.ok())
+        .filter_map(|entry| AudioBook::from_path(entry.path()))
+        .collect::<Vec<AudioBook>>();
+
+    audio_books.remove(0);
+    let library = AudioLibrary { audio_books };
+    library
+}

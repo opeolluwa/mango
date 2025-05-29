@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --accent: #537D5D;
+    --accent-mid: #73946B;
+    --accent-light: #9EBC8A;
+    --accent-secondary: #9EBC8A;
+}
+
+
+
+@theme {
+    --color-accent: #537D5D;
+    --color-accent-mid: #73946B;
+    --color-accent-light: #9EBC8A;
+    --color-accent-secondary: #D2D0A0;
+    --wrapper-padding: @apply px-8;
+}
