@@ -24,3 +24,5 @@ model.onnx
 test*.pdf
 
 audio*.wav
+
+*.wav
