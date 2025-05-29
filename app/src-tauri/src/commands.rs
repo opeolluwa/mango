@@ -1,10 +1,10 @@
 use std::path::{Path, PathBuf};
 
-use crate::error::AudioError;
 use crate::{MEDIA_DIR, MODEL_CONFIG_FILE};
+use libaudify::error::AudioError;
 use walkdir::WalkDir;
 
-use audify_rs::core::Audify;
+use libaudify::core::Audify;
 use serde::{Deserialize, Serialize};
 use tauri::path::BaseDirectory;
 use tauri::{AppHandle, Emitter, Manager};
@@ -43,8 +43,6 @@ impl AudioBook {
 pub struct AudioLibrary {
     pub audio_books: Vec<AudioBook>,
 }
-
-
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 #[serde(rename_all = "camelCase")]

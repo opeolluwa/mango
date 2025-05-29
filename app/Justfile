@@ -2,7 +2,6 @@
 
 alias w:= watch
 alias b:= build
-alias install := install-dependencies
 alias pack := package
 
 APP_NAME := "audify"
@@ -13,23 +12,8 @@ EXPORT_PATH := "packages"
 SUPPORTED_PLATFORM :="android"
 
 
-default: 
-    @just --list --list-heading $'Available commands\n'
-
-[doc('Install the application dependencies')]
-install-dependencies: 
-    echo "Installing dependencies"
-    cargo install --git https://github.com/cpg314/cargo-group-imports
-    cargo install cargo-sort
-    
 
 
-
-[doc('Lint')]
-fmt:
-    cargo clippy 
-    cargo sort -w 
-    cargo group-imports --fix 
 
 [doc('Run the application in watch mode')]
 watch target:
@@ -38,13 +22,10 @@ watch target:
     export ANDROID_HOME="$HOME/Library/Android/sdk"
     export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
     export ENV="development"
-    # export ORT_LIB_LOCATION="../onnxruntime/build/Android"
     if [ {{target}} = "android" ]; then
-      ORT_LIB_LOCATION=../onnxruntime/build/Android/Debug pnpm tauri android dev 
+        ORT_LIB_LOCATION=../onnxruntime/build/Android/Debug npm tauri android dev 
     elif [ {{target}} = "ios" ]; then 
-       pnpm tauri ios dev 
-    elif [ {{target}} = "styles" ]; then
-        npx tailwindcss -i ./tailwind.css -o ./style/output.css --watch --minify
+        npm tauri ios dev 
     else
         cargo tauri dev
     fi

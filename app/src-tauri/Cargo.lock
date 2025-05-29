@@ -275,10 +275,9 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 name = "audify"
 version = "0.1.0"
 dependencies = [
- "audify-rs",
  "dirs",
  "lazy_static",
- "piper-rs",
+ "libaudify",
  "rayon",
  "serde",
  "serde_json",
@@ -290,19 +289,6 @@ dependencies = [
  "thiserror 2.0.12",
  "ts-rs",
  "walkdir",
-]
-
-[[package]]
-name = "audify-rs"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5839541c64e5a994baa9c2b9f6723791b63a1289bd45ee9ea0ebc518dcfc2cfc"
-dependencies = [
- "extractous",
- "pdf-extract",
- "piper-rs",
- "serde",
- "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -2460,6 +2446,17 @@ dependencies = [
  "gtk-sys",
  "libloading 0.7.4",
  "once_cell",
+]
+
+[[package]]
+name = "libaudify"
+version = "0.1.0"
+dependencies = [
+ "extractous",
+ "pdf-extract",
+ "piper-rs",
+ "serde",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
