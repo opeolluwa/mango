@@ -49,3 +49,10 @@ build-onnxruntime:
 @build-desktop:
     just b desktop 
 
+
+[working-directory:'lame']
+@build-lame:
+    ./configure --disable-shared --enable-static --enable-nasm --prefix=$(pwd)/build
+    make
+    make install
+
