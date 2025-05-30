@@ -162,8 +162,6 @@ async function createNewBook() {
     });
 }
 
-
-
 async function changeSong(index: number) {
   const source = audioBooks.value[index]?.audioSrc;
   if (!source) return;
@@ -173,12 +171,16 @@ async function changeSong(index: number) {
     audio.value.currentTime = 0;
   }
 
+  // const { play } = useSound(source);
+  // play();
+  
   const newAudio = new Audio(source);
   audio.value = newAudio;
   currentSong.value = index;
 
   newAudio.addEventListener("loadedmetadata", () => {
-    trackDuration.value = Math.round(newAudio.duration);
+    trackDuration.value = Math.round(audio.value!.duration);
+    audio.value!.play().catch(console.error);
   });
 
   newAudio.addEventListener("timeupdate", () => {
@@ -200,7 +202,10 @@ async function togglePlaySound() {
   if (isPlaying.value) {
     audio.value.pause();
   } else {
-    await audio.value.play().catch(console.error);
+    await audio.value
+      .play()
+      .catch((err) => console.log("failed to play due to ", err));
+    // .catch("failed to play sound duue to", console.error);
   }
 
   isPlaying.value = !isPlaying.value;
