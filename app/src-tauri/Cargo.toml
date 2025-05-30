@@ -29,6 +29,7 @@ rayon = "1.10.0"
 ts-rs = "10.1.0"
 tauri-plugin-dialog = "2"
 thiserror = "2.0.12"
+libaudify = { path = "../../lib" }
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-single-instance = "2"
@@ -36,4 +37,3 @@ tauri-plugin-single-instance = "2"
 [target.'cfg(any(target_os = "macos", windows, target_os = "linux"))'.dependencies]
 tauri-plugin-single-instance = "2"
 
-libaudify = { path = "../../lib" }

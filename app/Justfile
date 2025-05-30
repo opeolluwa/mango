@@ -23,7 +23,7 @@ watch target:
     export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
     export ENV="development"
     if [ {{target}} = "android" ]; then
-        ORT_LIB_LOCATION=../onnxruntime/build/Android/Debug npm tauri android dev 
+        ORT_LIB_LOCATION=../onnxruntime/build/Android/Debug npm run tauri android dev 
     elif [ {{target}} = "ios" ]; then 
         npm tauri ios dev 
     else

@@ -52,7 +52,7 @@ build-onnxruntime:
 
 [working-directory:'lame']
 @build-lame:
-    ./configure --disable-shared --enable-static --enable-nasm --prefix=$(pwd)/build
+    ./configure --disable-shared --enable-static --enable-nasm --prefix=$(pwd)/../app/src-tauri/sidecar/lame
     make
     make install
 
