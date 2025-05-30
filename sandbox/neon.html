@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<style>
+    body {
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.neon-icon {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  background: #183c2a;
+  border-radius: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 100px;
+  color: #b0e3a8;
+  box-shadow:
+    0 0 20px #00ffcc,
+    0 0 40px #00ffcc,
+    0 0 60px #00ffcc,
+    inset 0 0 10px #00ffcc33;
+  overflow: hidden;
+}
+
+.noise-overlay {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('https://i.imgur.com/8nKpLxe.png'); /* subtle noise texture */
+  background-size: cover;
+  opacity: 0.07;
+  pointer-events: none;
+  z-index: 1;
+}
+
+</style>
+
+</head>
+<div class="neon-icon">
+  <div class="noise-overlay"></div>
+  🎧
+</div>
+
+
+</html>
