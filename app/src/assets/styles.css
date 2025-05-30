@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
 
 * {
     box-sizing: border-box;
@@ -10,7 +12,6 @@
     --accent-light: #9EBC8A;
     --accent-secondary: #9EBC8A;
 }
-
 
 
 @theme {

@@ -1,21 +1,21 @@
 <template>
   <template v-if="totalBooks == 0">
     <div
-      class="h-screen overflow-hidden bg-secondary bg-[url(cover.jpg)] bg-center-center bg-blend-multiply bg-cover bg-no-repeat bg-accent/60 text-accent-secondary relative flex flex-col justify-center items-center"
+      class="h-screen overflow-hidden bg-secondary bg-[url(cover.jpg)] bg-center-center bg-blend-multiply bg-cover bg-no-repeat bg-accent/60 text-accent-secondary relative flex flex-col justify-center items-center px-4"
     >
-      <ViewColumnsIcon class="size-40 mb-5" />
+      <ViewColumnsIcon class="size-40 mb-5 hidden" />
 
-      <h2 class="text-xl font-medium leading-10">
-        No audio book has been added
+      <h2 class="text-xl font-bold leading-10 prose-xl">
+        No audio book has been created
       </h2>
-      <small class="leading-1 mb-2"
+      <small class="text-center mb-2 "
         >Your audio books will appear as soon as you begin to add them</small
       >
       <button
-        class="bg-accent-secondary text-accent inline-flex gap-x-2 rounded items-center px-6 py-1 mt-2 cursor-pointer shadow-md transition-colors duration-200 ease-linear hover:opacity-95 hover:scale-95 control"
+        class="bg-accent-secondary text-accent btn-lg inline-flex gap-x-2 rounded items-center px-8 py-2 mt-2 cursor-pointer shadow-md transition-colors duration-200 ease-linear hover:opacity-95 hover:scale-95 control"
         @click="createNewBook"
       >
-        <PlusCircleIcon class="size-7" @click="invoke('synthesize_audio')" />
+        <PlusCircleIcon class="size-8" @click="invoke('synthesize_audio')" />
         Create
       </button>
     </div>
@@ -179,7 +179,6 @@ const hotkeys = ref<HotKey[]>([
       }
     },
   },
- 
 ]);
 const stopArr = useHotkey(hotkeys.value);
 
@@ -197,8 +196,6 @@ onMounted(async () => {
     changeSong(0); // Only call after books are loaded
   }
 });
-
-
 
 // PDF -> Audio book creation
 async function createNewBook() {

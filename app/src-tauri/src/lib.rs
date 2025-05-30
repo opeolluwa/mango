@@ -3,7 +3,6 @@
 use dirs;
 use lazy_static::lazy_static;
 mod commands;
-
 lazy_static! {
     pub static ref MODEL_CONFIG_FILE: &'static str = "resources/en_US-libritts_r-medium.onnx.json";
     pub static ref MEDIA_DIR: String = {
@@ -20,9 +19,12 @@ lazy_static! {
     };
 }
 
+pub const LAME_SIDECAR: &str = "lame";
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_dialog::init())
         // .setup(|app| {
         //     #[cfg(desktop)]

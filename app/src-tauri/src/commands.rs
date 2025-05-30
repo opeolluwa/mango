@@ -1,14 +1,16 @@
 use std::path::{Path, PathBuf};
 
-use crate::{MEDIA_DIR, MODEL_CONFIG_FILE};
-use libaudify::error::AudifyError;
-use walkdir::WalkDir;
-
 use libaudify::core::Audify;
+use libaudify::error::AudifyError;
 use serde::{Deserialize, Serialize};
 use tauri::path::BaseDirectory;
 use tauri::{AppHandle, Emitter, Manager};
+use tauri_plugin_shell::process::CommandEvent;
+use tauri_plugin_shell::ShellExt;
 use ts_rs::TS;
+use walkdir::WalkDir;
+use crate::{MEDIA_DIR, MODEL_CONFIG_FILE, LAME_SIDECAR};
+use tauri::Runtime;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -54,7 +56,7 @@ pub struct AudioSynthesisEvent {
 }
 
 #[tauri::command]
-pub fn synthesize_audio(pdf_path: &str, app_handle: AppHandle) -> Result<(), AudifyError> {
+pub fn synthesize_audio<R: Runtime>(pdf_path: &str, app_handle: AppHandle, window: tauri::Window<R>) -> Result<(), AudifyError> {
     println!("Received PDF path: {pdf_path}");
 
     let config_path = app_handle
@@ -85,10 +87,29 @@ pub fn synthesize_audio(pdf_path: &str, app_handle: AppHandle) -> Result<(), Aud
         )
         .unwrap();
 
+    //obtain the wav file
     let audio_output = format!("{}/{}.wav", MEDIA_DIR.as_str(), file_name);
     audify_rs
         .synthesize_pdf(pdf_path, &audio_output)
         .map_err(|e| AudifyError::SynthesisError(e.to_string()))?;
+
+    //CONVERT TO MP3
+    let sidecar_command = app_handle.shell().sidecar(LAME_SIDECAR).unwrap();
+    let (mut rx, mut child) = sidecar_command.spawn().expect("Failed to spawn lame sidecar");
+
+tauri::async_runtime::spawn(async move {
+  // read events such as stdout
+  while let Some(event) = rx.recv().await {
+    if let CommandEvent::Stdout(line_bytes) = event {
+      let line = String::from_utf8_lossy(&line_bytes);
+      window
+        .emit("message", Some(format!("'{}'", line)))
+        .expect("failed to emit event");
+      // write to stdin
+      child.write("message from Rust\n".as_bytes()).unwrap();
+    }
+  }
+});
 
     app_handle
         .emit(
@@ -117,3 +138,7 @@ pub fn read_library() -> AudioLibrary {
     let library = AudioLibrary { audio_books };
     library
 }
+
+
+
+
