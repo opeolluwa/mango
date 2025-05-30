@@ -11,9 +11,12 @@
       class="h-screen overflow-hidden bg-secondary bg-[url(cover.jpg)] bg-center-center bg-blend-multiply bg-cover bg-no-repeat bg-accent/60 text-accent-secondary relative"
     >
       <div class="flex justify-between rounded bg-blend-multiply px-4 py-6">
-        <Bars3Icon
+        <!-- <Bars3Icon
           class="size-7 cursor-pointer hover:opacity-65 hover:scale-95"
           @click="previewLibrary"
+        /> -->
+        <Bars3Icon
+          class="size-7 cursor-pointer hover:opacity-65 hover:scale-95"
         />
         <PlusCircleIcon class="size-7 control" @click="createNewBook" />
       </div>
@@ -33,18 +36,16 @@
         </div>
 
         <div id="progress" class="flex flex-col px-12">
-          <div class="flex justify-between">
-            <!----<small>{{ currentTime | +fancyTimeFormat }}</small>
-
-            <small>{{ trackDuration | +fancyTimeFormat }}</small>-->
+          <div class="flex justify-between mb-1 prose-sm">
+            <small> 0.00 </small>
+            <small>6.25</small>
           </div>
-
-          <Progressbar />
+          <Progressbar :progress="100" />
         </div>
 
         <div id="controls" class="flex items-center justify-evenly">
           <button
-            @click="prevSong"
+            @click="gotoPreviousSong"
             class="size-8 disabled:text-accent/95 control"
             :disabled="index == 0"
           >
@@ -53,7 +54,7 @@
           <button
             class="bg-accent-secondary text-accent flex justify-center items-center rounded-full size-16 active:scale-75 transition-all duration-75 ease-linear p-[5px]"
             @click="
-              togglePlaylist;
+              togglePlaySound;
               playSound(index);
             "
           >
@@ -69,7 +70,7 @@
           <button
             class="size-8 disabled:text-accent/95 control"
             :disabled="index == totalBooks - 1"
-            @click="nextSong"
+            @click="gotoNextSong"
           >
             <ForwardIcon />
           </button>
@@ -82,7 +83,7 @@
 <script lang="ts" setup>
 import ProcessingState from "./components/ProcessingState.vue";
 import EmptyState from "./components/EmptyState.vue";
-import Progressbar from "./components/ProgressBar.vue"
+import Progressbar from "./components/ProgressBar.vue";
 import {
   Bars3Icon,
   PlayIcon,
@@ -116,14 +117,29 @@ const audioLibrary = ref<AudioLibrary | null>(null);
 const audioBooks = computed(() => audioLibrary.value?.audioBooks ?? []);
 const totalBooks = computed(() => audioBooks.value.length);
 
-onMounted(() => {
+// helpers
+const gotoPreviousSong = () =>
+  currentSong.value > 0 && changeSong(currentSong.value - 1);
+const gotoNextSong = () =>
+  currentSong.value < audioBooks.value.length - 1 &&
+  changeSong(currentSong.value + 1);
+
+const togglePlaySound = () => (isPlaying.value = !isPlaying.value);
+const isCurrentSong = (index: number) => currentSong.value === index;
+const loadLibrary = () =>
   invoke("read_library").then((res) => {
     audioLibrary.value = res as AudioLibrary;
   });
 
+//hooks
+onMounted(() => {
+  loadLibrary();
   if (audioBooks.value.length > 0) {
-    changeSong(0); // Only call after books are loaded
+    changeSong(0);
   }
+});
+watch(currentTime, (val) => {
+  currentTime.value = Math.round(val);
 });
 
 // PDF -> Audio book creation
@@ -146,26 +162,8 @@ async function createNewBook() {
     });
 }
 
-function loadLibrary() {
-  invoke("read_library").then((res) => {
-    audioLibrary.value = res as AudioLibrary;
-  });
-}
-
-function nextSong() {
-  if (currentSong.value < audioBooks.value.length - 1)
-    changeSong(currentSong.value + 1);
-}
-
-function prevSong() {
-  if (currentSong.value > 0) changeSong(currentSong.value - 1);
-}
-
 function changeSong(index: number) {
   const wasPlaying = currentlyPlaying.value;
-
-  //TODO:
-  // stopAudio();
 
   currentSong.value = index;
   const source = audioBooks.value[index]?.audioSrc;
@@ -176,61 +174,31 @@ function changeSong(index: number) {
   audio.value.addEventListener("loadedmetadata", () => {
     trackDuration.value = Math.round(audio.value?.duration || 0);
   });
-
-  // audio.value.addEventListener("ended", handleEnded);
-
-  //TODO:
-  // if (wasPlaying) {
-  //   playAudio();
-  // }
 }
-
-function isCurrentSong(index: number) {
-  return currentSong.value === index;
-}
-// function playSound(index: number) {
-//   const source = audioBooks.value[0]?.audioSrc;
-//   const { play } = useSound(source);
-//   play();
-//   console.log({ source });
-// }
 
 function playSound(index: number) {
+  togglePlaySound();
+
   const source = audioBooks.value[index]?.audioSrc;
   if (!source) return;
 
-  audio.value.play();
-  // if (!audio.value) {
-  //   audio.value = new Audio(source);
-  //   audio.value.addEventListener("ended", () => {
-  //     isPlaying.value = false;
-  //   });
-  // }
-
-  // if (isPlaying.value) {
-  //   audio.value.pause();
-  //   isPlaying.value = false;
-  // } else {
-  //   audio.value.play();
-  //   isPlaying.value = true;
-  // }
+  if (!audio.value) {
+    audio.value = new Audio(source);
+    audio.value.addEventListener("ended", () => {
+      isPlaying.value = false;
+    });
+  }
 }
-
-watch(currentTime, (val) => {
-  currentTime.value = Math.round(val);
-});
 </script>
 
 <style scoped>
 @reference "./assets/styles.css";
-
 #wrapper {
   @apply hidden;
 }
 #wrapper > div {
   @apply px-8 py-3;
 }
-
 #wrapper.isActive {
   @apply block;
 }

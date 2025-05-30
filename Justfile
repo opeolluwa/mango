@@ -56,3 +56,17 @@ build-onnxruntime:
     make
     make install
 
+
+@convert-local:
+    #!/bin/bash
+
+    SOURCE_DIR="/Users/USER/Music/audify"   
+    OUTPUT_DIR="$SOURCE_DIR"
+
+    for wav_file in "$SOURCE_DIR"/*.wav; do
+        base_name=$(basename "$wav_file" .wav)
+        mp3_file="$OUTPUT_DIR/$base_name.mp3"
+        lame "$wav_file" "$mp3_file"
+    done
+
+    rm "/Users/USER/Music/audify/*.wav"

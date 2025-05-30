@@ -20,9 +20,8 @@
   </div>
 </template>
 
-<script lang="ts" scoped>
-import {defineEmits} from "vue"
-import { PlusCircleIcon } from "@heroicons/vue/24/solid";
+<script lang="ts" setup>
+import { PlusCircleIcon, ViewColumnsIcon } from "@heroicons/vue/24/solid";
 
 defineEmits(["createNewBook"]);
 </script>
