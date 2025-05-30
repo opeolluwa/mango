@@ -1,5 +1,6 @@
 name: 'publish'
 
+
 on:
   workflow_dispatch:
   push:
@@ -8,6 +9,9 @@ on:
 
 jobs:
   publish-tauri:
+    defaults:
+      run:
+        working-directory: ./app
     permissions:
       contents: write
     strategy:
