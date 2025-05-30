@@ -126,30 +126,34 @@ pub fn read_library() -> AudioLibrary {
 }
 
 
-
-
 async fn trancode_wav_to_mp3(app: tauri::AppHandle, file_name: &str) {
     println!("trying to encode {}", file_name);
-  let sidecar_command = app
-    .shell()
-    .sidecar(LAME_SIDECAR)
-    .unwrap()
-    .args([ "--file", file_name]);
-  let (mut rx, mut child) = sidecar_command.spawn().unwrap();
 
+    // Get the main window
+    let window = app.get_webview_window("main").unwrap();
+
+    let sidecar_command = app
+        .shell()
+        .sidecar(LAME_SIDECAR)
+        .unwrap()
+        .args(["--file", file_name]);
+
+    let (mut rx, mut child) = sidecar_command.spawn().unwrap();
 
     while let Some(event) = rx.recv().await {
-    if let CommandEvent::Stdout(line_bytes) = event {
-      let line = String::from_utf8_lossy(&line_bytes);
-    //   window
-    //     .emit("message", Some(format!("'{}'", line)))
-    //     .expect("failed to emit event");
-      // write to stdin
-      child.write("message from Rust\n".as_bytes()).unwrap();
+        if let CommandEvent::Stdout(line_bytes) = event {
+            let line = String::from_utf8_lossy(&line_bytes);
+
+            // Now this will work
+            window
+                .emit("audio-encoded", Some(format!("{}", line)))
+                .expect("failed to emit event");
+
+            // Optional: write to stdin
+            child.write(b"message from Rust\n").unwrap();
+        }
     }
-  }
 
     println!("done trying to encode {}", file_name);
-
 }
 

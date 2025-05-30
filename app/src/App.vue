@@ -152,7 +152,13 @@ import Loader from "./Loader.vue";
 import { type AudioLibrary } from "../src-tauri/bindings/AudioLibrary";
 import { open } from "@tauri-apps/plugin-dialog";
 import useHotkey, { HotKey, RemoveHandler } from "vue3-hotkey";
+import { listen } from '@tauri-apps/api/event';
 
+listen<any>('audio-encoded', (event) => {
+  console.log(
+    `downloading ${event.payload}`
+  );
+});
 // State refs
 const isPlaying = ref(false);
 const audio = ref<HTMLAudioElement>();
