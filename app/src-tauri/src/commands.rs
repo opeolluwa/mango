@@ -56,7 +56,7 @@ pub struct AudioSynthesisEvent {
 }
 
 #[tauri::command]
-pub async fn synthesize_audio<R: Runtime>(pdf_path: &str, app_handle: AppHandle, window: tauri::Window<R>) -> Result<(), AudifyError> {
+pub async fn synthesize_audio<R: Runtime>(pdf_path: &str, app_handle: AppHandle, _window: tauri::Window<R>) -> Result<(), AudifyError> {
     println!("Received PDF path: {pdf_path}");
 
     let config_path = app_handle

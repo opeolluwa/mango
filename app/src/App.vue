@@ -1,35 +1,10 @@
 <template>
   <template v-if="totalBooks == 0">
-    <div
-      class="h-screen overflow-hidden bg-secondary bg-[url(cover.jpg)] bg-center-center bg-blend-multiply bg-cover bg-no-repeat bg-accent/60 text-accent-secondary relative flex flex-col justify-center items-center px-4"
-    >
-      <ViewColumnsIcon class="size-40 mb-5 hidden" />
-
-      <h2 class="text-xl font-bold leading-10 prose-xl">
-        No audio book has been created
-      </h2>
-      <small class="text-center mb-2 "
-        >Your audio books will appear as soon as you begin to add them</small
-      >
-      <button
-        class="bg-accent-secondary text-accent btn-lg inline-flex gap-x-2 rounded items-center px-8 py-2 mt-2 cursor-pointer shadow-md transition-colors duration-200 ease-linear hover:opacity-95 hover:scale-95 control"
-        @click="createNewBook"
-      >
-        <PlusCircleIcon class="size-8" @click="invoke('synthesize_audio')" />
-        Create
-      </button>
-    </div>
+    <EmptyState @click="createNewBook" />
   </template>
 
   <template v-else>
-    <div
-      class="modal absolute bg-black/60 flex flex-col text-accent-secondary items-center justify-center w-screen h-screen z-50"
-      v-show="processingPdf"
-    >
-      <Loader />
-      <small>Processing... </small>
-    </div>
-
+    <ProcessingState v-show="processingPdf" />
     <div
       class="modal absolute bg-black/60 flex flex-col text-accent-secondary w-screen h-screen z-50 px-8"
       v-show="displayLibrary"
@@ -43,7 +18,7 @@
             type="search"
             name="price"
             id="price"
-            class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6 border bg-gray-500 w-full rounded-lg py-2 px-6 text-accent-secondary placeholder:px-4 placeholder:text-accent-secondary border-accent-secondary cursor-pointer"
+            class="block min-w-0 grow pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm/6 border bg-gray-500 w-full rounded-lg py-2 px-6 placeholder:px-4 placeholder:text-accent-secondary border-accent-secondary cursor-pointer"
             placeholder="search collection"
           />
 
@@ -87,9 +62,9 @@
 
         <div id="progress" class="flex flex-col px-12">
           <div class="flex justify-between">
-            <small>{{ currentTime | +fancyTimeFormat }}</small>
+            <!----<small>{{ currentTime | +fancyTimeFormat }}</small>
 
-            <small>{{ trackDuration | +fancyTimeFormat }}</small>
+            <small>{{ trackDuration | +fancyTimeFormat }}</small>-->
           </div>
 
           <progress
@@ -137,28 +112,27 @@
 </template>
 
 <script lang="ts" setup>
+import Loader from "./components/AppLoader.vue";
+import ProcessingState from "./components/ProcessingState.vue";
+import EmptyState from "./components/EmptyState.vue";
+
 import {
   Bars3Icon,
-  PlusCircleIcon,
   PlayIcon,
   PauseIcon,
   ForwardIcon,
   BackwardIcon,
   ViewColumnsIcon,
+  PlusCircleIcon,
 } from "@heroicons/vue/24/solid";
 import { ref, onMounted, onBeforeUnmount, watch, computed } from "vue";
 import { invoke } from "@tauri-apps/api/core";
-import Loader from "./Loader.vue";
 import { type AudioLibrary } from "../src-tauri/bindings/AudioLibrary";
 import { open } from "@tauri-apps/plugin-dialog";
 import useHotkey, { HotKey, RemoveHandler } from "vue3-hotkey";
-import { listen } from '@tauri-apps/api/event';
+import { listen } from "@tauri-apps/api/event";
+import { useSound } from "@vueuse/sound";
 
-listen<any>('audio-encoded', (event) => {
-  console.log(
-    `downloading ${event.payload}`
-  );
-});
 // State refs
 const isPlaying = ref(false);
 const audio = ref<HTMLAudioElement>();
@@ -175,28 +149,10 @@ const audioLibrary = ref<AudioLibrary | null>(null);
 const audioBooks = computed(() => audioLibrary.value?.audioBooks ?? []);
 const totalBooks = computed(() => audioBooks.value.length);
 
-const hotkeys = ref<HotKey[]>([
-  {
-    keys: ["esc"],
-    preventDefault: true,
-    handler() {
-      if (displayLibrary.value == true) {
-        displayLibrary.value = false;
-      }
-    },
-  },
-]);
-const stopArr = useHotkey(hotkeys.value);
-
-// 取消监听快捷键
-// const removeHotKeys = (hk: HotKey) => {
-//   stopArr.foreach((item: RemoveHandler) => item());
-// };
-
-// Lifecycle: onMounted
-onMounted(async () => {
-  const res = await invoke("read_library");
-  audioLibrary.value = res as AudioLibrary;
+onMounted(() => {
+  invoke("read_library").then((res) => {
+    audioLibrary.value = res as AudioLibrary;
+  });
 
   if (audioBooks.value.length > 0) {
     changeSong(0); // Only call after books are loaded
@@ -229,17 +185,6 @@ function loadLibrary() {
   });
 }
 
-function previewLibrary() {
-  displayLibrary.value = true;
-  loadLibrary();
-  // listen to escap and click event
-}
-
-// Playback control
-function togglePlaylist() {
-  isPlaying.value = !isPlaying.value;
-}
-
 function nextSong() {
   if (currentSong.value < audioBooks.value.length - 1)
     changeSong(currentSong.value + 1);
@@ -252,7 +197,8 @@ function prevSong() {
 function changeSong(index: number) {
   const wasPlaying = currentlyPlaying.value;
 
-  stopAudio();
+  //TODO:
+  // stopAudio();
 
   currentSong.value = index;
   const source = audioBooks.value[index]?.audioSrc;
@@ -264,89 +210,48 @@ function changeSong(index: number) {
     trackDuration.value = Math.round(audio.value?.duration || 0);
   });
 
-  audio.value.addEventListener("ended", handleEnded);
+  // audio.value.addEventListener("ended", handleEnded);
 
-  if (wasPlaying) {
-    playAudio();
-  }
-}
-
-function playAudio() {
-  if (
-    currentlyStopped.value &&
-    currentSong.value + 1 === audioBooks.value.length
-  ) {
-    currentSong.value = 0;
-    changeSong(0);
-  }
-
-  if (!currentlyPlaying.value) {
-    currentlyPlaying.value = true;
-    audio.value?.play();
-  } else {
-    stopAudio();
-  }
-
-  currentlyStopped.value = false;
-}
-
-function stopAudio() {
-  audio.value?.pause();
-  currentlyPlaying.value = false;
-}
-
-function handleEnded() {
-  if (currentSong.value + 1 === audioBooks.value.length) {
-    stopAudio();
-    currentlyStopped.value = true;
-  } else {
-    currentSong.value++;
-    changeSong(currentSong.value);
-    playAudio();
-  }
+  //TODO:
+  // if (wasPlaying) {
+  //   playAudio();
+  // }
 }
 
 function isCurrentSong(index: number) {
   return currentSong.value === index;
 }
+// function playSound(index: number) {
+//   const source = audioBooks.value[0]?.audioSrc;
+//   const { play } = useSound(source);
+//   play();
+//   console.log({ source });
+// }
 
 function playSound(index: number) {
   const source = audioBooks.value[index]?.audioSrc;
   if (!source) return;
 
-  if (!audio.value) {
-    audio.value = new Audio(source);
-    audio.value.addEventListener("ended", () => {
-      isPlaying.value = false;
-    });
-  }
+  audio.value.play();
+  // if (!audio.value) {
+  //   audio.value = new Audio(source);
+  //   audio.value.addEventListener("ended", () => {
+  //     isPlaying.value = false;
+  //   });
+  // }
 
-  if (isPlaying.value) {
-    audio.value.pause();
-    isPlaying.value = false;
-  } else {
-    audio.value.play();
-    isPlaying.value = true;
-  }
+  // if (isPlaying.value) {
+  //   audio.value.pause();
+  //   isPlaying.value = false;
+  // } else {
+  //   audio.value.play();
+  //   isPlaying.value = true;
+  // }
 }
 
-// Cleanup
-onBeforeUnmount(() => {
-  if (audio.value) {
-    audio.value.removeEventListener("ended", handleEnded);
-  }
-  stopArr.forEach((item: RemoveHandler) => item());
-});
-
-// Optional watch
 watch(currentTime, (val) => {
   currentTime.value = Math.round(val);
 });
-
-// Time format
-function fancyTimeFormat(s: number) {
-  return `${Math.floor(s / 60)}:${s % 60 < 10 ? "0" : ""}${s % 60}`;
-}
 </script>
 
 <style scoped>
