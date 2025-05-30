@@ -1,14 +1,16 @@
 use std::path::{Path, PathBuf};
 
-use crate::{MEDIA_DIR, MODEL_CONFIG_FILE};
-use libaudify::error::AudifyError;
-use walkdir::WalkDir;
-
 use libaudify::core::Audify;
+use libaudify::error::AudifyError;
 use serde::{Deserialize, Serialize};
 use tauri::path::BaseDirectory;
 use tauri::{AppHandle, Emitter, Manager};
+use tauri_plugin_shell::process::CommandEvent;
+use tauri_plugin_shell::ShellExt;
 use ts_rs::TS;
+use walkdir::WalkDir;
+use crate::{MEDIA_DIR, MODEL_CONFIG_FILE, LAME_SIDECAR};
+use tauri::Runtime;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -25,7 +27,7 @@ impl AudioBook {
         let path_buf = path.canonicalize().ok()?;
         let file_name = path_buf.file_name()?.to_str()?.to_string();
 
-        // Remove ".wav" if it exists
+        //TODO: Remove ".wav" if it exists
         let display_name = file_name.strip_suffix(".wav").unwrap_or(&file_name);
 
         Some(Self {
@@ -54,7 +56,7 @@ pub struct AudioSynthesisEvent {
 }
 
 #[tauri::command]
-pub fn synthesize_audio(pdf_path: &str, app_handle: AppHandle) -> Result<(), AudifyError> {
+pub async fn synthesize_audio<R: Runtime>(pdf_path: &str, app_handle: AppHandle, _window: tauri::Window<R>) -> Result<(), AudifyError> {
     println!("Received PDF path: {pdf_path}");
 
     let config_path = app_handle
@@ -85,10 +87,15 @@ pub fn synthesize_audio(pdf_path: &str, app_handle: AppHandle) -> Result<(), Aud
         )
         .unwrap();
 
+    //obtain the wav file
     let audio_output = format!("{}/{}.wav", MEDIA_DIR.as_str(), file_name);
     audify_rs
         .synthesize_pdf(pdf_path, &audio_output)
         .map_err(|e| AudifyError::SynthesisError(e.to_string()))?;
+
+    //CONVERT TO MP3
+ trancode_wav_to_mp3(app_handle.clone(), &audio_output).await;
+
 
     app_handle
         .emit(
@@ -117,3 +124,36 @@ pub fn read_library() -> AudioLibrary {
     let library = AudioLibrary { audio_books };
     library
 }
+
+
+async fn trancode_wav_to_mp3(app: tauri::AppHandle, file_name: &str) {
+    println!("trying to encode {}", file_name);
+
+    // Get the main window
+    let window = app.get_webview_window("main").unwrap();
+
+    let sidecar_command = app
+        .shell()
+        .sidecar(LAME_SIDECAR)
+        .unwrap()
+        .args(["--file", file_name]);
+
+    let (mut rx, mut child) = sidecar_command.spawn().unwrap();
+
+    while let Some(event) = rx.recv().await {
+        if let CommandEvent::Stdout(line_bytes) = event {
+            let line = String::from_utf8_lossy(&line_bytes);
+
+            // Now this will work
+            window
+                .emit("audio-encoded", Some(format!("{}", line)))
+                .expect("failed to emit event");
+
+            // Optional: write to stdin
+            child.write(b"message from Rust\n").unwrap();
+        }
+    }
+
+    println!("done trying to encode {}", file_name);
+}
+

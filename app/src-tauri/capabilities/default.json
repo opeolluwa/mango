@@ -8,6 +8,21 @@
   "permissions": [
     "core:default",
     "opener:default",
-    "dialog:default"
+    "dialog:default",
+    "shell:default",
+        {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "args": [
+            "--file"
+           
+          ],
+          "name": "binaries/lame",
+          "sidecar": true
+        }
+      ]
+    },
+    "shell:allow-open"
   ]
 }

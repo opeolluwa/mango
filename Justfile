@@ -52,7 +52,21 @@ build-onnxruntime:
 
 [working-directory:'lame']
 @build-lame:
-    ./configure --disable-shared --enable-static --enable-nasm --prefix=$(pwd)/build
+    ./configure --disable-shared --enable-static --enable-nasm --prefix=$(pwd)/../app/src-tauri/sidecar/lame
     make
     make install
 
+
+@convert-local:
+    #!/bin/bash
+
+    SOURCE_DIR="/Users/USER/Music/audify"   
+    OUTPUT_DIR="$SOURCE_DIR"
+
+    for wav_file in "$SOURCE_DIR"/*.wav; do
+        base_name=$(basename "$wav_file" .wav)
+        mp3_file="$OUTPUT_DIR/$base_name.mp3"
+        lame "$wav_file" "$mp3_file"
+    done
+
+    rm "/Users/USER/Music/audify/*.wav"
