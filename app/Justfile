@@ -11,9 +11,21 @@ BINARIES_PATH := "bin"
 EXPORT_PATH := "packages"
 SUPPORTED_PLATFORM :="android"
 
+LAME_PATH:= "src-tauri/sidecar/lame/bin/lame"
+SIDECAR_PATH :="src-tauri/sidecar/binaries"
 
 
 
+[working-directory:'../']
+@build-lame:
+    @just build-lame
+
+#TODO: build for all platforms in CI
+[doc('build the lame project for the target platform')]
+@prebuild:
+    npm run build 
+    just build-lame
+    @cp "src-tauri/sidecar/lame/bin/lame" "{{SIDECAR_PATH}}/lame-$(rustc -Vv | grep host | cut -f2 -d' ')"
 
 [doc('Run the application in watch mode')]
 watch target:
@@ -84,15 +96,3 @@ package:
     echo date > release-date.text
     cp "{{BINARIES_PATH}}/*" "{{EXPORT_PATH}}/*"
 
-
-download-models:
-     wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/libritts_r/medium/en_US-libritts_r-medium.onnx     
-     wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/libritts_r/medium/en_US-libritts_r-medium.onnx.json
-
-
-
-compile-onnxruntime:
-    #!/bin/bash
-    export ANDROID_HOME="$HOME/Library/Android/sdk"
-    export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
-    ../onnxruntime/build.sh --android --android_sdk_path "$ANDROID_HOME" --android_ndk_path "$NDK_HOME" --android_abi arm64-v8a --android_api 33

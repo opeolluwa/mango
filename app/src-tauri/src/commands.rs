@@ -25,7 +25,7 @@ impl AudioBook {
         let path_buf = path.canonicalize().ok()?;
         let file_name = path_buf.file_name()?.to_str()?.to_string();
 
-        // Remove ".wav" if it exists
+        //TODO: Remove ".wav" if it exists
         let display_name = file_name.strip_suffix(".wav").unwrap_or(&file_name);
 
         Some(Self {
