@@ -56,7 +56,7 @@ pub struct AudioSynthesisEvent {
 }
 
 #[tauri::command]
-pub fn synthesize_audio<R: Runtime>(pdf_path: &str, app_handle: AppHandle, window: tauri::Window<R>) -> Result<(), AudifyError> {
+pub async fn synthesize_audio<R: Runtime>(pdf_path: &str, app_handle: AppHandle, window: tauri::Window<R>) -> Result<(), AudifyError> {
     println!("Received PDF path: {pdf_path}");
 
     let config_path = app_handle
@@ -94,22 +94,8 @@ pub fn synthesize_audio<R: Runtime>(pdf_path: &str, app_handle: AppHandle, windo
         .map_err(|e| AudifyError::SynthesisError(e.to_string()))?;
 
     //CONVERT TO MP3
-    let sidecar_command = app_handle.shell().sidecar(LAME_SIDECAR).unwrap();
-    let (mut rx, mut child) = sidecar_command.spawn().expect("Failed to spawn lame sidecar");
+ trancode_wav_to_mp3(app_handle.clone(), &audio_output).await;
 
-tauri::async_runtime::spawn(async move {
-  // read events such as stdout
-  while let Some(event) = rx.recv().await {
-    if let CommandEvent::Stdout(line_bytes) = event {
-      let line = String::from_utf8_lossy(&line_bytes);
-      window
-        .emit("message", Some(format!("'{}'", line)))
-        .expect("failed to emit event");
-      // write to stdin
-      child.write("message from Rust\n".as_bytes()).unwrap();
-    }
-  }
-});
 
     app_handle
         .emit(
@@ -141,4 +127,29 @@ pub fn read_library() -> AudioLibrary {
 
 
 
+
+async fn trancode_wav_to_mp3(app: tauri::AppHandle, file_name: &str) {
+    println!("trying to encode {}", file_name);
+  let sidecar_command = app
+    .shell()
+    .sidecar(LAME_SIDECAR)
+    .unwrap()
+    .args([ "--file", file_name]);
+  let (mut rx, mut child) = sidecar_command.spawn().unwrap();
+
+
+    while let Some(event) = rx.recv().await {
+    if let CommandEvent::Stdout(line_bytes) = event {
+      let line = String::from_utf8_lossy(&line_bytes);
+    //   window
+    //     .emit("message", Some(format!("'{}'", line)))
+    //     .expect("failed to emit event");
+      // write to stdin
+      child.write("message from Rust\n".as_bytes()).unwrap();
+    }
+  }
+
+    println!("done trying to encode {}", file_name);
+
+}
 
