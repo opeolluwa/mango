@@ -54,8 +54,8 @@
           <button
             class="bg-accent-secondary text-accent flex justify-center items-center rounded-full size-16 active:scale-75 transition-all duration-75 ease-linear p-[5px]"
             @click="
-              togglePlaySound;
-              playSound(index);
+              changeSong(index);
+              togglePlaySound();
             "
           >
             <PlayIcon
@@ -124,7 +124,7 @@ const gotoNextSong = () =>
   currentSong.value < audioBooks.value.length - 1 &&
   changeSong(currentSong.value + 1);
 
-const togglePlaySound = () => (isPlaying.value = !isPlaying.value);
+// const togglePlaySound = () => (isPlaying.value = !isPlaying.value);
 const isCurrentSong = (index: number) => currentSong.value === index;
 const loadLibrary = () =>
   invoke("read_library").then((res) => {
@@ -162,32 +162,48 @@ async function createNewBook() {
     });
 }
 
-function changeSong(index: number) {
-  const wasPlaying = currentlyPlaying.value;
 
-  currentSong.value = index;
+
+async function changeSong(index: number) {
   const source = audioBooks.value[index]?.audioSrc;
   if (!source) return;
 
-  audio.value = new Audio(source);
+  if (audio.value) {
+    audio.value.pause();
+    audio.value.currentTime = 0;
+  }
 
-  audio.value.addEventListener("loadedmetadata", () => {
-    trackDuration.value = Math.round(audio.value?.duration || 0);
+  const newAudio = new Audio(source);
+  audio.value = newAudio;
+  currentSong.value = index;
+
+  newAudio.addEventListener("loadedmetadata", () => {
+    trackDuration.value = Math.round(newAudio.duration);
   });
+
+  newAudio.addEventListener("timeupdate", () => {
+    currentTime.value = newAudio.currentTime;
+  });
+
+  newAudio.addEventListener("ended", () => {
+    isPlaying.value = false;
+  });
+
+  if (isPlaying.value) {
+    await newAudio.play().catch(console.error);
+  }
 }
 
-function playSound(index: number) {
-  togglePlaySound();
+async function togglePlaySound() {
+  if (!audio.value) return;
 
-  const source = audioBooks.value[index]?.audioSrc;
-  if (!source) return;
-
-  if (!audio.value) {
-    audio.value = new Audio(source);
-    audio.value.addEventListener("ended", () => {
-      isPlaying.value = false;
-    });
+  if (isPlaying.value) {
+    audio.value.pause();
+  } else {
+    await audio.value.play().catch(console.error);
   }
+
+  isPlaying.value = !isPlaying.value;
 }
 </script>
 
