@@ -33,7 +33,7 @@ impl AudioBook {
         Some(Self {
             file_name: display_name.to_string(),
             play_back_duration: 45, // Consider computing real duration later
-            audio_src: file_name,
+            audio_src:path.canonicalize().ok()?.to_str().unwrap().to_string() ,
         })
     }
 }
