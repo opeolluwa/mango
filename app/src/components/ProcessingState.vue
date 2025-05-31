@@ -7,10 +7,7 @@
   </div>
 </template>
 
-
 <script lang="ts" setup>
 import Loader from "./AppLoader.vue";
-
-const props = defineProps(['processingPdf'])
 </script>
 <style></style>

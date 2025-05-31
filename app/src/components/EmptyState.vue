@@ -22,6 +22,7 @@
 
 <script lang="ts" setup>
 import { PlusCircleIcon, ViewColumnsIcon } from "@heroicons/vue/24/solid";
+import { invoke } from "@tauri-apps/api/core";
 
 defineEmits(["createNewBook"]);
 </script>
