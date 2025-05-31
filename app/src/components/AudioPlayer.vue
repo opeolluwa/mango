@@ -89,6 +89,7 @@ const playAudio = () => {
   isPlaying.value = !isPlaying.value;
 };
 
+
 const pauseAudio = () => {
   audioRef.value?.pause();
   isPlaying.value = !isPlaying.value;
