@@ -12,6 +12,11 @@ use walkdir::WalkDir;
 use crate::{MEDIA_DIR, MODEL_CONFIG_FILE, LAME_SIDECAR};
 use tauri::Runtime;
 
+use std::fs;
+use std::io;
+
+
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[derive(TS)]
@@ -94,7 +99,8 @@ pub async fn synthesize_audio<R: Runtime>(pdf_path: &str, app_handle: AppHandle,
         .map_err(|e| AudifyError::SynthesisError(e.to_string()))?;
 
     //CONVERT TO MP3
- trancode_wav_to_mp3(app_handle.clone(), &audio_output).await;
+ transcode_wav_to_mp3(app_handle.clone(), &audio_output).await;
+ delete_file_if_exists(&audio_output).unwrap();
 
 
     app_handle
@@ -107,7 +113,6 @@ pub async fn synthesize_audio<R: Runtime>(pdf_path: &str, app_handle: AppHandle,
         )
         .unwrap();
 
-    println!("Audio synthesis complete.");
 
     Ok(())
 }
@@ -126,17 +131,15 @@ pub fn read_library() -> AudioLibrary {
 }
 
 
-async fn trancode_wav_to_mp3(app: tauri::AppHandle, file_name: &str) {
-    println!("trying to encode {}", file_name);
+async fn transcode_wav_to_mp3(app: tauri::AppHandle, file_name: &str) {
 
-    // Get the main window
     let window = app.get_webview_window("main").unwrap();
 
     let sidecar_command = app
         .shell()
         .sidecar(LAME_SIDECAR)
         .unwrap()
-        .args(["--file", file_name]);
+        .args([ file_name]);
 
     let (mut rx, mut child) = sidecar_command.spawn().unwrap();
 
@@ -154,6 +157,14 @@ async fn trancode_wav_to_mp3(app: tauri::AppHandle, file_name: &str) {
         }
     }
 
-    println!("done trying to encode {}", file_name);
 }
 
+
+
+fn delete_file_if_exists(path: &str) -> io::Result<()> {
+    let file_path = Path::new(path);
+    if file_path.exists() {
+        fs::remove_file(file_path)?;
+    }
+    Ok(())
+}
