@@ -2,6 +2,15 @@
   <footer
     class="fixed bg-app-dark border-t border-t-gray-50/10 w-screen min-h-12 bottom-0 parent-element py-3 text-small flex items-center justify-between z-5000"
   >
+    <audio
+      ref="audioRef"
+      :src="audioSrc"
+      preload="auto"
+      class="hidden"
+      @timeupdate="updateCurrentTime"
+      @loadedmetadata="updateDuration"
+    />
+
     <div class="flex gap-x-2">
       <img
         src="./../../assets/cover.jpg"
@@ -10,7 +19,7 @@
       />
       <div class="col-span-1">
         <small class="text-gray-400"> You are listening to... </small>
-        <h6 class="leading-">Welcome to horrowwook</h6>
+        <h6 class="text-[14px] leading-1.5">{{ fileName }}</h6>
       </div>
     </div>
     <div class="flex gap-x-4 items-center">
@@ -19,21 +28,46 @@
       <div
         class="w-8 h-8 border rounded-full border-gray-600 flex items-center justify-center"
       >
-        <!-- <Icon icon="fluent:play-48-filled" class="icon" /> -->
-        <Icon icon="fluent:pause-48-filled" class="icon p-[2px]" />
+        <Icon
+          icon="fluent:play-48-filled"
+          class="icon"
+          v-show="!isPlaying"
+          @click="playAudio"
+        />
+        <Icon
+          icon="fluent:pause-48-filled"
+          class="icon p-[2px]"
+          v-show="isPlaying"
+          @click="pauseAudio"
+        />
       </div>
       <Icon icon="fluent:next-48-filled" class="icon" />
-      <Icon icon="gravity-ui:heart-fill" class="icon text-app-red" />
-      <!-- <Icon icon="gravity-ui:heart" class="icon text-gray-500" /> -->
+      <Icon
+        icon="gravity-ui:heart-fill"
+        class="icon text-app-red"
+        v-show="isLoved"
+        @click="toggledIsLoved"
+      />
+      <Icon
+        icon="gravity-ui:heart"
+        class="icon text-gray-500"
+        v-show="!isLoved"
+        @click="toggledIsLoved"
+      />
     </div>
     <div class="flex w-[40%] items-center gap-x-2">
-      <ProgressBar class="w-4/5" progress="40" />
-      <div class="text-[12px] text-gray-400">1:55/3:47</div>
+      <ProgressBar
+        class="w-4/5"
+        :progress="(currentTime / duration) * 100 || 0"
+      />
+      <div class="text-[12px] text-gray-400">
+        {{ formatTime(currentTime) }}/ {{ formatTime(duration) }}
+      </div>
     </div>
 
     <div class="flex w-[10%] items-center gap-x-2">
       <Icon icon="fluent-mdl2:volume-3" class="icon" />
-      <ProgressBar class="w-4/5" progress="40" />
+      <ProgressBar class="w-4/5" :progress="volume * 100 || 0" />
     </div>
     <div class="flex gap-x-2 items-center">
       <Icon icon="iconamoon:playlist-shuffle-fill" class="size-6" />
@@ -46,4 +80,66 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import ProgressBar from "../../components/ProgressBar.vue";
+import { ref } from "vue";
+import Core from "@any-touch/core";
+import Pan from "@any-touch/pan";
+import type { AnyTouchEvent } from "any-touch";
+const props = defineProps<{
+  fileName: string;
+  audioSrc: string;
+}>();
+
+const initState = () => {
+  state.isPlaying = false;
+  state.isDragging = false;
+  state.currentTime = 0;
+  state.totalTime = 0;
+  state.totalTimeStr = "00:00";
+};
+
+const { fileName, audioSrc } = props;
+const isPlaying = ref(false);
+const isLoved = ref(false);
+const audioRef = ref<HTMLAudioElement | null>(null);
+const currentTime = ref(0);
+const duration = ref(0);
+const volume = ref(0.25);
+
+// audioRef.value?.volume = volume.value;
+const toggledIsLoved = () => {
+  isLoved.value = !isLoved.value;
+};
+
+const playAudio = () => {
+  audioRef.value?.play().catch((err) => {
+    console.error("Failed to play audio:", err);
+  });
+  isPlaying.value = !isPlaying.value;
+};
+
+const pauseAudio = () => {
+  audioRef.value?.pause();
+  isPlaying.value = !isPlaying.value;
+};
+
+const updateCurrentTime = () => {
+  if (audioRef.value) {
+    currentTime.value = audioRef.value.currentTime;
+  }
+};
+
+const updateDuration = () => {
+  if (audioRef.value) {
+    duration.value = audioRef.value.duration;
+  }
+};
+
+const formatTime = (time: number): string => {
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60);
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
+    2,
+    "0"
+  )}`;
+};
 </script>

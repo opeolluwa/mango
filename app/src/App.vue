@@ -8,13 +8,16 @@
       <RouterView />
     </main>
     <aside class="col-span-3"></aside>
-    <AppFooter />
+    <AppFooter :file-name="fileName" :audio-src="audioSource" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import AppFooter from "./components/app/AppFooter.vue";
 import AppNavigation from "./components/app/AppNavigation.vue";
+import { ref } from "vue";
+const audioSource = ref("source.mp3");
+const fileName = ref("the great asb.pdf");
 </script>
 <style scoped>
 @reference "./assets/styles.css";

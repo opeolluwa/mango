@@ -6,8 +6,8 @@
 
     <div class="nav-section">
       <AppLabeledIcon icon="mynaui:signal" label="Feed" />
-      <AppLabeledIcon icon="ph:playlist-duotone" label="Playlist" />
-      <AppLabeledIcon icon="bx:bar-chart" label="Statistics" />
+      <AppLabeledIcon icon="ph:playlist-duotone" label="Library" />
+      <AppLabeledIcon icon="hugeicons:bot" label="AI Voice" />
     </div>
 
     <div class="nav-section">
