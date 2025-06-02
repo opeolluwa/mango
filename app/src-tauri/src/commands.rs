@@ -1,21 +1,19 @@
 use std::path::{Path, PathBuf};
 
+use crate::{LAME_SIDECAR, MEDIA_DIR, MODEL_CONFIG_FILE};
 use libaudify::core::Audify;
 use libaudify::error::AudifyError;
 use serde::{Deserialize, Serialize};
 use tauri::path::BaseDirectory;
+use tauri::Runtime;
 use tauri::{AppHandle, Emitter, Manager};
 use tauri_plugin_shell::process::CommandEvent;
 use tauri_plugin_shell::ShellExt;
 use ts_rs::TS;
 use walkdir::WalkDir;
-use crate::{MEDIA_DIR, MODEL_CONFIG_FILE, LAME_SIDECAR};
-use tauri::Runtime;
 
 use std::fs;
 use std::io;
-
-
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -38,7 +36,7 @@ impl AudioBook {
         Some(Self {
             file_name: display_name.to_string(),
             play_back_duration: 45, // Consider computing real duration later
-            audio_src:path.canonicalize().ok()?.to_str().unwrap().to_string() ,
+            audio_src: path.canonicalize().ok()?.to_str().unwrap().to_string(),
         })
     }
 }
@@ -61,7 +59,11 @@ pub struct AudioSynthesisEvent {
 }
 
 #[tauri::command]
-pub async fn synthesize_audio<R: Runtime>(pdf_path: &str, app_handle: AppHandle, _window: tauri::Window<R>) -> Result<(), AudifyError> {
+pub async fn synthesize_audio<R: Runtime>(
+    pdf_path: &str,
+    app_handle: AppHandle,
+    _window: tauri::Window<R>,
+) -> Result<(), AudifyError> {
     println!("Received PDF path: {pdf_path}");
 
     let config_path = app_handle
@@ -99,9 +101,8 @@ pub async fn synthesize_audio<R: Runtime>(pdf_path: &str, app_handle: AppHandle,
         .map_err(|e| AudifyError::SynthesisError(e.to_string()))?;
 
     //CONVERT TO MP3
- transcode_wav_to_mp3(app_handle.clone(), &audio_output).await;
- delete_file_if_exists(&audio_output).unwrap();
-
+    transcode_wav_to_mp3(app_handle.clone(), &audio_output).await;
+    delete_file_if_exists(&audio_output).unwrap();
 
     app_handle
         .emit(
@@ -112,7 +113,6 @@ pub async fn synthesize_audio<R: Runtime>(pdf_path: &str, app_handle: AppHandle,
             },
         )
         .unwrap();
-
 
     Ok(())
 }
@@ -130,16 +130,10 @@ pub fn read_library() -> AudioLibrary {
     library
 }
 
-
 async fn transcode_wav_to_mp3(app: tauri::AppHandle, file_name: &str) {
-
     let window = app.get_webview_window("main").unwrap();
 
-    let sidecar_command = app
-        .shell()
-        .sidecar(LAME_SIDECAR)
-        .unwrap()
-        .args([ file_name]);
+    let sidecar_command = app.shell().sidecar(LAME_SIDECAR).unwrap().args([file_name]);
 
     let (mut rx, mut child) = sidecar_command.spawn().unwrap();
 
@@ -156,10 +150,7 @@ async fn transcode_wav_to_mp3(app: tauri::AppHandle, file_name: &str) {
             child.write(b"message from Rust\n").unwrap();
         }
     }
-
 }
-
-
 
 fn delete_file_if_exists(path: &str) -> io::Result<()> {
     let file_path = Path::new(path);
