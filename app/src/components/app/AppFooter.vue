@@ -5,7 +5,7 @@
     <div class="flex gap-x-2">
       <img
         src="./../../assets/cover.jpg"
-        class="w-12 h-12 rounded col-span-1"
+        class="w-10 h-10 rounded col-span-1"
         alt=""
       />
       <div class="col-span-1">
