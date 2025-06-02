@@ -1,6 +1,6 @@
 <template>
   <nav
-    class="col-span-3 border-r border-r-gray-500/10 layout flex flex-col gap-y-16 h-screen"
+    class="border-r border-r-gray-500/10 layout flex flex-col gap-y-16 h-screen text-app-white/60"
   >
     <AppLogo class="parent px-8" />
 
@@ -11,14 +11,11 @@
     </div>
 
     <div class="nav-section">
-      <small class="nav-section-heading parent-element">Your music</small>
+      <small class="nav-section-heading parent-element">Your collection</small>
+      <AppLabeledIcon icon="mdi:book-plus-outline" label="Create new" />
       <AppLabeledIcon icon="fluent:heart-28-regular" label="Favourites" />
       <AppLabeledIcon icon="fluent:clock-16-regular" label="Listen later" />
       <AppLabeledIcon icon="solar:calendar-broken" label="History" class="" />
-      <AppLabeledIcon
-        icon="material-symbols-light:podcasts-rounded"
-        label="Podcast"
-      />
     </div>
 
     <div class="nav-section">

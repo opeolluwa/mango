@@ -11,7 +11,7 @@
       @loadedmetadata="updateDuration"
     />
 
-    <div class="flex gap-x-2">
+    <div class="flex gap-x-2 xs:hidden">
       <img
         src="./../../assets/cover.jpg"
         class="w-10 h-10 rounded col-span-1"
@@ -69,9 +69,9 @@
       <Icon icon="fluent-mdl2:volume-3" class="icon" />
       <ProgressBar class="w-4/5" :progress="volume * 100 || 0" />
     </div>
-    <div class="flex gap-x-2 items-center">
-      <Icon icon="iconamoon:playlist-shuffle-fill" class="size-6" />
-      <Icon icon="iconamoon:playlist-repeat-list-light" class="size-6" />
+    <div class="flex gap-x-2 items-center xs:hidden">
+      <Icon icon="iconamoon:playlist-shuffle-fill" class="size-5" />
+      <Icon icon="iconamoon:playlist-repeat-list-light" class="size-5" />
       <Icon icon="solar:playlist-outline" class="size-5" />
     </div>
   </footer>
@@ -81,21 +81,18 @@
 import { Icon } from "@iconify/vue";
 import ProgressBar from "../../components/ProgressBar.vue";
 import { ref } from "vue";
-import Core from "@any-touch/core";
-import Pan from "@any-touch/pan";
-import type { AnyTouchEvent } from "any-touch";
 const props = defineProps<{
   fileName: string;
   audioSrc: string;
 }>();
 
-const initState = () => {
-  state.isPlaying = false;
-  state.isDragging = false;
-  state.currentTime = 0;
-  state.totalTime = 0;
-  state.totalTimeStr = "00:00";
-};
+// const initState = () => {
+//   state.isPlaying = false;
+//   state.isDragging = false;
+//   state.currentTime = 0;
+//   state.totalTime = 0;
+//   state.totalTimeStr = "00:00";
+// };
 
 const { fileName, audioSrc } = props;
 const isPlaying = ref(false);
