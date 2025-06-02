@@ -6,13 +6,9 @@
     box-sizing: border-box;
 }
 
-:root {
-    --accent: #537D5D;
-    --accent-mid: #73946B;
-    --accent-light: #9EBC8A;
-    --accent-secondary: #9EBC8A;
+#app {
+    position: fixed;
 }
-
 
 @theme {
     --color-accent: #537D5D;
@@ -20,4 +16,35 @@
     --color-accent-light: #9EBC8A;
     --color-accent-secondary: #D2D0A0;
     --wrapper-padding: @apply px-8;
+    --color-app-dark: #09090f;
+    --color-app-red: #F7374F;
+    --color-app-orange: #FF6500;
+
+    --color-app-dark: oklch(14.298% 0.01306 284.63);
+    --color-app-dark-50: oklch(44.806% 0.08425 282.46);
+    --color-app-dark-100: oklch(41.634% 0.07757 282.5);
+    --color-app-dark-200: oklch(35.476% 0.06361 282.67);
+    --color-app-dark-300: oklch(28.978% 0.0471 283.07);
+    --color-app-dark-400: oklch(21.796% 0.0331 283.31);
+    --color-app-dark-500: oklch(14.298% 0.01306 284.63);
+    --color-app-dark-600: oklch(0% 0 none);
+    --color-app-dark-700: oklch(0% 0 none);
+    --color-app-dark-800: oklch(0% 0 none);
+    --color-app-dark-900: oklch(0% 0 none);
+    --color-app-dark-950: oklch(0% 0 none);
+}
+
+
+.icon {
+    @apply size-4 cursor-pointer hover:text-app-orange;
+}
+
+
+.parent-element {
+    @apply px-8;
+}
+
+.layout {
+    @apply pt-4 h-screen overflow-scroll scroll-smooth scroll-m-1 pb-24;
+
 }

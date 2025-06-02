@@ -13,9 +13,9 @@
     "windows": [
       {
         "title": "Audify",
-        "width": 400,
-        "height": 500,
-        "resizable": false
+        "width": 1200,
+        "height": 800,
+        "resizable": true
       }
     ],
     "security": {

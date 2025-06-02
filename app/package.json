@@ -10,6 +10,8 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@coreui/icons": "^3.0.1",
+    "@coreui/icons-vue": "^2.2.0",
     "@heroicons/vue": "^2.2.0",
     "@tailwindcss/vite": "^4.1.5",
     "@tauri-apps/api": "^2",
@@ -22,6 +24,7 @@
     "vue3-hotkey": "^1.0.6"
   },
   "devDependencies": {
+    "@iconify/vue": "^5.0.0",
     "@tailwindcss/typography": "^0.5.16",
     "@tauri-apps/cli": "^2",
     "@vitejs/plugin-vue": "^5.2.1",

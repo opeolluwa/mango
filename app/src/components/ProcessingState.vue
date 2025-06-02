@@ -8,6 +8,6 @@
 </template>
 
 <script lang="ts" setup>
-import Loader from "./AppLoader.vue";
+import Loader from "./app/AppLoader.vue";
 </script>
 <style></style>
