@@ -28,10 +28,10 @@
 </template>
 
 <script lang="ts" setup>
-import { Icon } from "@iconify/vue";
 import AppFooter from "./components/app/AppFooter.vue";
 import AppNavigation from "./components/app/AppNavigation.vue";
 </script>
 <style scoped>
 @reference "./assets/styles.css";
 </style>
+
