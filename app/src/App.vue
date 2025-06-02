@@ -8,7 +8,7 @@
       <AppHeading />
       <RouterView />
     </main>
-    <aside class="col-span-3"></aside>
+    <aside class="col-span-3 md:hidden"> hey</aside>
     <AppFooter
       :file-name="fileName"
       :audio-src="audioSource"
