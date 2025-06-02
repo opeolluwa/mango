@@ -2,12 +2,14 @@
   <heading class="flex gap-x-4 items-center justify-between">
     <div class="flex gap-x-3 items-center">
       <Icon
-        icon="fic:outline-chevron-right"
-        class="text-gray-400/50 size-5 flex items-center h-full"
+        icon="mingcute:left-fill"
+        class="text-gray-400/50 size-5 flex items-center h-full icon"
+        @click="goBack"
       />
       <Icon
-        icon="ic:outline-chevron-right"
-        class="text-gray-400/50 size-5 flex items-center h-full"
+        icon="mingcute:right-fill"
+        class="text-gray-400/50 size-5 flex items-center h-full icon"
+        @click="goForward"
       />
     </div>
     <form
@@ -44,4 +46,5 @@
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
+import { goBack, goForward } from "../../hooks/router";
 </script>

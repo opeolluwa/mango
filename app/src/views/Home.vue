@@ -15,7 +15,7 @@
       </div>
 
       <div
-        class="rounded-lg col-span-8 h-full px-4 shadow-app-gray py-6 bg-blend-multiply bg-[url(../assets/cover.jpg)] bg-center bg-cover bg-app-gray/90 bg-no-repeat relative "
+        class="rounded-lg col-span-8 h-full px-4 shadow-app-gray py-6 bg-blend-multiply bg-[url(../assets/cover.jpg)] bg-center bg-cover bg-app-gray/90 bg-no-repeat relative"
       >
         <div class="flex justify-between">
           <small class="text-[12px] text-gray-400"
@@ -41,8 +41,7 @@
         >
           <Icon icon="fluent:play-48-filled" class="size-6" />
         </div>
-        <ProgressBar :progress="60"  class="absolute bottom-1.5 w-[80%]"/>
-
+        <ProgressBar :progress="60" class="absolute bottom-1.5 w-[80%]" />
       </div>
     </div>
 
@@ -63,34 +62,12 @@
 
       <div class="flex flex-col gap-y-4 mt-4">
         <AudioBook
-          file-name="test-file.pdf"
-          duration="3:45/1:00:34"
-          class
-          date-last-played="June 2 2025"
-        />
-        <AudioBook
-          file-name="test-file.pdf"
-          duration="3:45/1:00:34"
-          class
-          date-last-played="June 2 2025"
-        />
-        <AudioBook
-          file-name="test-file.pdf"
-          duration="3:45/1:00:34"
-          class
-          date-last-played="June 2 2025"
-        />
-        <AudioBook
-          file-name="test-file.pdf"
-          duration="3:45/1:00:34"
-          class
-          date-last-played="June 2 2025"
-        />
-        <AudioBook
-          file-name="test-file.pdf"
-          duration="3:45/1:00:34"
-          class
-          date-last-played="June 2 2025"
+          class=""
+          v-for="(book, index) in audioBooks"
+          :key="index"
+          :file-name="book.fileName"
+          :duration="book.playBackDuration.toString()"
+          :date-last-played="new Date().toLocaleDateString()"
         />
       </div>
     </div>
@@ -98,11 +75,15 @@
 </template>
 
 <script lang="ts" setup>
+import { Icon } from "@iconify/vue";
 import { ref } from "vue";
 import AudioBook from "../components/AudioBook.vue";
 import ColumnLayout from "../components/layouts/ColumnLayout.vue";
-import { Icon } from "@iconify/vue";
 import ProgressBar from "../components/ProgressBar.vue";
+import { useMusicLibary } from "../stores/library.ts";
+
+const musicStore = useMusicLibary();
+const audioBooks = musicStore.audioLibrary?.audioBooks;
 
 const isLoved = ref(false);
 const toggledIsLoved = () => {

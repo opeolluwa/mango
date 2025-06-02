@@ -5,14 +5,18 @@
     <AppLogo class="parent px-8" />
 
     <div class="nav-section">
-      <AppLabeledIcon icon="mynaui:signal" label="Feed" />
-      <AppLabeledIcon icon="ph:playlist-duotone" label="Library" />
-      <AppLabeledIcon icon="hugeicons:bot" label="AI Voice" />
+      <AppLabeledIcon icon="mynaui:signal" label="Feed" route="/" />
+      <AppLabeledIcon
+        icon="ph:playlist-duotone"
+        label="Library"
+        route="/library"
+      />
+      <AppLabeledIcon icon="hugeicons:bot" label="AI Voice" route="/voices" />
     </div>
 
     <div class="nav-section">
       <small class="nav-section-heading parent-element">Your collection</small>
-      <AppLabeledIcon icon="mdi:book-plus-outline" label="Create new" />
+      <AppLabeledIcon icon="mdi:book-plus-outline" label="Create new"  @click="useCreateNewBook" />
       <AppLabeledIcon icon="fluent:heart-28-regular" label="Favourites" />
       <AppLabeledIcon icon="fluent:clock-16-regular" label="Listen later" />
       <AppLabeledIcon icon="solar:calendar-broken" label="History" class="" />
@@ -35,6 +39,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useCreateNewBook } from "../../hooks/createBook";
 import PlayListTag from "../PlayListTag.vue";
 import AppLabeledIcon from "./AppLabeledIcon.vue";
 import AppLogo from "./AppLogo.vue";
