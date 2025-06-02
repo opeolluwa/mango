@@ -48,7 +48,7 @@ import { Icon } from "@iconify/vue";
 @reference "../../assets/styles.css";
 
 .nav-section {
-  @apply flex flex-col gap-y-5;
+  @apply flex flex-col gap-y-6;
 }
 
 .nav-section-heading {
