@@ -1,21 +1,66 @@
 <template>
-     <heading class="paent-element">
-        <form
-          action=""
-          class="bg-gray-50/10 flex gap-x-2 items-center rounded-md h-10 relative"
+  <ColumnLayout>
+    <div class="grid grid-cols-12 h-48 mt-16 gap-4">
+      <div
+        class="rounded-lg shadow shadow-app-gray py-6 bg-linear-50 from-app-orange/90 from-20% via-app-gray to-app-dark col-span-4 h-full px-4"
+      >
+        <small class="text-[12px] text-gray-400"
+          >69 tracks . 4 hours 37 minutes</small
         >
-          <!-- <Icon
-            icon="fluent:search-16-filled"
-            class="text-gray-400/50 size-8 flex items-center h-full pl-2"
-          /> -->
-          <input
-            type="text"
-            class="w-full h-10 outline-none border-none pr-6 placeholder:text-gray-400/50 placeholder:text-center"
-            placeholder="Search by artist, song or albulm"
-          />
-        </form>
-      </heading>
+        <h2 class="text-leadning-loose prose-h1:first-letter:capitalize">
+          Playlist for the day
+        </h2>
+      </div>
+
+      <div class="rounded py-6 bg-app-gray col-span-8 h-full px-4">
+        <h2>Playlist fo the day</h2>
+      </div>
+    </div>
+
+    <div>
+      <JustifiedRowLayout class="flex justify-between items-center">
+        <h2 class="text-app-orange font-bold leaidn-loose">Recently played</h2>
+        <small>View all</small>
+      </JustifiedRowLayout>
+      <div class="flex flex-col gap-y-6 mt-8">
+        <AudioBook
+          file-name="test-file.pdf"
+          duration="3:45/1:00:34"
+          class
+          date-last-played="June 2 2025"
+        />
+        <AudioBook
+          file-name="test-file.pdf"
+          duration="3:45/1:00:34"
+          class
+          date-last-played="June 2 2025"
+        />
+        <AudioBook
+          file-name="test-file.pdf"
+          duration="3:45/1:00:34"
+          class
+          date-last-played="June 2 2025"
+        />
+        <AudioBook
+          file-name="test-file.pdf"
+          duration="3:45/1:00:34"
+          class
+          date-last-played="June 2 2025"
+        />
+        <AudioBook
+          file-name="test-file.pdf"
+          duration="3:45/1:00:34"
+          class
+          date-last-played="June 2 2025"
+        />
+      </div>
+    </div>
+  </ColumnLayout>
 </template>
 
-
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { Icon } from "@iconify/vue";
+import ColumnLayout from "../components/layouts/ColumnLayout.vue";
+import JustifiedRowLayout from "../components/layouts/JustifiedRowLayout.vue";
+import AudioBook from "../components/AudioBook.vue";
+</script>

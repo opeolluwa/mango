@@ -5,16 +5,21 @@
   >
     <AppNavigation />
     <main class="col-span-6 layout parent-element">
+      <AppHeading />
       <RouterView />
     </main>
     <aside class="col-span-3"></aside>
-    <AppFooter :file-name="fileName" :audio-src="audioSource" />
+    <AppFooter
+      :file-name="fileName"
+      :audio-src="audioSource"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
-import AppFooter from "./components/app/AppFooter.vue";
-import AppNavigation from "./components/app/AppNavigation.vue";
+import AppFooter from "./components/uiBlocks/AppFooter.vue";
+import AppNavigation from "./components/uiBlocks/AppNavigation.vue";
+import AppHeading from "./components/uiBlocks/AppHeading.vue";
 import { ref } from "vue";
 const audioSource = ref("source.mp3");
 const fileName = ref("the great asb.pdf");
