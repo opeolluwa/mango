@@ -36,5 +36,5 @@ const props = defineProps<{
   dateLastPlayed: string;
 }>();
 
-const { fileName, duration, dateLastPlayed } = props;
+const { fileName,  } = props;
 </script>
