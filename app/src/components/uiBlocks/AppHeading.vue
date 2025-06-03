@@ -1,5 +1,5 @@
 <template>
-  <heading class="flex gap-x-4 items-center justify-between">
+  <header class="flex gap-x-4 items-center justify-between">
     <div class="flex gap-x-3 items-center">
       <Icon
         icon="mingcute:left-fill"
@@ -41,7 +41,7 @@
         class="text-gray-400/50 size-6 flex items-center h-full cursor-pointer"
       />
     </div>
-  </heading>
+  </header>
 </template>
 
 <script lang="ts" setup>

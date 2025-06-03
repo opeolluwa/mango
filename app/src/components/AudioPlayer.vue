@@ -86,6 +86,7 @@ const props = defineProps<{
   audioSrc: string;
 }>();
 
+
 // const initState = () => {
 //   state.isPlaying = false;
 //   state.isDragging = false;

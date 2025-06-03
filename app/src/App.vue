@@ -5,6 +5,7 @@
       <AppMain class="col-span-9 xl:col-span-8" />
     </Transition>
     <aside class="hidden xl:block xl:col-span-2">hey</aside>
+
     <AudioPlayer :file-name="fileName" :audio-src="audioSource" />
   </AppLayout>
 </template>
@@ -16,18 +17,26 @@ import AudioPlayer from "./components/AudioPlayer.vue";
 import AppMain from "./components/uiBlocks/AppMain.vue";
 import AppNavigation from "./components/uiBlocks/AppNavigation.vue";
 import { useMusicLibary } from "./stores/library";
+import * as path from "@tauri-apps/api/path";
 
 const audioSource = ref("source.mp3");
 const fileName = ref("the great asb.pdf");
 const store = useMusicLibary();
 
-onMounted(() => {
-  store.loadMusicLibrary();
+onMounted(async () => {
+  const dir = await path.desktopDir();
+  audioSource.value = await path.join(
+    dir,
+    "projects",
+    "audify",
+    "app/public/source.mp3"
+  );
+
+  await store.loadMusicLibrary();
 });
 </script>
-<style scoped>
-@reference "./assets/styles.css";
 
+<style scoped>
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease;

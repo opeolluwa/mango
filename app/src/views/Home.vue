@@ -76,14 +76,19 @@
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import AudioBook from "../components/AudioBook.vue";
 import ColumnLayout from "../components/layouts/ColumnLayout.vue";
 import ProgressBar from "../components/ProgressBar.vue";
 import { useMusicLibary } from "../stores/library.ts";
+import { type AudioBook as AudioBookInterface } from "../../src-tauri/bindings/AudioBook.ts";
 
 const musicStore = useMusicLibary();
-const audioBooks = musicStore.audioLibrary?.audioBooks;
+const audioBooks = ref<Array<AudioBookInterface>>();
+
+watch(audioBooks, async () => {
+  audioBooks.value = musicStore.audioBooks;
+});
 
 const isLoved = ref(false);
 const toggledIsLoved = () => {

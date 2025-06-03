@@ -9,7 +9,7 @@ import { AudioBook } from "../../src-tauri/bindings/AudioBook";
 
 export const useMusicLibary = defineStore("musicLibrary", {
   state: () => ({
-    audioLibrary: undefined as unknown as AudioLibrary,
+    audioLibrary: {} as AudioLibrary,
     audioBooks: [] as AudioBook[],
     isProcessingPdf: false,
   }),
