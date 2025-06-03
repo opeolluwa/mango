@@ -34,11 +34,12 @@
 
       <Icon
         icon="mdi:book-plus-outline"
-        class="text-gray-400/50 size-6 flex items-center h-full cursor-pointer"
+        class="text-gray-400/50 size-5 flex items-center h-full cursor-pointer"
+        @click="useCreateNewBook"
       />
       <Icon
         icon="mdi:bell-outline"
-        class="text-gray-400/50 size-6 flex items-center h-full cursor-pointer"
+        class="text-gray-400/50 size-5 flex items-center h-full cursor-pointer"
       />
     </div>
   </header>
@@ -47,4 +48,5 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import { goBack, goForward } from "../../hooks/router";
+import { useCreateNewBook } from "../../hooks/createBook";
 </script>
