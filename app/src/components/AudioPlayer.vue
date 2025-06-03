@@ -13,7 +13,7 @@
 
     <div class="flex gap-x-2 xs:hidden">
       <img
-        src="./../../assets/cover.jpg"
+        src="../assets/cover.jpg"
         class="w-10 h-10 rounded col-span-1"
         alt=""
       />
@@ -79,12 +79,13 @@
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
-import ProgressBar from "../../components/ProgressBar.vue";
+import ProgressBar from "./ProgressBar.vue";
 import { ref } from "vue";
 const props = defineProps<{
   fileName: string;
   audioSrc: string;
 }>();
+
 
 // const initState = () => {
 //   state.isPlaying = false;

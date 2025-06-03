@@ -13,7 +13,7 @@
     "windows": [
       {
         "title": "Audify",
-        "width": 1200,
+        "width": 1000,
         "height": 800,
         "resizable": true
       }
