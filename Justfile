@@ -52,9 +52,16 @@ build-onnxruntime:
 
 [working-directory:'lame']
 @build-lame:
-    ./configure --disable-shared --enable-static --enable-nasm --prefix=$(pwd)/../app/src-tauri/sidecar/lame
-    make
-    make install
+    #!/bin/bash
+    # set -e
+
+    if [ ! -f "../app/src-tauri/sidecar/lame/bin/lame" ]; then
+        ./configure --disable-shared --enable-static --enable-nasm --prefix=$(pwd)/../app/src-tauri/sidecar/lame
+        make
+        make install
+    else
+        echo "LAME already exists, skipping..."
+    fi
 
 
 @convert-local:
