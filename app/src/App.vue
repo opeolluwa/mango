@@ -4,8 +4,7 @@
     <Transition name="fade">
       <AppMain class="col-span-9 xl:col-span-8" />
     </Transition>
-    <aside class="hidden xl:block xl:col-span-2">hey</aside>
-
+    <aside class="hidden xl:block xl:col-span-2"></aside>
     <AudioPlayer :file-name="fileName" :audio-src="audioSource" />
   </AppLayout>
 </template>

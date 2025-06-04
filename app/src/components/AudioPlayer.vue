@@ -11,7 +11,7 @@
       @loadedmetadata="updateDuration"
     />
 
-    <div class="flex gap-x-2 xs:hidden">
+    <div class="flex gap-x-4 xs:hidden">
       <img
         src="../assets/cover.jpg"
         class="w-10 h-10 rounded col-span-1"
@@ -19,14 +19,14 @@
       />
       <div class="col-span-1">
         <small class="text-gray-400"> You are listening to... </small>
-        <h6 class="text-[14px] leading-1.5">{{ fileName }}</h6>
+        <h6 class="text-[14px] leading-3.5">{{ fileName }}</h6>
       </div>
     </div>
     <div class="flex gap-x-4 items-center">
       <Icon icon="fluent:previous-48-filled" class="icon" />
 
       <div
-        class="w-8 h-8 border rounded-full border-gray-600 flex items-center justify-center"
+        class="w-8 h-8 border rounded-full border-gray-600 flex items-center justify-center text-white/80"
       >
         <Icon
           icon="fluent:play-48-filled"
@@ -56,12 +56,15 @@
       />
     </div>
     <div class="flex w-[40%] items-center gap-x-2">
+      <div class="text-[12px] text-gray-400">
+        {{ formatTime(currentTime) }}
+      </div>
       <ProgressBar
         class="w-4/5"
         :progress="(currentTime / duration) * 100 || 0"
       />
       <div class="text-[12px] text-gray-400">
-        {{ formatTime(currentTime) }}/ {{ formatTime(duration) }}
+        {{ formatTime(duration) }}
       </div>
     </div>
 
@@ -69,7 +72,7 @@
       <Icon icon="fluent-mdl2:volume-3" class="icon" />
       <ProgressBar class="w-4/5" :progress="volume * 100 || 0" />
     </div>
-    <div class="flex gap-x-2 items-center xs:hidden">
+    <div class="flex gap-x-2 items-center hidden">
       <Icon icon="iconamoon:playlist-shuffle-fill" class="size-5" />
       <Icon icon="iconamoon:playlist-repeat-list-light" class="size-5" />
       <Icon icon="solar:playlist-outline" class="size-5" />
@@ -85,7 +88,6 @@ const props = defineProps<{
   fileName: string;
   audioSrc: string;
 }>();
-
 
 // const initState = () => {
 //   state.isPlaying = false;
