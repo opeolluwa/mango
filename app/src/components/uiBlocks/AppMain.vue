@@ -1,11 +1,13 @@
 <template>
   <main class="layout parent-element">
     <AppHeading />
-    <RouterView v-slot="{ Component }">
-      <Transition name="fade" mode="out-in">
-        <component :is="Component" />
-      </Transition>
-    </RouterView>
+<!--    <RouterView v-slot="{ Component }">-->
+<!--      <Transition name="fade" mode="out-in">-->
+<!--        <component :is="Component" />-->
+<!--      </Transition>-->
+<!--    </RouterView>-->
+
+    <RouterView/>
   </main>
 </template>
 
