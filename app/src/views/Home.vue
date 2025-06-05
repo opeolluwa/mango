@@ -11,7 +11,7 @@
       >
       <button
         class="bg-app-orange text-white btn-lg inline-flex gap-x-2 rounded items-center px-8 py-2 mt-2 cursor-pointer shadow-md transition-colors duration-200 ease-linear hover:opacity-95 hover:scale-95 control"
-        @click="useCreateNewBook"
+        @click="createNewBook"
       >
         <Icon icon="ic:round-plus" class="size-8" />
         Create
@@ -98,7 +98,7 @@ import ColumnLayout from "../components/layouts/ColumnLayout.vue";
 import ProgressBar from "../components/ProgressBar.vue";
 import { useAudioBookLibrary } from "../stores/library.ts";
 import { type AudioBook as AudioBookInterface } from "../../src-tauri/bindings/AudioBook.ts";
-import { useCreateNewBook } from "../hooks/createBook.ts";
+import { createNewBook } from "../hooks/book.ts";
 const empty = ref(false);
 const musicStore = useAudioBookLibrary();
 const audioBooks = ref<Array<AudioBookInterface>>();

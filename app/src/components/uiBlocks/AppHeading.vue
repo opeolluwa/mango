@@ -35,7 +35,7 @@
       <Icon
         icon="mdi:book-plus-outline"
         class="text-gray-400/50 size-5 flex items-center h-full cursor-pointer"
-        @click="useCreateNewBook"
+        @click="createNewBook"
       />
       <RouterLink to="/notification">
         <Icon
@@ -50,5 +50,5 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import { goBack, goForward } from "../../hooks/router";
-import { useCreateNewBook } from "../../hooks/createBook";
+import { createNewBook } from "../../hooks/book";
 </script>
