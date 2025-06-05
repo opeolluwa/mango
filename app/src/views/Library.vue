@@ -28,10 +28,10 @@
 <script lang="ts" setup>
 import {ref} from "vue";
 import AudioBook from "../components/AudioBook.vue";
-import {useMusicLibary} from "../stores/library";
+import {useAudioBookLibrary} from "../stores/library";
 import {Icon} from "@iconify/vue";
 
-const musicStore = useMusicLibary();
+const musicStore = useAudioBookLibrary();
 const audioBooks = musicStore.audioLibrary.audioBooks;
 const empty = ref(false);
 </script>

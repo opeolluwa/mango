@@ -1,9 +1,9 @@
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
-import { useMusicLibary } from "../stores/library";
+import { useAudioBookLibrary } from "../stores/library";
 
 export async function useCreateNewBook() {
-  const musicLibStore = useMusicLibary();
+  const musicLibStore = useAudioBookLibrary();
 
   const file = await open({
     multiple: false,
