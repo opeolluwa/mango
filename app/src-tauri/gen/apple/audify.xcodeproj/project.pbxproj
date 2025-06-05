@@ -22,7 +22,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		248B5BC5264DC95E14156B59 /* error.rs */ = {isa = PBXFileReference; path = error.rs; sourceTree = "<group>"; };
 		29A65EA218C7FBC8241AD073 /* libapp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libapp.a; sourceTree = "<group>"; };
 		3426AD429B032210B2C6B60A /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		3B61AE98C0133C2B6227BCC9 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -115,7 +114,6 @@
 			isa = PBXGroup;
 			children = (
 				7CDF2F31AE37554ECC249A78 /* commands.rs */,
-				248B5BC5264DC95E14156B59 /* error.rs */,
 				8B95006C55D25CB9423C34CF /* lib.rs */,
 				6267B9152FE5B5E1B7E577CA /* main.rs */,
 			);

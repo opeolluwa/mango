@@ -1,8 +1,13 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 
+use crate::state::AppState;
 use dirs;
 use lazy_static::lazy_static;
+use std::sync::{Arc, Mutex};
+
 mod commands;
+
+mod state;
 
 lazy_static! {
     pub static ref MODEL_CONFIG_FILE: &'static str = "resources/en_US-libritts_r-medium.onnx.json";
@@ -20,21 +25,42 @@ lazy_static! {
     };
 }
 
+pub const LAME_SIDECAR: &str = "lame";
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_dialog::init())
+        .manage(Arc::new(AppState {
+            current_audio_book: Mutex::new(None),
+        }))
         // .setup(|app| {
-        //     #[cfg(desktop)]
-        //     let _ = app
-        //         .handle()
-        //         .plugin(tauri_plugin_single_instance::init(|_app, _args, _cwd| {}));
+        //     app.manage(AppData {
+        //         welcome_message: "Welcome to Tauri!",
+        //     });
         //     Ok(())
         // })
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_sql::Builder::new().build())
+        // .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_upload::init())
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init())
+        .setup(|app| {
+            #[cfg(desktop)]
+            let _ = app
+                .handle()
+                .plugin(tauri_plugin_single_instance::init(|_app, _args, _cwd| {}));
+            Ok(())
+        })
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             commands::synthesize_audio,
-            commands::read_library
+            commands::read_library,
+            commands::play_audio_book,
+            commands::pause_audio_book,
+            commands::set_audio_book_volume,
+            commands::seek_audio_book_to_position,
+            commands::set_audio_book_playback_speed
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

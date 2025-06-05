@@ -1,17 +1,16 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
 
 * {
     box-sizing: border-box;
 }
 
-:root {
-    --accent: #537D5D;
-    --accent-mid: #73946B;
-    --accent-light: #9EBC8A;
-    --accent-secondary: #9EBC8A;
+
+#app {
+    position: fixed;
+    height: 100% !important;
 }
-
-
 
 @theme {
     --color-accent: #537D5D;
@@ -19,4 +18,49 @@
     --color-accent-light: #9EBC8A;
     --color-accent-secondary: #D2D0A0;
     --wrapper-padding: @apply px-8;
+    --color-app-dark: #09090f;
+    --color-app-red: #F7374F;
+    --color-app-orange: #FF6500;
+    --color-app-gray: #282830
+}
+
+
+
+html,
+body {
+    @apply bg-app-dark;
+    overscroll-behavior: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.icon {
+    @apply size-5 cursor-pointer hover:text-app-orange;
+}
+
+
+.parent-element {
+    @apply px-8;
+}
+
+.layout {
+    @apply pt-4 h-screen overflow-scroll scroll-smooth scroll-m-1 pb-24;
+
+}
+
+/* For global styling */
+*::-webkit-scrollbar {
+    width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--color-app-dark);
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: var(--color-app-gray);
+    opacity: 0.75;
+    border-radius: 6px;
+    border: 3px solid var(--color-app-dark);
 }

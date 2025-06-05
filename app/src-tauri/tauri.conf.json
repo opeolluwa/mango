@@ -6,26 +6,31 @@
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "npm run build",
+    "beforeBuildCommand": "just prebuild",
     "frontendDist": "../dist"
   },
   "app": {
     "windows": [
       {
-        "title": "audify",
-        "width": 400,
-        "height": 500,
-        "resizable": false
+        "title": "Audify",
+        "width": 1000,
+        "height": 800,
+        "resizable": true
       }
     ],
     "security": {
-      "csp": null
+      "csp": "default-src 'self' ipc: http://ipc.localhost; img-src 'self' asset: http://asset.localhost",
+      "assetProtocol": {
+        "enable": true,
+        "scope": []
+      }
     }
   },
   "bundle": {
     "active": true,
     "targets": "all",
     "resources": ["resources/**/*"],
+    "externalBin": ["sidecar/binaries/lame"],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
