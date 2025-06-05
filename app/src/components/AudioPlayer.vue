@@ -1,6 +1,5 @@
 <template>
   <footer
-    :class="{ hidden: !fileName }"
     class="fixed bg-app-dark border-t border-t-gray-50/10 w-screen min-h-12 bottom-0 parent-element py-3 text-small flex items-center justify-between z-5000"
   >
     <audio
