@@ -5,15 +5,21 @@ use libaudify::core::Audify;
 use libaudify::error::AudifyError;
 use serde::{Deserialize, Serialize};
 use tauri::path::BaseDirectory;
-use tauri::Runtime;
 use tauri::{AppHandle, Emitter, Manager};
+use tauri::{Runtime, State};
 use tauri_plugin_shell::process::CommandEvent;
 use tauri_plugin_shell::ShellExt;
 use ts_rs::TS;
 use walkdir::WalkDir;
 
+use crate::state::AppState;
+use rodio::{Decoder, OutputStream, Sink};
 use std::fs;
+use std::fs::File;
 use std::io;
+use std::io::{sink, BufReader};
+use std::os::macos::raw::stat;
+use std::sync::Arc;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -129,6 +135,91 @@ pub fn read_library() -> AudioLibrary {
     let library = AudioLibrary { audio_books };
     library
 }
+
+
+#[tauri::command]
+//todo: use the primary key from the database
+pub async fn play_audio_book(book_title: String, state: State<'static, Arc<AppState>>) {
+    let audio_book_canonical_path = format!("{}/{}", MEDIA_DIR.as_str(), book_title);
+    let state = state.inner().clone();
+
+    //play the file in a new thread
+    thread::spawn(move || {
+        let file = match File::open(audio_book_canonical_path) {
+            Ok(file) => file,
+            Err(err_message) => {
+                //TODO: emit the error to the FE
+                eprintln!("Error opening file: {}", err_message);
+                return;
+            }
+        };
+
+        let (_stream, stream_handle) = match OutputStream::try_default() {
+            Ok(output) => output,
+            Err(err_message) => {
+                //TODO: emit the error to the FE
+                eprintln!("Error initializing output stream {}", err_message);
+                return;
+            }
+        };
+
+        let sink = match Sink::try_new(&stream_handle) {
+            Ok(sink) => Arc::new(sink),
+            Err(err_message) => {
+                //TODO: emit the error to the FE
+                eprintln!("Error creating sink {}", err_message);
+                return;
+            }
+        };
+
+        match Decoder::new(BufReader::new(file)) {
+            Ok(source) => sink.append(source),
+            Err(err_message) => {
+                //TODO: emit the error to the FE
+                eprintln!("Error decoding audio file: {}", err_message);
+                return;
+            }
+        }
+
+        {
+            let mut current_audio_book = state.current_audio_book.lock().unwrap();
+            if let Some(ref audio_book) = *current_audio_book {
+                audio_book.pause;
+            }
+            *current_audio_book = Some(sink.clone());
+        }
+
+        //todo: use mutable state
+        sink.set_volume(1.0);
+        sink.sleep_until_end();
+    });
+}
+
+
+#[tauri::command]
+pub async fn pause_audio_book(state: State<'_, Arc<AppState>>) {
+    let mut current_audio_book = state.current_audio_book.lock().unwrap();
+    if let Some(ref audio_book) = *current_audio_book {
+        audio_book.pause();
+    }
+}
+
+
+#[tauri::command]
+pub async fn set_audio_book_volume(volume: f32, (state: State<'_, Arc<AppState>>) {
+    let mut current_audio_book = state.current_audio_book.lock().unwrap();
+    if let Some(ref audio_book) = *current_audio_book {
+        audio_book.set_volume(volume);
+    }
+}
+
+
+#[tauri::command]
+pub async fn seek_audio_book_to_position() {}
+
+
+#[tauri::command]
+pub async fn set_audio_book_playback_speed() {}
 
 async fn transcode_wav_to_mp3(app: tauri::AppHandle, file_name: &str) {
     let window = app.get_webview_window("main").unwrap();

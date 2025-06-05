@@ -3,6 +3,9 @@
 use dirs;
 use lazy_static::lazy_static;
 mod commands;
+
+mod state;
+
 lazy_static! {
     pub static ref MODEL_CONFIG_FILE: &'static str = "resources/en_US-libritts_r-medium.onnx.json";
     pub static ref MEDIA_DIR: String = {

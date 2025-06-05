@@ -72,7 +72,7 @@
       <Icon icon="fluent-mdl2:volume-3" class="icon" />
       <ProgressBar class="w-4/5" :progress="volume * 100 || 0" />
     </div>
-    <div class="flex gap-x-2 items-center hidden">
+    <div class=" gap-x-2 items-center hidden">
       <Icon icon="iconamoon:playlist-shuffle-fill" class="size-5" />
       <Icon icon="iconamoon:playlist-repeat-list-light" class="size-5" />
       <Icon icon="solar:playlist-outline" class="size-5" />
