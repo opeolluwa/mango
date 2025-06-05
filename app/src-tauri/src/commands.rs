@@ -1,9 +1,9 @@
-use std::path::{Path, PathBuf};
-
 use crate::{LAME_SIDECAR, MEDIA_DIR, MODEL_CONFIG_FILE};
 use libaudify::core::Audify;
 use libaudify::error::AudifyError;
 use serde::{Deserialize, Serialize};
+use std::path::{Path, PathBuf};
+use std::thread;
 use tauri::path::BaseDirectory;
 use tauri::{AppHandle, Emitter, Manager};
 use tauri::{Runtime, State};
@@ -17,8 +17,7 @@ use rodio::{Decoder, OutputStream, Sink};
 use std::fs;
 use std::fs::File;
 use std::io;
-use std::io::{sink, BufReader};
-use std::os::macos::raw::stat;
+use std::io::BufReader;
 use std::sync::Arc;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -136,10 +135,12 @@ pub fn read_library() -> AudioLibrary {
     library
 }
 
-
 #[tauri::command]
 //todo: use the primary key from the database
-pub async fn play_audio_book(book_title: String, state: State<'static, Arc<AppState>>) {
+pub async fn play_audio_book(
+    book_title: String,
+    state: State<'_, Arc<AppState>>,
+) -> Result<(), String> {
     let audio_book_canonical_path = format!("{}/{}", MEDIA_DIR.as_str(), book_title);
     let state = state.inner().clone();
 
@@ -184,7 +185,7 @@ pub async fn play_audio_book(book_title: String, state: State<'static, Arc<AppSt
         {
             let mut current_audio_book = state.current_audio_book.lock().unwrap();
             if let Some(ref audio_book) = *current_audio_book {
-                audio_book.pause;
+                audio_book.pause();
             }
             *current_audio_book = Some(sink.clone());
         }
@@ -193,33 +194,41 @@ pub async fn play_audio_book(book_title: String, state: State<'static, Arc<AppSt
         sink.set_volume(1.0);
         sink.sleep_until_end();
     });
+
+    Ok(())
 }
 
-
 #[tauri::command]
-pub async fn pause_audio_book(state: State<'_, Arc<AppState>>) {
-    let mut current_audio_book = state.current_audio_book.lock().unwrap();
+pub async fn pause_audio_book(state: State<'_, Arc<AppState>>) -> Result<(), String> {
+    let current_audio_book = state.current_audio_book.lock().unwrap();
     if let Some(ref audio_book) = *current_audio_book {
         audio_book.pause();
     }
+
+    Ok(())
 }
 
-
 #[tauri::command]
-pub async fn set_audio_book_volume(volume: f32, (state: State<'_, Arc<AppState>>) {
-    let mut current_audio_book = state.current_audio_book.lock().unwrap();
+pub async fn set_audio_book_volume(
+    volume: f32,
+    state: State<'_, Arc<AppState>>,
+) -> Result<(), String> {
+    let current_audio_book = state.current_audio_book.lock().unwrap();
     if let Some(ref audio_book) = *current_audio_book {
         audio_book.set_volume(volume);
     }
+    Ok(())
 }
 
+#[tauri::command]
+pub async fn seek_audio_book_to_position() -> Result<(), String> {
+    todo!()
+}
 
 #[tauri::command]
-pub async fn seek_audio_book_to_position() {}
-
-
-#[tauri::command]
-pub async fn set_audio_book_playback_speed() {}
+pub async fn set_audio_book_playback_speed() -> Result<(), String> {
+    todo!()
+}
 
 async fn transcode_wav_to_mp3(app: tauri::AppHandle, file_name: &str) {
     let window = app.get_webview_window("main").unwrap();
