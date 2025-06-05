@@ -9,9 +9,9 @@
       <AppLabeledIcon
         icon="ph:playlist-duotone"
         label="Library"
-        route="/library"
+        to="/library"
       />
-      <AppLabeledIcon icon="hugeicons:bot" label="AI Voice" route="/voices" />
+      <AppLabeledIcon icon="hugeicons:bot" label="AI Voice" to="/voices" />
     </div>
 
     <div class="nav-section">
@@ -21,9 +21,22 @@
         label="Import new"
         @click="useCreateNewBook"
       />
-      <AppLabeledIcon icon="fluent:heart-28-regular" label="Favourites" />
-      <AppLabeledIcon icon="fluent:clock-16-regular" label="Recent" />
-      <AppLabeledIcon icon="solar:calendar-broken" label="History" class="" />
+      <AppLabeledIcon
+        icon="fluent:heart-28-regular"
+        label="Favourites"
+        to="/favourites"
+      />
+      <AppLabeledIcon
+        icon="fluent:clock-16-regular"
+        label="Recent"
+        to="/recent"
+      />
+      <AppLabeledIcon
+        icon="solar:calendar-broken"
+        label="History"
+        class=""
+        to="/history"
+      />
     </div>
 
     <div class="nav-section">
