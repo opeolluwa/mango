@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/onnxruntime" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/onnxruntime/cmake/external/emsdk" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/onnxruntime/cmake/external/libprotobuf-mutator" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/onnxruntime/cmake/external/onnx" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/onnxruntime/cmake/external/onnx/third_party/pybind11" vcs="Git" />
+  </component>
+</project>

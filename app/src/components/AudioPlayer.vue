@@ -4,7 +4,7 @@
   >
     <audio
       ref="audioRef"
-      :src="audioSrc"
+      src="audioSrc"
       preload="auto"
       class="hidden"
       @timeupdate="updateCurrentTime"
@@ -19,7 +19,7 @@
       />
       <div class="col-span-1">
         <small class="text-gray-400"> You are listening to... </small>
-        <h6 class="text-[14px] leading-3.5">{{ fileName }}</h6>
+        <h6 class="text-[14px] leading-3.5">{{ fileName || "err" }}</h6>
       </div>
     </div>
     <div class="flex gap-x-4 items-center">
@@ -32,13 +32,13 @@
           icon="fluent:play-48-filled"
           class="icon"
           v-show="!isPlaying"
-          @click="playAudio"
+          @click="togglePlaying"
         />
         <Icon
           icon="fluent:pause-48-filled"
           class="icon p-[2px]"
           v-show="isPlaying"
-          @click="pauseAudio"
+          @click="togglePlaying"
         />
       </div>
       <Icon icon="fluent:next-48-filled" class="icon" />
@@ -70,9 +70,10 @@
 
     <div class="flex w-[10%] items-center gap-x-2">
       <Icon icon="fluent-mdl2:volume-3" class="icon" />
-      <ProgressBar class="w-4/5" :progress="volume * 100 || 0" />
+      <!-- <input type="range" class="bg-app-orange" /> -->
+      <ProgressBar class="w-4/5" :progress="volume * 100 || 0"/>
     </div>
-    <div class="flex gap-x-2 items-center hidden">
+    <div class="gap-x-2 items-center hidden">
       <Icon icon="iconamoon:playlist-shuffle-fill" class="size-5" />
       <Icon icon="iconamoon:playlist-repeat-list-light" class="size-5" />
       <Icon icon="solar:playlist-outline" class="size-5" />
@@ -83,22 +84,17 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import ProgressBar from "./ProgressBar.vue";
-import { ref } from "vue";
-const props = defineProps<{
-  fileName: string;
-  audioSrc: string;
-}>();
+import { computed, ref } from "vue";
+import { useCurrentBook } from "../stores/book.ts";
+import { useBookProcesses } from "../stores/actions.ts";
+import { pauseAudioBook, playAudioBook } from "../hooks/book.ts";
 
-// const initState = () => {
-//   state.isPlaying = false;
-//   state.isDragging = false;
-//   state.currentTime = 0;
-//   state.totalTime = 0;
-//   state.totalTimeStr = "00:00";
-// };
+const store = useCurrentBook();
+const processes = useBookProcesses();
 
-const { fileName, audioSrc } = props;
-const isPlaying = ref(false);
+const fileName = computed(() => store.currentBook?.fileName);
+const isPlaying = computed(() => processes.isPlayingBook);
+
 const isLoved = ref(false);
 const audioRef = ref<HTMLAudioElement | null>(null);
 const currentTime = ref(0);
@@ -110,16 +106,12 @@ const toggledIsLoved = () => {
   isLoved.value = !isLoved.value;
 };
 
-const playAudio = () => {
-  audioRef.value?.play().catch((err) => {
-    console.error("Failed to play audio:", err);
-  });
-  isPlaying.value = !isPlaying.value;
-};
-
-const pauseAudio = () => {
-  audioRef.value?.pause();
-  isPlaying.value = !isPlaying.value;
+const togglePlaying = () => {
+  if (isPlaying) {
+    pauseAudioBook();
+  } else {
+    playAudioBook(String(store.currentBook?.fileName));
+  }
 };
 
 const updateCurrentTime = () => {

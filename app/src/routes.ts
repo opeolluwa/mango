@@ -6,6 +6,7 @@ import History from "./views/History.vue";
 import Scheduled from "./views/Scheduled.vue";
 import Library from "./views/Library.vue";
 import Voices from "./views/Voices.vue";
+import Notification from "./views/Notification.vue";
 const routes = [
   {
     path: "/",
@@ -16,6 +17,7 @@ const routes = [
       { path: "/history", component: History },
       { path: "/voices", component: Voices },
       { path: "/scheduled", component: Scheduled },
+      { path: "/notification", component: Notification },
     ],
   },
 ];

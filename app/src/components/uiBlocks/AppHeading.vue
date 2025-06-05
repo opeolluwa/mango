@@ -4,12 +4,12 @@
       <Icon
         icon="mingcute:left-fill"
         class="text-gray-400/50 size-5 flex items-center h-full icon"
-        @click="goBack"
+        @click="goBack()"
       />
       <Icon
         icon="mingcute:right-fill"
         class="text-gray-400/50 size-5 flex items-center h-full icon"
-        @click="goForward"
+        @click="goForward()"
       />
     </div>
     <form
@@ -26,7 +26,7 @@
         placeholder="Search by artist, song or albulm"
       />
     </form>
-    <div class="col-span-4 flex gap-x-3">
+    <div class="col-span-4 flex gap-x-3 items-center">
       <!-- <Icon
       icon="mdi:bell"
       class="text-gray-400/50 size-5 flex items-center h-full"
@@ -35,12 +35,14 @@
       <Icon
         icon="mdi:book-plus-outline"
         class="text-gray-400/50 size-5 flex items-center h-full cursor-pointer"
-        @click="useCreateNewBook"
+        @click="createNewBook"
       />
-      <Icon
-        icon="mdi:bell-outline"
-        class="text-gray-400/50 size-5 flex items-center h-full cursor-pointer"
-      />
+      <RouterLink to="/notification">
+        <Icon
+          icon="mdi:bell-outline"
+          class="text-gray-400/50 size-5 flex items-center h-full cursor-pointer"
+        />
+      </RouterLink>
     </div>
   </header>
 </template>
@@ -48,5 +50,5 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import { goBack, goForward } from "../../hooks/router";
-import { useCreateNewBook } from "../../hooks/createBook";
+import { createNewBook } from "../../hooks/book";
 </script>

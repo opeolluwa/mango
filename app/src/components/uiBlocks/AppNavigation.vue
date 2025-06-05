@@ -9,9 +9,9 @@
       <AppLabeledIcon
         icon="ph:playlist-duotone"
         label="Library"
-        route="/library"
+        to="/library"
       />
-      <AppLabeledIcon icon="hugeicons:bot" label="AI Voice" route="/voices" />
+      <AppLabeledIcon icon="hugeicons:bot" label="AI Voice" to="/voices" />
     </div>
 
     <div class="nav-section">
@@ -19,11 +19,24 @@
       <AppLabeledIcon
         icon="mdi:book-plus-outline"
         label="Import new"
-        @click="useCreateNewBook"
+        @click="createNewBook"
       />
-      <AppLabeledIcon icon="fluent:heart-28-regular" label="Favourites" />
-      <AppLabeledIcon icon="fluent:clock-16-regular" label="Recent" />
-      <AppLabeledIcon icon="solar:calendar-broken" label="History" class="" />
+      <AppLabeledIcon
+        icon="fluent:heart-28-regular"
+        label="Favourites"
+        to="/favourites"
+      />
+      <AppLabeledIcon
+        icon="fluent:clock-16-regular"
+        label="Recent"
+        to="/recent"
+      />
+      <AppLabeledIcon
+        icon="solar:calendar-broken"
+        label="History"
+        class=""
+        to="/history"
+      />
     </div>
 
     <div class="nav-section">
@@ -46,7 +59,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { useCreateNewBook } from "../../hooks/createBook";
+import { createNewBook } from "../../hooks/book";
 import PlayListTag from "../PlayListTag.vue";
 import AppLabeledIcon from "./AppLabeledIcon.vue";
 import AppLogo from "./AppLogo.vue";

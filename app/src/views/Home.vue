@@ -1,5 +1,5 @@
 <template>
-  <template v-if="!empty">
+  <template v-if="empty">
     <div
       class="overflow-hidden bg-secondary bg-center-center bg-blend-multiply bg-cover bg-no-repeat relative flex flex-col justify-center items-center px-4 h-[90%] text-gray-400"
     >
@@ -11,7 +11,7 @@
       >
       <button
         class="bg-app-orange text-white btn-lg inline-flex gap-x-2 rounded items-center px-8 py-2 mt-2 cursor-pointer shadow-md transition-colors duration-200 ease-linear hover:opacity-95 hover:scale-95 control"
-        @click="useCreateNewBook"
+        @click="createNewBook"
       >
         <Icon icon="ic:round-plus" class="size-8" />
         Create
@@ -96,11 +96,11 @@ import { ref, watch } from "vue";
 import AudioBook from "../components/AudioBook.vue";
 import ColumnLayout from "../components/layouts/ColumnLayout.vue";
 import ProgressBar from "../components/ProgressBar.vue";
-import { useMusicLibary } from "../stores/library.ts";
+import { useAudioBookLibrary } from "../stores/library.ts";
 import { type AudioBook as AudioBookInterface } from "../../src-tauri/bindings/AudioBook.ts";
-import { useCreateNewBook } from "../hooks/createBook.ts";
+import { createNewBook } from "../hooks/book.ts";
 const empty = ref(false);
-const musicStore = useMusicLibary();
+const musicStore = useAudioBookLibrary();
 const audioBooks = ref<Array<AudioBookInterface>>();
 
 watch(audioBooks, async () => {
