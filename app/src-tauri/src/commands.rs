@@ -210,6 +210,26 @@ pub async fn pause_audio_book(state: State<'_, Arc<AppState>>) -> Result<(), Str
 }
 
 #[tauri::command]
+pub async fn resume_playing_audio_book(state: State<'_, Arc<AppState>>) -> Result<(), String> {
+    println!("Resuming audio book");
+    let current_audio_book = state.current_audio_book.lock().unwrap();
+    if let Some(ref audio_book) = *current_audio_book {
+        match audio_book.is_paused() {
+            true => {
+                println!("Resuming audio book");
+                audio_book.play()
+            }
+            false => {
+                println!("Audio book is already playing");
+                return Ok(());
+            }
+        }
+    }
+
+    Ok(())
+}
+
+#[tauri::command]
 pub async fn set_audio_book_volume(
     volume: f32,
     state: State<'_, Arc<AppState>>,

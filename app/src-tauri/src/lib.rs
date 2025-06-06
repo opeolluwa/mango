@@ -130,7 +130,8 @@ PRAGMA foreign_keys=on;
             commands::pause_audio_book,
             commands::set_audio_book_volume,
             commands::seek_audio_book_to_position,
-            commands::set_audio_book_playback_speed
+            commands::set_audio_book_playback_speed,
+            commands::resume_playing_audio_book
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
