@@ -126,6 +126,8 @@ pub fn read_library() -> AudioLibrary {
     let mut audio_books = WalkDir::new(&format!("{}/", MEDIA_DIR.as_str()))
         .into_iter()
         .filter_map(|entry| entry.ok())
+        .filter(|entry| entry.path().is_file())
+        .filter(|entry| entry.path().extension().unwrap_or_default() == "mp3")
         .filter_map(|entry| AudioBook::from_path(entry.path()))
         .collect::<Vec<AudioBook>>();
 

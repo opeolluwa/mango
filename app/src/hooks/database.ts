@@ -2,7 +2,7 @@ import Database, {QueryResult} from "@tauri-apps/plugin-sql";
 
 import {v4 as uuidv4} from "uuid";
 
-const DB = await Database.load("sqlite:echo.db");
+// const DB = await Database.load("sqlite:echo.db");
 
 export class DbError extends Error {
     static NotFound = new DbError("Record not found");
@@ -18,17 +18,24 @@ export class DbError extends Error {
 }
 
 abstract class BaseModel {
+
+
     abstract save(): Promise<QueryResult>;
 
-    abstract findByIdentifier(identifier: string): Promise<any>;
+    protected async loadConn() {
+        const conn = await Database.load("sqlite:echo.db");
+        return conn;
+    }
 
-    abstract update(identifier: string): Promise<void>;
-
-    abstract delete(identifier: string): Promise<void>;
+    // abstract findByIdentifier(identifier: string): Promise<any>;
+    //
+    // abstract update(identifier: string): Promise<void>;
+    //
+    // abstract delete(identifier: string): Promise<void>;
 }
 
 export class Playlist extends BaseModel {
-    private conn = DB;
+    // private conn = Database;
     private readonly identifier: String;
     private readonly name: String;
     private readonly description: String;
@@ -45,8 +52,9 @@ export class Playlist extends BaseModel {
     }
 
     async save(): Promise<QueryResult> {
+        const conn = await this.loadConn();
         try {
-            return await this.conn.execute(
+            return await conn.execute(
                 "INSERT INTO playlist (identifier, name, description, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)",
                 [
                     this.identifier,
@@ -61,17 +69,17 @@ export class Playlist extends BaseModel {
         }
     }
 
-    findByIdentifier(identifier: string): Promise<any> {
-        throw new Error("Method not implemented.");
-    }
-
-    update(identifier: string): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
-
-    delete(identifier: string): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
+    // findByIdentifier(identifier: string): Promise<any> {
+    //     throw new Error("Method not implemented.");
+    // }
+    //
+    // update(identifier: string): Promise<void> {
+    //     throw new Error("Method not implemented.");
+    // }
+    //
+    // delete(identifier: string): Promise<void> {
+    //     throw new Error("Method not implemented.");
+    // }
 
     //
     // static async findById(conn: any, id: string): Promise<Playlist> {
@@ -107,19 +115,21 @@ export class Playlist extends BaseModel {
     // }
 }
 
-export class History {
-    private conn = DB;
+export class History extends BaseModel {
+    // private conn = DB;
     private readonly identifier: String;
     private readonly audioBookIdentifier: String;
 
     constructor(audioBookIdentifier: string) {
+        super()
         this.identifier = uuidv4();
         this.audioBookIdentifier = audioBookIdentifier;
     }
 
-    async create(): Promise<QueryResult> {
+    async save(): Promise<QueryResult> {
         try {
-            return await this.conn.execute(
+            const conn = await this.loadConn();
+            return await conn.execute(
                 "INSERT INTO history (identifier, audio_book_identifier) VALUES ($1, $2)",
                 [this.identifier, this.audioBookIdentifier]
             );

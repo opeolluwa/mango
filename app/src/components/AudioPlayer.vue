@@ -3,14 +3,7 @@
       :class="{'hidden': !fileName}"
       class="fixed bg-app-dark border-t border-t-gray-50/10 w-screen min-h-12 bottom-0 parent-element py-3 text-small flex items-center justify-between z-5000"
   >
-    <audio
-        ref="audioRef"
-        src="audioSrc"
-        preload="auto"
-        class="hidden"
-        @timeupdate="updateCurrentTime"
-        @loadedmetadata="updateDuration"
-    />
+
 
     <div class="flex gap-x-4 xs:hidden">
       <img
@@ -71,7 +64,6 @@
 
     <div class="flex w-[10%] items-center gap-x-2">
       <Icon icon="fluent-mdl2:volume-3" class="icon"/>
-      <!-- <input type="range" class="bg-app-orange" /> -->
       <ProgressBar class="w-4/5" :progress="volume * 100 || 0"/>
     </div>
     <div class="gap-x-2 items-center hidden">
@@ -97,7 +89,6 @@ const fileName = computed(() => store.currentBook?.fileName);
 const isPlaying = computed(() => processes.isPlayingBook);
 
 const isLoved = ref(false);
-const audioRef = ref<HTMLAudioElement | null>(null);
 const currentTime = ref(0);
 const duration = ref(0);
 const volume = ref(0.25);
@@ -108,11 +99,14 @@ const toggledIsLoved = () => {
 };
 
 const togglePlaying = () => {
-  if (isPlaying) {
+  if (processes.isPlayingBook) {
     pauseAudioBook();
   } else {
     playAudioBook(String(store.currentBook?.fileName));
   }
+
+  processes.isPlayingBook = !processes.isPlayingBook;
+
 };
 
 const updateCurrentTime = () => {
