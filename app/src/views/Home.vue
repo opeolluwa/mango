@@ -18,9 +18,9 @@
       </button>
     </div>
   </template>
-  <template>
+  <template v-else>
     <ColumnLayout>
-      <div class="grid grid-cols-12 h-64 mt-16 gap-12">
+      <div class="grid grid-cols-12 h-48 mt-16 gap-12">
         <div
           class="rounded-lg shadow shadow-app-gray py-6 bg-linear-50 from-app-orange/90 from-20% via-app-gray to-app-dark col-span-4 h-full px-4"
         >

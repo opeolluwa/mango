@@ -1,23 +1,25 @@
 <template>
   <AppLayout>
-    <AppNavigation class="col-span-3 xl:col-span-2" />
-    <AppMain class="col-span-9 xl:col-span-8" />
+    <AppNavigation class="col-span-3 xl:col-span-2"/>
+    <AppMain class="col-span-9 xl:col-span-8"/>
     <aside class="hidden xl:block xl:col-span-2"></aside>
-    <AudioPlayer />
+    <AudioPlayer/>
   </AppLayout>
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from "vue";
+import {onMounted} from "vue";
 import AudioPlayer from "./components/AudioPlayer.vue";
 import AppLayout from "./components/layouts/AppLayout.vue";
 import AppMain from "./components/uiBlocks/AppMain.vue";
 import AppNavigation from "./components/uiBlocks/AppNavigation.vue";
-import { useAudioBookLibrary } from "./stores/library.ts";
+import {useAudioBookLibrary} from "./stores/library.ts";
+
 
 const store = useAudioBookLibrary();
 onMounted(async () => {
   await store.loadMusicLibrary();
+  setTimeout(() => window.HSStaticMethods.autoInit(), 100)
 });
 </script>
 
