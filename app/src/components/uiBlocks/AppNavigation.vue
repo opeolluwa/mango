@@ -5,7 +5,7 @@
     <AppLogo class="parent px-8"/>
 
     <div class="nav-section">
-      <AppLabeledIcon icon="mynaui:signal" label="Feed" route="/"/>
+      <AppLabeledIcon icon="mynaui:signal" label="Feed" route=""/>
       <AppLabeledIcon
           icon="ph:playlist-duotone"
           label="Library"
