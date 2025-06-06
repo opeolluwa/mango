@@ -1,5 +1,8 @@
 alias install := install-dependencies
 
+LAME_PATH:= "app/src-tauri/sidecar/lame/bin/lame"
+SIDECAR_PATH :="app/src-tauri/sidecar/binaries"
+
 default: 
     @just --list --list-heading $'Available commands\n'
 
@@ -63,6 +66,13 @@ build-onnxruntime:
         echo "LAME already exists, skipping..."
     fi
 
+
+#TODO: build for all platforms in CI
+[doc('build the lame project for the target platform')]
+@prebuild:
+    cd app && npm run build  && cd ..
+    just build-lame
+    @cp "{{LAME_PATH}}" "{{SIDECAR_PATH}}/lame-$(rustc -Vv | grep host | cut -f2 -d' ')"
 
 @convert-local:
     #!/bin/bash
