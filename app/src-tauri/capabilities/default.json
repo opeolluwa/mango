@@ -20,6 +20,8 @@
       ]
     },
     "shell:allow-open",
-    "upload:default"
+    "upload:default",
+    "sql:default",
+    "sql:allow-execute"
   ]
 }

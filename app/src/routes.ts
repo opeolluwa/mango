@@ -12,12 +12,12 @@ const routes = [
     path: "/",
     children: [
       { path: "", component: Home },
-      { path: "/favouries", component: Favourites },
-      { path: "/library", component: Library },
-      { path: "/history", component: History },
-      { path: "/voices", component: Voices },
-      { path: "/scheduled", component: Scheduled },
-      { path: "/notification", component: Notification },
+      { path: "favourites", component: Favourites },
+      { path: "library", component: Library },
+      { path: "history", component: History },
+      { path: "voices", component: Voices },
+      { path: "scheduled", component: Scheduled },
+      { path: "notification", component: Notification },
     ],
   },
 ];
@@ -25,6 +25,7 @@ const routes = [
 const router = createRouter({
   history: createMemoryHistory(),
   routes,
+
 });
 
 export default router;
