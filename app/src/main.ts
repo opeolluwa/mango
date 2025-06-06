@@ -13,4 +13,4 @@ app.use(router);
 app.use(PDFObjectPlugin);
 app.mount("#app");
 
-import("preline/dist/index.js");
+// import("preline/dist/index.js");

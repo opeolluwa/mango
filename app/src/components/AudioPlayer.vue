@@ -37,7 +37,7 @@
         />
       </div>
       <Icon icon="fluent:next-48-filled" @click="playTheNextBook"
-            :class="[ isFirstBookIndex? 'text-gray-400/50 cursor-not-allowed hover:text-gray-400/50 size-5': 'icon']"/>
+            :class="[ isLastBookIndex? 'text-gray-400/50 cursor-not-allowed hover:text-gray-400/50 size-5': 'icon']"/>
       <Icon
           icon="gravity-ui:heart-fill"
           class="icon text-app-red"
@@ -114,17 +114,17 @@ const togglePlaying = async () => {
 
 };
 
-const updateCurrentTime = () => {
-  if (audioRef.value) {
-    currentTime.value = audioRef.value.currentTime;
-  }
-};
-
-const updateDuration = () => {
-  if (audioRef.value) {
-    duration.value = audioRef.value.duration;
-  }
-};
+// const updateCurrentTime = () => {
+//   if (audioRef.value) {
+//     currentTime.value = audioRef.value.currentTime;
+//   }
+// };
+//
+// const updateDuration = () => {
+//   if (audioRef.value) {
+//     duration.value = audioRef.value.duration;
+//   }
+// };
 
 const formatTime = (time: number): string => {
   const minutes = Math.floor(time / 60);
