@@ -52,7 +52,7 @@ jobs:
       - name: install just command runner
         uses: extractions/setup-just@v2
         with:
-          just-version: 1.5.0
+          just-version: 1.40.0
 
       - name: confirm just installation
         run: just
