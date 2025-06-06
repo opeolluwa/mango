@@ -58,7 +58,7 @@ build-onnxruntime:
     #!/bin/bash
     # set -e
 
-    if [ ! -f "../app/src-tauri/sidecar/lame/bin/lame" ]; then
+    if [ ! -f "{{LAME_PATH}}" ]; then
         ./configure --disable-shared --enable-static --enable-nasm --prefix=$(pwd)/../app/src-tauri/sidecar/lame
         make
         make install
@@ -71,6 +71,8 @@ build-onnxruntime:
 [doc('build the lame project for the target platform')]
 @prebuild:
     cd app && npm run build  && cd ..
+    mkdir  -p "app/src-tauri/sidecar"
+    mkdir  -p "app/src-tauri/sidecar/binaries"
     just build-lame
     @cp "{{LAME_PATH}}" "{{SIDECAR_PATH}}/lame-$(rustc -Vv | grep host | cut -f2 -d' ')"
 
