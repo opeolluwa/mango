@@ -1,6 +1,9 @@
 @import "tailwindcss";
+
 @plugin "@tailwindcss/typography";
 
+@import "preline/variants.css";
+@source "../../node_modules/preline/dist/*.js";
 
 * {
     box-sizing: border-box;
@@ -23,7 +26,6 @@
     --color-app-orange: #FF6500;
     --color-app-gray: #282830
 }
-
 
 
 html,
@@ -64,3 +66,15 @@ body {
     border-radius: 6px;
     border: 3px solid var(--color-app-dark);
 }
+
+
+/* Adds pointer cursor to buttons */
+@layer base {
+    button:not(:disabled),
+    [role="button"]:not(:disabled) {
+        cursor: pointer;
+    }
+}
+
+/* Defaults hover styles on all devices */
+@custom-variant hover (&:hover);

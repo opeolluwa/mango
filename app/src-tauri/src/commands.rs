@@ -35,7 +35,6 @@ impl AudioBook {
         let path_buf = path.canonicalize().ok()?;
         let file_name = path_buf.file_name()?.to_str()?.to_string();
 
-        //TODO: Remove ".wav" if it exists
         let display_name = file_name.strip_suffix(".wav").unwrap_or(&file_name);
 
         Some(Self {
@@ -127,6 +126,8 @@ pub fn read_library() -> AudioLibrary {
     let mut audio_books = WalkDir::new(&format!("{}/", MEDIA_DIR.as_str()))
         .into_iter()
         .filter_map(|entry| entry.ok())
+        .filter(|entry| entry.path().is_file())
+        .filter(|entry| entry.path().extension().unwrap_or_default() == "mp3")
         .filter_map(|entry| AudioBook::from_path(entry.path()))
         .collect::<Vec<AudioBook>>();
 
@@ -203,6 +204,26 @@ pub async fn pause_audio_book(state: State<'_, Arc<AppState>>) -> Result<(), Str
     let current_audio_book = state.current_audio_book.lock().unwrap();
     if let Some(ref audio_book) = *current_audio_book {
         audio_book.pause();
+    }
+
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn resume_playing_audio_book(state: State<'_, Arc<AppState>>) -> Result<(), String> {
+    println!("Resuming audio book");
+    let current_audio_book = state.current_audio_book.lock().unwrap();
+    if let Some(ref audio_book) = *current_audio_book {
+        match audio_book.is_paused() {
+            true => {
+                println!("Resuming audio book");
+                audio_book.play()
+            }
+            false => {
+                println!("Audio book is already playing");
+                return Ok(());
+            }
+        }
     }
 
     Ok(())

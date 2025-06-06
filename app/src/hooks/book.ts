@@ -3,7 +3,7 @@ import {useCurrentBook} from "../stores/book.ts";
 import {useAudioBookLibrary} from "../stores/library.ts";
 import {AudioBook} from "../../src-tauri/bindings/AudioBook.ts";
 import {open} from "@tauri-apps/plugin-dialog";
-import {useBookProcesses} from "../stores/actions.ts";
+import {useBookProcesses} from "../stores/process.ts";
 
 export async function playAudioBook(bookTitle: string) {
     const bookStore = useCurrentBook();
@@ -35,6 +35,19 @@ export async function pauseAudioBook() {
         });
 }
 
+export async function resumeAudioBook() {
+    const processes = useBookProcesses();
+    const bookStore = useCurrentBook();
+    if (!bookStore.currentBook) return;
+    invoke(" resume_playing_audio_book")
+        .then(() => {
+            processes.isPlayingBook = true
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+}
+
 export async function createNewBook() {
     const musicLibStore = useAudioBookLibrary();
     const processes = useBookProcesses();
@@ -56,4 +69,48 @@ export async function createNewBook() {
             console.log(err);
         });
     processes.isProcessingNewBook = false;
+}
+
+
+export  const playTheNextBook = async () => {
+    const library = useAudioBookLibrary();
+    const bookStore = useCurrentBook();
+
+    if (!bookStore.currentBook) {
+        await playAudioBook(library.audioBooks[0].fileName);
+    }
+
+
+    if (bookStore.currentBook) {
+        let currentBookIndex = library.audioBooks.findIndex(b => b.fileName === bookStore.currentBook?.fileName);
+
+        if (currentBookIndex === library.audioBooks.length - 1) {
+            return
+        } else {
+            currentBookIndex++;
+            await playAudioBook(library.audioBooks[currentBookIndex].fileName);
+        }
+
+    }
+
+}
+
+
+export const playThePreviousBook = async () => {
+    const library = useAudioBookLibrary();
+    const bookStore = useCurrentBook();
+
+    if (!bookStore.currentBook) {
+        await playAudioBook(library.audioBooks[0].fileName);
+    }
+
+    if (bookStore.currentBook) {
+        let currentBookIndex = library.audioBooks.findIndex(b => b.fileName === bookStore.currentBook?.fileName);
+        if (currentBookIndex === 0) {
+            return
+        } else {
+            currentBookIndex--;
+            await playAudioBook(library.audioBooks[currentBookIndex].fileName);
+        }
+    }
 }

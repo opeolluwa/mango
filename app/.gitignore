@@ -135,4 +135,5 @@ node_modules
 onnxruntime
 
 
-public/source.mp3
+public/*.mp3
+/public/*.pdf
