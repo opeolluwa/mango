@@ -75,6 +75,7 @@ build-onnxruntime:
     mkdir  -p "app/src-tauri/sidecar/binaries"
     just build-lame
     @cp "{{LAME_PATH}}" "{{SIDECAR_PATH}}/lame-$(rustc -Vv | grep host | cut -f2 -d' ')"
+    @echo "sidecar copied to {{SIDECAR_PATH}}/lame-$(rustc -Vv | grep host | cut -f2 -d' ')"
 
 @convert-local:
     #!/bin/bash
