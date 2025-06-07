@@ -1,45 +1,50 @@
+# Alias
 alias install := install-dependencies
 
-default: 
+# Constants
+LAME_PATH := "app/src-tauri/sidecar/lame/bin/lame"
+SIDECAR_PATH := "app/src-tauri/sidecar/binaries"
+HOST_TRIPLE := "$(rustc -Vv | grep host | cut -f2 -d' ')"
+
+# Default
+default:
     @just --list --list-heading $'Available commands\n'
 
+#>> Dependency Setup
 [doc('Install the application dependencies')]
-install-dependencies: 
+install-dependencies:
     echo "Installing dependencies"
     cargo install --git https://github.com/cpg314/cargo-group-imports
     cargo install cargo-sort
-    
 
-
-#>> test commands 
+#>> Test Commands
 [working-directory: 'lib']
-@test-audio-synthensis:
+@test-audio-synthesis:
     cargo run --example audio
 
-#>> watch commands 
+#>> Watch Commands
 [working-directory: 'app']
 @watch-android:
-    just w android 
+    just w android
 
 [working-directory: 'app']
-@watch-io:
+@watch-ios:
     just w ios
 
 [working-directory: 'app']
 @watch-desktop:
-    just w desktop 
+    just w desktop
 
-#>> build commands 
+#>> Build Commands
 build-onnxruntime:
     export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
     export ANDROID_HOME="$HOME/Library/Android/sdk"
-    export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
-
+    export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk | head -n 1)"
     ./onnxruntime/build.sh --android --android_sdk_path "$ANDROID_HOME" --android_ndk_path "$NDK_HOME" --android_abi arm64-v8a --android_api 27
 
 [working-directory: 'app']
 @build-android:
-    just b android 
+    just b android
 
 [working-directory: 'app']
 @build-ios:
@@ -47,27 +52,51 @@ build-onnxruntime:
 
 [working-directory: 'app']
 @build-desktop:
-    just b desktop 
+    just b desktop
 
-
-[working-directory:'lame']
+#>> Build LAME
+[working-directory: 'lame']
 @build-lame:
     #!/bin/bash
-    # set -e
+    if [ "{{os()}}" = "windows" ]; then \
+        echo "Building for Windows in $PWD"
+        mkdir -p "../app/src-tauri/sidecar/lame/bin"
+        mkdir -p "../app/src-tauri/sidecar/binaries"
+        cp "./archive/lame.exe" "../app/src-tauri/sidecar/lame/bin/"
+    fi
 
-    if [ ! -f "../app/src-tauri/sidecar/lame/bin/lame" ]; then
-        ./configure --disable-shared --enable-static --enable-nasm --prefix=$(pwd)/../app/src-tauri/sidecar/lame
-        make
+    if [ ! -f {{LAME_PATH}} ]; then \
+        ./configure --disable-shared --enable-static --enable-nasm --prefix="$(pwd)/../app/src-tauri/sidecar/lame" 
+        make 
         make install
     else
         echo "LAME already exists, skipping..."
     fi
 
+#>> Build everything for current platform
+[doc('Build the LAME project and prepare sidecar for the target platform')]
+@prebuild:
+    #!/bin/bash
+    cd app && npm run build && cd ..
+    mkdir -p "app/src-tauri/sidecar"
+    mkdir -p "app/src-tauri/sidecar/binaries"
+    just build-lame
 
+    if [ "{{HOST_TRIPLE}}" = "x86_64-pc-windows-gnu" ]; then
+        cp "{{LAME_PATH}}.exe" "{{SIDECAR_PATH}}/lame.exe-{{HOST_TRIPLE}}"
+    elif [ "{{HOST_TRIPLE}}" = "aarch64-apple-darwin" ]; then
+        cp "{{LAME_PATH}}" "{{SIDECAR_PATH}}/lame-x86_64-apple-darwin"
+        cp "{{LAME_PATH}}" "{{SIDECAR_PATH}}/lame-{{HOST_TRIPLE}}"
+    else
+        cp "{{LAME_PATH}}" "{{SIDECAR_PATH}}/lame-{{HOST_TRIPLE}}"
+    fi
+
+    echo "Sidecar copied to {{SIDECAR_PATH}}/lame-{{HOST_TRIPLE}}"
+
+#>> Local audio conversion using LAME
 @convert-local:
     #!/bin/bash
-
-    SOURCE_DIR="/Users/USER/Music/audify"   
+    SOURCE_DIR="/Users/USER/Music/audify"
     OUTPUT_DIR="$SOURCE_DIR"
 
     for wav_file in "$SOURCE_DIR"/*.wav; do
@@ -76,4 +105,4 @@ build-onnxruntime:
         lame "$wav_file" "$mp3_file"
     done
 
-    rm "/Users/USER/Music/audify/*.wav"
+    rm "$SOURCE_DIR"/*.wav

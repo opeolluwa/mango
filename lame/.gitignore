@@ -58,3 +58,6 @@ share/
 .DS_Store
 
 stamp-h1
+
+archive/*
+!archive/lame.exe

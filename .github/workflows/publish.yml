@@ -19,10 +19,10 @@ jobs:
             args: '--target aarch64-apple-darwin'
           - platform: 'macos-latest' # for Intel based macs.
             args: '--target x86_64-apple-darwin'
-#          - platform: 'ubuntu-22.04'
-#            args: ''
-#          - platform: 'windows-latest'
-#            args: ''
+          # - platform: 'ubuntu-22.04'
+            # args: ''
+          - platform: 'windows-latest'
+            args: ''
 
     runs-on: ${{ matrix.platform }}
     defaults:
@@ -31,17 +31,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-#      - name: install dependencies (ubuntu only)
-#        if: matrix.platform == 'ubuntu-22.04' # This must match the platform value defined above.
-#        run: |
-#          sudo apt-get update
-#          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      # - name: install dependencies (ubuntu only)
+        # if: matrix.platform == 'ubuntu-22.04' # This must match the platform value defined above.
+        # run: |
+        #   sudo apt-get update
+        #   sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev   librsvg2-dev patchelf libasound2-dev 
 
       - name: setup node
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          # cache: 'npm' # Set this to npm, yarn or pnpm.
+          cache: 'npm' # Set this to npm, yarn or pnpm.
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable # Set this to dtolnay/rust-toolchain@nightly
@@ -52,27 +52,25 @@ jobs:
       - name: install just command runner
         uses: extractions/setup-just@v2
         with:
-          just-version: 1.5.0
+          just-version: 1.40.0
 
-      - name: confirm just installation
-        run: just
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './app/src-tauri -> target'
 
-#      - name: Rust cache
-#        uses: swatinem/rust-cache@v2
-#        with:
-#          workspaces: './src-tauri -> target'
-#
-#      - name: install frontend dependencies
-#        # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
-#        run: npm install # change this to npm or pnpm depending on which one you use.
-#
-#      - uses: tauri-apps/tauri-action@v0
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
-#          releaseName: 'App v__VERSION__'
-#          releaseBody: 'See the assets to download this version and install.'
-#          releaseDraft: true
-#          prerelease: false
-#          args: ${{ matrix.args }}
+      - name: install frontend dependencies
+        run: npm install 
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
+          releaseName: 'App v__VERSION__'
+          releaseBody: 'See the assets to download this version and install.'
+          releaseDraft: true
+          prerelease: false
+          owner: opeolluwa
+          repo: audify-rs
+          args: ${{ matrix.args }}
