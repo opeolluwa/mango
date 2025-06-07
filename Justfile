@@ -58,7 +58,7 @@ build-onnxruntime:
     #!/bin/bash
     # set -e
     if [ {{os()}} = "windows" ]; then \
-        copy "archive\\lame.exe" "{{LAME_PATH}}.exe"; \
+        cp "archive\\lame.exe" "{{LAME_PATH}}.exe"; \
     fi
 
     if [ ! -f "{{LAME_PATH}}" ]; then
