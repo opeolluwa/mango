@@ -58,7 +58,7 @@ build-onnxruntime:
     #!/bin/bash
     # set -e
     if [ {{os()}} = "windows" ]; then \
-        cp "archive\\lame.exe" "{{LAME_PATH}}.exe"; \
+        cp "archive/lame.exe" "../app/src-tauri/sidecar/lame/bin/lame.exe"; \
     fi
 
     if [ ! -f "{{LAME_PATH}}" ]; then
@@ -79,6 +79,10 @@ build-onnxruntime:
     @mkdir  -p "app/src-tauri/sidecar"
     @mkdir  -p "app/src-tauri/sidecar/binaries"
     @just build-lame
+    if [  "$(rustc -Vv | grep host | cut -f2 -d' ')" = "x86_64-pc-windows-gnu" ]; then
+        @cp "{{LAME_PATH}}.exe" "{{SIDECAR_PATH}}/lame.exe-$(rustc -Vv | grep host | cut -f2 -d' ')"
+    fi 
+    #default case 
     @cp "{{LAME_PATH}}" "{{SIDECAR_PATH}}/lame-$(rustc -Vv | grep host | cut -f2 -d' ')"
     @echo "sidecar copied to {{SIDECAR_PATH}}/lame-$(rustc -Vv | grep host | cut -f2 -d' ')"
 
