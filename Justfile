@@ -58,6 +58,10 @@ build-onnxruntime:
     #!/bin/bash
     # set -e
     if [ {{os()}} = "windows" ]; then \
+        @mkdir  -p "app/src-tauri/sidecar" \
+        @mkdir  -p "app/src-tauri/sidecar/binaries" \
+        @mkdir  -p "../app/src-tauri/sidecar" \
+        @mkdir  -p "../app/src-tauri/sidecar/binaries" \
         cp "archive/lame.exe" "../app/src-tauri/sidecar/lame/bin/lame.exe"; \
     fi
 
