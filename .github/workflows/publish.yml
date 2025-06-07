@@ -37,15 +37,15 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev   librsvg2-dev patchelf libasound2-dev 
 
-      - name: Set up MinGW
-        if: matrix.platform == 'windows-latest'
-        uses: egor-tensin/setup-mingw@v2
-        with:
-        platform: x64
+      # - name: Set up MinGW
+      #   if: matrix.platform == 'windows-latest'
+      #   uses: egor-tensin/setup-mingw@v2
+      #   with:
+      #   platform: x64
 
-      - name: Setup msys2
-        if: matrix.platform == 'windows-latest'
-        uses: msys2/setup-msys2@v2
+      # - name: Setup msys2
+      #   if: matrix.platform == 'windows-latest'
+      #   uses: msys2/setup-msys2@v2
 
       - name: setup node
         uses: actions/setup-node@v4
