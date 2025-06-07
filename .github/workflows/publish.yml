@@ -54,9 +54,6 @@ jobs:
         with:
           just-version: 1.40.0
 
-      - name: confirm just installation
-        run: just prebuild
-
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
