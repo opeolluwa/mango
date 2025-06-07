@@ -59,15 +59,13 @@ jobs:
           # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      - name: prebuild 
-        run: just prebuild
-      # - name: install just command runner
-      #   uses: extractions/setup-just@v2
-      #   with:
-      #     just-version: 1.40.0
+      - name: install just command runner
+        uses: extractions/setup-just@v2
+        with:
+          just-version: 1.40.0
 
-      # - name: confirm just installation
-      #   run: just
+      - name: confirm just installation
+        run: just prebuild
 
       # - name: Rust cache
       #   uses: swatinem/rust-cache@v2
