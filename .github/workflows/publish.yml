@@ -25,9 +25,9 @@ jobs:
             args: ''
 
     runs-on: ${{ matrix.platform }}
-    # defaults:
-      # run:
-      #   working-directory: ./app
+    defaults:
+      run:
+        working-directory: ./app
     steps:
       - uses: actions/checkout@v4
 
