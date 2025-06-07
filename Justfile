@@ -57,13 +57,11 @@ build-onnxruntime:
 @build-lame:
     #!/bin/bash
     # set -e
-    if [ {{os()}} = "windows" ]; then \
-        echo "Building for windows"
-        mkdir  -p "app/src-tauri/sidecar/lame/bin" \
-        mkdir  -p "app/src-tauri/sidecar/binaries" \
-        mkdir  -p "../app/src-tauri/sidecar/lame/bin" \
-        mkdir  -p "../app/src-tauri/sidecar/binaries" \
-        cp "archive/lame.exe" "../app/src-tauri/sidecar/lame/bin/lame.exe"; \
+    if [  {{os()}} = "windows" ]; then \
+        echo "Building for windows as $PWD"
+        mkdir  -p "../app/src-tauri/sidecar/lame/bin" 
+        mkdir  -p "../app/src-tauri/sidecar/binaries" 
+        cp "./archive/lame.exe" "../app/src-tauri/sidecar/lame/bin/"; \
     fi
 
     if [ ! -f "{{LAME_PATH}}" ]; then
