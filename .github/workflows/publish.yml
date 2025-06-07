@@ -37,21 +37,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev   librsvg2-dev patchelf libasound2-dev 
 
-      # - name: Set up MinGW
-      #   if: matrix.platform == 'windows-latest'
-      #   uses: egor-tensin/setup-mingw@v2
-      #   with:
-      #   platform: x64
-
-      # - name: Setup msys2
-      #   if: matrix.platform == 'windows-latest'
-      #   uses: msys2/setup-msys2@v2
-
       - name: setup node
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          # cache: 'npm' # Set this to npm, yarn or pnpm.
+          cache: 'npm' # Set this to npm, yarn or pnpm.
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable # Set this to dtolnay/rust-toolchain@nightly
@@ -67,21 +57,21 @@ jobs:
       - name: confirm just installation
         run: just prebuild
 
-      # - name: Rust cache
-      #   uses: swatinem/rust-cache@v2
-      #   with:
-      #     workspaces: './app/src-tauri -> target'
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './app/src-tauri -> target'
 
-      # - name: install frontend dependencies
-      #   run: npm install 
+      - name: install frontend dependencies
+        run: npm install 
 
-      # - uses: tauri-apps/tauri-action@v0
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
-      #     releaseName: 'App v__VERSION__'
-      #     releaseBody: 'See the assets to download this version and install.'
-      #     releaseDraft: true
-      #     prerelease: false
-      #     args: ${{ matrix.args }}
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
+          releaseName: 'App v__VERSION__'
+          releaseBody: 'See the assets to download this version and install.'
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}
