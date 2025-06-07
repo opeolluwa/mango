@@ -57,7 +57,7 @@ build-onnxruntime:
 @build-lame:
     #!/bin/bash
     # set -e
-    if [  {{os()}} = "windows" ]; then \
+    if [  "{{os()}}" = "windows" ]; then \
         echo "Building for windows as $PWD"
         mkdir  -p "../app/src-tauri/sidecar/lame/bin" 
         mkdir  -p "../app/src-tauri/sidecar/binaries" 
@@ -84,7 +84,7 @@ build-onnxruntime:
     @just build-lame
     
     if [  "$(rustc -Vv | grep host | cut -f2 -d' ')" = "x86_64-pc-windows-gnu" ]; then \
-        @cp "{{LAME_PATH}}.exe" "{{SIDECAR_PATH}}/lame.exe-$(rustc -Vv | grep host | cut -f2 -d' ')" \
+        @cp "{{LAME_PATH}}.exe" "{{SIDECAR_PATH}}/lame.exe-$(rustc -Vv | grep host | cut -f2 -d' ')" 
     fi 
     #default case 
     @cp "{{LAME_PATH}}" "{{SIDECAR_PATH}}/lame-$(rustc -Vv | grep host | cut -f2 -d' ')"
