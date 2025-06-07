@@ -4,6 +4,7 @@ alias install := install-dependencies
 # Constants
 LAME_PATH := "app/src-tauri/sidecar/lame/bin/lame"
 SIDECAR_PATH := "app/src-tauri/sidecar/binaries"
+HOST_TRIPLE := "$(rustc -Vv | grep host | cut -f2 -d' ')"
 
 # Default
 default:
@@ -56,16 +57,17 @@ build-onnxruntime:
 #>> Build LAME
 [working-directory: 'lame']
 @build-lame:
-    if [ "{{os()}}" = "windows" ]; then
+    #!/bin/bash
+    if [ "{{os()}}" = "windows" ]; then \
         echo "Building for Windows in $PWD"
         mkdir -p "../app/src-tauri/sidecar/lame/bin"
         mkdir -p "../app/src-tauri/sidecar/binaries"
         cp "./archive/lame.exe" "../app/src-tauri/sidecar/lame/bin/"
     fi
 
-    if [ ! -f {{LAME_PATH}} ]; then
-        ./configure --disable-shared --enable-static --enable-nasm --prefix="$(pwd)/../app/src-tauri/sidecar/lame"
-        make
+    if [ ! -f {{LAME_PATH}} ]; then \
+        ./configure --disable-shared --enable-static --enable-nasm --prefix="$(pwd)/../app/src-tauri/sidecar/lame" 
+        make 
         make install
     else
         echo "LAME already exists, skipping..."
@@ -74,22 +76,23 @@ build-onnxruntime:
 #>> Build everything for current platform
 [doc('Build the LAME project and prepare sidecar for the target platform')]
 @prebuild:
+    #!/bin/bash
     cd app && npm run build && cd ..
     mkdir -p "app/src-tauri/sidecar"
     mkdir -p "app/src-tauri/sidecar/binaries"
     just build-lame
 
-    HOST_TRIPLE := $(rustc -Vv | grep host | cut -f2 -d' ')
-    if [ "$HOST_TRIPLE" = "x86_64-pc-windows-gnu" ]; then
-        cp "{{LAME_PATH}}.exe" "{{SIDECAR_PATH}}/lame.exe-$HOST_TRIPLE"
+    if [ "{{HOST_TRIPLE}}" = "x86_64-pc-windows-gnu" ]; then
+        cp "{{LAME_PATH}}.exe" "{{SIDECAR_PATH}}/lame.exe-{{HOST_TRIPLE}}"
     else
-        cp "{{LAME_PATH}}" "{{SIDECAR_PATH}}/lame-$HOST_TRIPLE"
+        cp "{{LAME_PATH}}" "{{SIDECAR_PATH}}/lame-{{HOST_TRIPLE}}"
     fi
 
-    echo "Sidecar copied to {{SIDECAR_PATH}}/lame-$HOST_TRIPLE"
+    echo "Sidecar copied to {{SIDECAR_PATH}}/lame-{{HOST_TRIPLE}}"
 
 #>> Local audio conversion using LAME
 @convert-local:
+    #!/bin/bash
     SOURCE_DIR="/Users/USER/Music/audify"
     OUTPUT_DIR="$SOURCE_DIR"
 
