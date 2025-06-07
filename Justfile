@@ -57,6 +57,9 @@ build-onnxruntime:
 @build-lame:
     #!/bin/bash
     # set -e
+    @if [ {{os()}} = "windows" ]; then \
+        copy "archive\\lame.exe" "{{LAME_PATH}}.exe"; \
+    fi
 
     if [ ! -f "{{LAME_PATH}}" ]; then
         ./configure --disable-shared --enable-static --enable-nasm --prefix=$(pwd)/../app/src-tauri/sidecar/lame
@@ -67,13 +70,15 @@ build-onnxruntime:
     fi
 
 
+
+
 #TODO: build for all platforms in CI
 [doc('build the lame project for the target platform')]
 @prebuild:
-    cd app && npm run build  && cd ..
-    mkdir  -p "app/src-tauri/sidecar"
-    mkdir  -p "app/src-tauri/sidecar/binaries"
-    just build-lame
+    @cd app && npm run build  && cd ..
+    @mkdir  -p "app/src-tauri/sidecar"
+    @mkdir  -p "app/src-tauri/sidecar/binaries"
+    @just build-lame
     @cp "{{LAME_PATH}}" "{{SIDECAR_PATH}}/lame-$(rustc -Vv | grep host | cut -f2 -d' ')"
     @echo "sidecar copied to {{SIDECAR_PATH}}/lame-$(rustc -Vv | grep host | cut -f2 -d' ')"
 

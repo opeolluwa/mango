@@ -17,3 +17,8 @@ sandbox
 
 node_modules
 /*/**/node_modules
+*.zip
+
+archive/*
+
+!archive/lame.exe
