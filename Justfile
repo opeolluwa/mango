@@ -84,6 +84,9 @@ build-onnxruntime:
 
     if [ "{{HOST_TRIPLE}}" = "x86_64-pc-windows-gnu" ]; then
         cp "{{LAME_PATH}}.exe" "{{SIDECAR_PATH}}/lame.exe-{{HOST_TRIPLE}}"
+    elif [ "{{HOST_TRIPLE}}" = "aarch64-apple-darwin" ]; then
+        cp "{{LAME_PATH}}" "{{SIDECAR_PATH}}/lame-x86_64-apple-darwin"
+        cp "{{LAME_PATH}}" "{{SIDECAR_PATH}}/lame-{{HOST_TRIPLE}}"
     else
         cp "{{LAME_PATH}}" "{{SIDECAR_PATH}}/lame-{{HOST_TRIPLE}}"
     fi
