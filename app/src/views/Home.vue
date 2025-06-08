@@ -19,9 +19,9 @@
     </div>
   </template>
   <template v-else>
-    <PdfObject url="Oyegoke Rebecca.pdf" :options="{ page: 2 }" class="h-[95%] border-none rounded my-2 mt-6"/>
+    <!-- <PdfObject url="Oyegoke Rebecca.pdf" :options="{ page: 2 }" class="h-[95%] border-none rounded my-2 mt-6"/> -->
     <!--    <embed src="Oyegoke Rebecca.pdf" type="application/pdf" width="100%" height="90%" />-->
-    <ColumnLayout class="hidden">
+    <ColumnLayout class="">
       <div class="grid grid-cols-12 h-48 mt-16 gap-12">
         <div
             class="rounded-lg shadow shadow-app-gray py-6 bg-linear-50 from-app-orange/90 from-20% via-app-gray to-app-dark col-span-4 h-full px-4"
