@@ -19,7 +19,7 @@ import {useAudioBookLibrary} from "./stores/library.ts";
 const store = useAudioBookLibrary();
 onMounted(async () => {
   await store.loadMusicLibrary();
-  setTimeout(() => window.HSStaticMethods.autoInit(), 100)
+  // setTimeout(() => window.HSStaticMethods.autoInit(), 100)
 });
 </script>
 

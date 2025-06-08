@@ -2,11 +2,14 @@
 use crate::state::AppState;
 use dirs;
 use lazy_static::lazy_static;
+use sqlx::sqlite::SqliteConnectOptions;
 use std::sync::{Arc, Mutex};
+use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
+use sqlx::SqlitePool;
 
 mod commands;
-
+mod database;
 mod state;
 
 lazy_static! {
@@ -27,6 +30,7 @@ lazy_static! {
 }
 
 pub const LAME_SIDECAR: &str = "lame";
+pub const DATABASE_PATH: &str = "echo.db";
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -102,10 +106,47 @@ PRAGMA foreign_keys=on;
             "#,
         },
     ];
+
     tauri::Builder::default()
-        .manage(Arc::new(AppState {
-            current_audio_book: Mutex::new(None),
-        }))
+        // .setup(|app| {
+        //     let _ = std::fs::create_dir_all(app.path().app_data_dir().unwrap());
+        //     let db_path = app.path().app_data_dir().unwrap().join(DATABASE_PATH);
+        //     let connection_options = SqliteConnectOptions::new()
+        //         .filename(db_path)
+        //         .create_if_missing(true);
+
+        //     app.manage(AppState {
+        //         current_audio_book: Mutex::new(None),
+        //         db: Some(connection_options),
+        //     });
+
+        //     Ok(())
+        // })
+        // .manage(Arc::new(AppState {
+        //     current_audio_book: Mutex::new(None),
+        //     db: None,
+        // }))
+        .setup(|app| {
+            tauri::async_runtime::spawn(async move {});
+            tauri::async_runtime::block_on(async move {
+                let mut app_state: AppState = AppState {
+                    current_audio_book: Mutex::new(None),
+                    db: Mutex::new(None),
+                };
+                app_state.current_audio_book = Mutex::new(None);
+        let _ = std::fs::create_dir_all(app.path().app_data_dir().unwrap());
+        let db_path = app.path().app_data_dir().unwrap().join(DATABASE_PATH);
+        let connection_options = SqliteConnectOptions::new()
+            .filename(db_path)
+            .create_if_missing(true);
+                let pool = SqlitePool::connect_with(connection_options)
+                    .await
+                    .map_err(|err| err.to_string())?;
+                app_state.db = Mutex::new(Some(pool));
+                app.manage(Arc::new(app_state));
+                Ok(())
+            })
+        })
         .plugin(tauri_plugin_fs::init())
         .plugin(
             tauri_plugin_sql::Builder::default()

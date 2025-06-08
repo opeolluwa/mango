@@ -2,10 +2,16 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lame" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lib/target/debug/build/espeak-rs-sys-f280ef336dba77aa/out/build/_deps/sonic-git-src" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/onnxruntime" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/onnxruntime/cmake/external/emsdk" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/onnxruntime/cmake/external/libprotobuf-mutator" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/onnxruntime/cmake/external/onnx" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/onnxruntime/cmake/external/onnx/third_party/pybind11" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/piper" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/piper/crates/espeak-rs-sys/espeak-ng" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/piper/crates/sonic-rs-sys/sonic" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/piper/target/debug/build/espeak-rs-sys-a8bcd7d98fc423d5/out/build/_deps/sonic-git-src" vcs="Git" />
   </component>
 </project>

@@ -142,6 +142,7 @@ pub async fn play_audio_book(
     book_title: String,
     state: State<'_, Arc<AppState>>,
 ) -> Result<(), String> {
+    println!("plaing {}", book_title);
     let audio_book_canonical_path = format!("{}/{}", MEDIA_DIR.as_str(), book_title);
     let state = state.inner().clone();
 
