@@ -13,10 +13,8 @@ edition = "2021"
 name = "audify_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
-[build-dependencies]
-tauri-build = { version = "2", features = [] }
-
 [dependencies]
+anyhow = "1.0.98"
 chrono = "0.4.41"
 dirs = "6.0.0"
 lazy_static = "1.5.0"
@@ -35,14 +33,18 @@ tauri-plugin-shell = "2"
 tauri-plugin-sql = { version = "2.2.0", features = ["sqlite"] }
 tauri-plugin-upload = "2"
 thiserror = "2.0.12"
+tokio = { version = "1.45.1", features = ["full"] }
 ts-rs = "10.1.0"
 uuid = { version = "1.17.0", features = ["v4"] }
 walkdir = "2.5.0"
+
+[target.'cfg(any(target_os = "macos", windows, target_os = "linux"))'.dependencies]
+tauri-plugin-single-instance = "2"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-single-instance = "2"
 tauri-plugin-updater = "2"
 
-[target.'cfg(any(target_os = "macos", windows, target_os = "linux"))'.dependencies]
-tauri-plugin-single-instance = "2"
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
 

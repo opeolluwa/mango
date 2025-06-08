@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
-use sqlx::Connection;
 use std::time::{SystemTime, UNIX_EPOCH};
-use thiserror::Error;
 use ts_rs::TS;
 
 pub trait ModelTrait {
@@ -10,16 +8,9 @@ pub trait ModelTrait {
     async fn update(&self);
 }
 
-#[derive(Debug, Error)]
-pub enum DbError {
-    #[error("Database error: {0}")]
-    Database(String),
-    #[error("Record not found")]
-    NotFound,
-}
-
 #[derive(Debug, Serialize, Deserialize, Clone, TS)]
 #[ts(export)]
+#[serde(rename_all = "camelCase")]
 pub struct AudioBook {
     pub identifier: String,
     pub title: Option<String>,
@@ -30,6 +21,7 @@ pub struct AudioBook {
 
 #[derive(Debug, Serialize, Deserialize, Clone, TS)]
 #[ts(export)]
+#[serde(rename_all = "camelCase")]
 pub struct Playlist {
     pub identifier: String,
     pub name: Option<String>,
@@ -38,6 +30,7 @@ pub struct Playlist {
 
 #[derive(Debug, Serialize, Deserialize, Clone, TS)]
 #[ts(export)]
+#[serde(rename_all = "camelCase")]
 pub struct History {
     pub identifier: String,
     pub audio_book_identifier: String,
