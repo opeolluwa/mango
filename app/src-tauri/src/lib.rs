@@ -5,7 +5,7 @@ use lazy_static::lazy_static;
 use std::sync::{Arc, Mutex};
 use tauri_plugin_sql::{Migration, MigrationKind};
 
-// mod commands;
+mod commands;
 
 mod state;
 
@@ -124,14 +124,14 @@ PRAGMA foreign_keys=on;
         })
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
-            // commands::synthesize_audio,
-            // commands::read_library,
-            // commands::play_audio_book,
-            // commands::pause_audio_book,
-            // commands::set_audio_book_volume,
-            // commands::seek_audio_book_to_position,
-            // commands::set_audio_book_playback_speed,
-            // commands::resume_playing_audio_book
+            commands::synthesize_audio,
+            commands::read_library,
+            commands::play_audio_book,
+            commands::pause_audio_book,
+            commands::set_audio_book_volume,
+            commands::seek_audio_book_to_position,
+            commands::set_audio_book_playback_speed,
+            commands::resume_playing_audio_book
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
