@@ -1,0 +1,34 @@
+#!/usr/bin/env sh
+
+export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+
+# Android paths
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk | head -n 1)"
+
+# NDK toolchain path
+export TOOLCHAIN="$NDK_HOME/toolchains/llvm/prebuilt/aarch64-apple-darwin"
+export PATH="$TOOLCHAIN/bin:$PATH"
+
+# This tells bindgen to use the Android NDK sysroot for headers like stdio.h
+export BINDGEN_EXTRA_CLANG_ARGS="--sysroot=$TOOLCHAIN/sysroot"
+
+# export the ONNXRUNTIME shared library 
+export ORT_LIB_LOCATION=../onnxruntime/build/Android/
+
+export CC_aarch64_linux_android="$TOOLCHAIN/bin/aarch64-linux-android21-clang"
+export CXX_aarch64_linux_android="$TOOLCHAIN/bin/aarch64-linux-android21-clang++"
+export AR_aarch64_linux_android="$TOOLCHAIN/bin/aarch64-linux-android-ar"
+
+
+mkdir -p cmake-install-local
+export CMAKE_INSTALL_PREFIX="./cmake-install-local" 
+# Optional: verify clang is available
+which aarch64-linux-android-clang
+
+# Required for cmake-rs crate
+export CMAKE_TOOLCHAIN_FILE="$NDK_HOME/build/cmake/android.toolchain.cmake"
+export CMAKE_GENERATOR="Ninja"
+
+# Build
+cargo build --target aarch64-linux-android
