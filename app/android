@@ -1,0 +1,32 @@
+#!/usr/bin/env sh
+
+# Android SDK & NDK setup
+export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export NDK_VERSION=$(ls -1 "$ANDROID_HOME/ndk" | tail -n 1)
+export NDK_HOME="$ANDROID_HOME/ndk/$NDK_VERSION"
+
+# Detect the correct platform (darwin-x86_64 or darwin-arm64)
+PLATFORM=$(ls "$NDK_HOME/toolchains/llvm/prebuilt/" | head -n 1)
+
+# Toolchain and sysroot
+export TOOLCHAIN="$NDK_HOME/toolchains/llvm/prebuilt/$PLATFORM"
+export PATH="$TOOLCHAIN/bin:$PATH"
+
+# Target and Clang setup
+export API_LEVEL=30
+export TARGET_TRIPLE="aarch64-linux-android"
+export CC_aarch64_linux_android="${TARGET_TRIPLE}${API_LEVEL}-clang"
+export SYSROOT="$TOOLCHAIN/sysroot"
+
+# Bindgen support for sysroot
+export BINDGEN_EXTRA_CLANG_ARGS="--sysroot=$SYSROOT -isystem $SYSROOT/usr/include -isystem $SYSROOT/usr/include/$TARGET_TRIPLE -D__ANDROID_API__=$API_LEVEL"
+
+# Optional debug echo
+echo "NDK version: $NDK_VERSION"
+echo "Using toolchain: $TOOLCHAIN"
+echo "Using compiler: $(which $CC_aarch64_linux_android)"
+
+export ORT_LIB_LOCATION=../onnxruntime/build/Android/Debug
+
+npm run tauri android dev 
