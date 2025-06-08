@@ -1,14 +1,43 @@
 # Alias
 alias install := install-dependencies
-
+alias config:= configure
 # Constants
 LAME_PATH := "app/src-tauri/sidecar/lame/bin/lame"
 SIDECAR_PATH := "app/src-tauri/sidecar/binaries"
 HOST_TRIPLE := "$(rustc -Vv | grep host | cut -f2 -d' ')"
 
+PIPER_DIR:='piper'
+APP_DIR:='app'
+LIB_DIR :='lib'
+
 # Default
 default:
     @just --list --list-heading $'Available commands\n'
+
+configure:
+    @just configure-piper-rs
+
+clean target:
+    #!/usr/bin/env sh
+    echo "Cleaning {{target}} build assets"
+    if [ "{{target}}" = "lib" ]; then \
+        cd {{LIB_DIR}} && cargo clean 
+    elif [ "{{target}}" = "piper" ]; then \
+        cd {{PIPER_DIR}} && cargo clean
+    elif [ "{{target}}" = "app" ]; then \
+        cd "{{APP_DIR}}/src-tauri" && cargo clean
+    elif [ "{{target}}" = "all" ]; then \
+        just clean lib 
+        just clean piper 
+        just clean app 
+    else 
+        echo "Invalid {{target}} use one of app,piper,lib"
+    fi
+        
+[working-directory:'piper']
+configure-piper-rs:
+    @echo "Configuring piper-rs ...\n"
+    git submodule update --init
 
 #>> Dependency Setup
 [doc('Install the application dependencies')]
