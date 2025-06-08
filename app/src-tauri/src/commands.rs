@@ -19,31 +19,7 @@ use std::fs::File;
 use std::io;
 use std::io::BufReader;
 use std::sync::Arc;
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-#[serde(rename_all = "camelCase")]
-#[derive(TS)]
-#[ts(export)]
-pub struct AudioBook {
-    pub file_name: String,
-    pub play_back_duration: u64,
-    pub audio_src: String,
-}
-
-impl AudioBook {
-    pub fn from_path(path: &Path) -> Option<Self> {
-        let path_buf = path.canonicalize().ok()?;
-        let file_name = path_buf.file_name()?.to_str()?.to_string();
-
-        let display_name = file_name.strip_suffix(".wav").unwrap_or(&file_name);
-
-        Some(Self {
-            file_name: display_name.to_string(),
-            play_back_duration: 45, // Consider computing real duration later
-            audio_src: path.canonicalize().ok()?.to_str().unwrap().to_string(),
-        })
-    }
-}
+use crate::adapters::AudioBook;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -122,6 +98,10 @@ pub async fn synthesize_audio<R: Runtime>(
 }
 
 #[tauri::command]
+pub async fn sync_playlist(state: State<'_, Arc<AppState>>) -> Result<(), String> {
+    todo!()
+}
+#[tauri::command]
 pub fn read_library() -> AudioLibrary {
     let mut audio_books = WalkDir::new(&format!("{}/", MEDIA_DIR.as_str()))
         .into_iter()
@@ -142,6 +122,7 @@ pub async fn play_audio_book(
     book_title: String,
     state: State<'_, Arc<AppState>>,
 ) -> Result<(), String> {
+    println!("plaing {}", book_title);
     let audio_book_canonical_path = format!("{}/{}", MEDIA_DIR.as_str(), book_title);
     let state = state.inner().clone();
 
@@ -198,6 +179,9 @@ pub async fn play_audio_book(
 
     Ok(())
 }
+
+
+
 
 #[tauri::command]
 pub async fn pause_audio_book(state: State<'_, Arc<AppState>>) -> Result<(), String> {

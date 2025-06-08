@@ -1,9 +1,9 @@
 [submodule "onnxruntime"]
 	path = onnxruntime
-	url = https://github.com/microsoft/onnxruntime
+	url = https://github.com/opeolluwa/onnxruntime
 [submodule "piper"]
 	path = piper
-	url = https://github.com/thewh1teagle/piper-rs
+	url = https://github.com/opeolluwa/piper-rs
 [submodule "lame"]
 	path = lame
 	url = https://github.com/opeolluwa/lame
