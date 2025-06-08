@@ -11,7 +11,7 @@ BINARIES_PATH := "bin"
 EXPORT_PATH := "packages"
 SUPPORTED_PLATFORM :="android"
 
-LAME_PATH:= "src-tauri/sidecar/lame/bin/lame"
+LAME_PATH := "src-tauri/sidecar/lame/bin/lame"
 SIDECAR_PATH :="src-tauri/sidecar/binaries"
 
 
@@ -20,7 +20,6 @@ SIDECAR_PATH :="src-tauri/sidecar/binaries"
 @build-lame:
     @just build-lame
 
-#TODO: build for all platforms in CI
 [doc('build the lame project for the target platform')]
 @prebuild:
     npm run build 
@@ -30,14 +29,15 @@ SIDECAR_PATH :="src-tauri/sidecar/binaries"
 [doc('Run the application in watch mode')]
 watch target:
     #!/usr/bin/env sh
-    export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
-    export ANDROID_HOME="$HOME/Library/Android/sdk"
-    export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
-    export ENV="development"
-    export BINDGEN_EXTRA_CLANG_ARGS="--sysroot=$NDK_HOME/toolchains/llvm/prebuilt/aarch64-apple-darwin/sysroot"
-
     if [ {{target}} = "android" ]; then
-        ORT_LIB_LOCATION=../onnxruntime/build/Android/DebugBINDGEN_EXTRA_CLANG_ARGS="--sysroot=$NDK_HOME/toolchains/llvm/prebuilt/aarch64-apple-darwin/sysroot" npm run tauri android dev 
+        export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+        export ANDROID_HOME="$HOME/Library/Android/sdk"
+        export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
+        export ENV="development"
+        export BINDGEN_EXTRA_CLANG_ARGS="--sysroot=$NDK_HOME/toolchains/llvm/prebuilt/aarch64-apple-darwin/sysroot"
+        export ORT_LIB_LOCATION=../onnxruntime/build/Android/
+        export DebugBINDGEN_EXTRA_CLANG_ARGS="--sysroot=$NDK_HOME/toolchains/llvm/prebuilt/aarch64-apple-darwin/sysroot"
+        npm run tauri android dev 
     elif [ {{target}} = "ios" ]; then 
         npm tauri ios dev 
     else
