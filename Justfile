@@ -1,22 +1,29 @@
 # Alias
 alias install := install-dependencies
 alias config:= configure
+alias w := watch
+alias b := build
+
 # Constants
 LAME_PATH := "app/src-tauri/sidecar/lame/bin/lame"
 SIDECAR_PATH := "app/src-tauri/sidecar/binaries"
 HOST_TRIPLE := "$(rustc -Vv | grep host | cut -f2 -d' ')"
 
+# projects directories 
 PIPER_DIR:='piper'
 APP_DIR:='app'
 LIB_DIR :='lib'
 
-# Default
+#>>  Default Shows the default commands 
 default:
     @just --list --list-heading $'Available commands\n'
 
+#>> execute all initial setup after cloning the project
 configure:
     @just configure-piper-rs
+    @just install-dependencies
 
+#>> delete rust target dir
 clean target:
     #!/usr/bin/env sh
     echo "Cleaning {{target}} build assets"
@@ -34,6 +41,7 @@ clean target:
         echo "Invalid {{target}} use one of app,piper,lib"
     fi
         
+#>> download piper-rs dependnecies 
 [working-directory:'piper']
 configure-piper-rs:
     @echo "Configuring piper-rs ...\n"
@@ -42,7 +50,7 @@ configure-piper-rs:
 #>> Dependency Setup
 [doc('Install the application dependencies')]
 install-dependencies:
-    echo "Installing dependencies"
+    @echo "Installing dependencies"
     cargo install --git https://github.com/cpg314/cargo-group-imports
     cargo install cargo-sort
 
@@ -51,7 +59,11 @@ install-dependencies:
 @test-audio-synthesis:
     cargo run --example audio
 
-#>> Watch Commands
+#>> the root Watch Commands, it abstarcts other commands like watch-lib watch-app, watch-android
+watch target:
+    @echo "Watching {{target}} for changes"
+    @just "watch-{{target}}"
+
 [working-directory: 'app']
 @watch-android:
     #!/usr/bin/env sh
@@ -66,8 +78,14 @@ install-dependencies:
 @watch-desktop:
     just w desktop
 
+
+#>> the root Watch Commands, it abstarcts other commands like watch-lib watch-app, watch-android
+@build target:
+    @echo "Building {{target}} for production"
+    @just "build-{{target}}"
+
 #>> Build Commands
-build-onnxruntime:
+@build-onnxruntime:
     export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
     export ANDROID_HOME="$HOME/Library/Android/sdk"
     export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk | head -n 1)"
