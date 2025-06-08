@@ -25,6 +25,8 @@ install-dependencies:
 #>> Watch Commands
 [working-directory: 'app']
 @watch-android:
+    #!/usr/bin/env sh
+    export BINDGEN_EXTRA_CLANG_ARGS="--sysroot=$NDK_HOME/toolchains/llvm/prebuilt/aarch64-apple-darwin/sysroot"
     just w android
 
 [working-directory: 'app']
@@ -41,6 +43,16 @@ build-onnxruntime:
     export ANDROID_HOME="$HOME/Library/Android/sdk"
     export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk | head -n 1)"
     ./onnxruntime/build.sh --android --android_sdk_path "$ANDROID_HOME" --android_ndk_path "$NDK_HOME" --android_abi arm64-v8a --android_api 27
+
+[working-directory:'piper-rs']
+@build-piper-android:
+    #!/usr/bin/env sh
+    export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+    export ANDROID_HOME="$HOME/Library/Android/sdk"
+    export BINDGEN_EXTRA_CLANG_ARGS="--sysroot=$NDK_HOME/toolchains/llvm/prebuilt/aarch64-apple-darwin/sysroot"
+    export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk | head -n 1)"
+    ORT_LIB_LOCATION=../onnxruntime/build/Android/Debug
+    cargo build --target aarch64-linux-android
 
 [working-directory: 'app']
 @build-android:

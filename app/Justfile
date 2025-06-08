@@ -34,8 +34,10 @@ watch target:
     export ANDROID_HOME="$HOME/Library/Android/sdk"
     export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
     export ENV="development"
+    export BINDGEN_EXTRA_CLANG_ARGS="--sysroot=$NDK_HOME/toolchains/llvm/prebuilt/aarch64-apple-darwin/sysroot"
+
     if [ {{target}} = "android" ]; then
-        ORT_LIB_LOCATION=../onnxruntime/build/Android/Debug npm run tauri android dev 
+        ORT_LIB_LOCATION=../onnxruntime/build/Android/DebugBINDGEN_EXTRA_CLANG_ARGS="--sysroot=$NDK_HOME/toolchains/llvm/prebuilt/aarch64-apple-darwin/sysroot" npm run tauri android dev 
     elif [ {{target}} = "ios" ]; then 
         npm tauri ios dev 
     else
