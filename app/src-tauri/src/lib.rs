@@ -3,13 +3,15 @@ use crate::state::AppState;
 use dirs;
 use lazy_static::lazy_static;
 use sqlx::sqlite::SqliteConnectOptions;
+use sqlx::SqlitePool;
 use std::sync::{Arc, Mutex};
 use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
-use sqlx::SqlitePool;
 
+mod adapters;
 mod commands;
 mod database;
+mod error;
 mod state;
 
 lazy_static! {
@@ -108,44 +110,43 @@ PRAGMA foreign_keys=on;
     ];
 
     tauri::Builder::default()
-        // .setup(|app| {
-        //     let _ = std::fs::create_dir_all(app.path().app_data_dir().unwrap());
-        //     let db_path = app.path().app_data_dir().unwrap().join(DATABASE_PATH);
-        //     let connection_options = SqliteConnectOptions::new()
-        //         .filename(db_path)
-        //         .create_if_missing(true);
-
-        //     app.manage(AppState {
-        //         current_audio_book: Mutex::new(None),
-        //         db: Some(connection_options),
-        //     });
-
-        //     Ok(())
-        // })
-        // .manage(Arc::new(AppState {
-        //     current_audio_book: Mutex::new(None),
-        //     db: None,
-        // }))
         .setup(|app| {
-            tauri::async_runtime::spawn(async move {});
-            tauri::async_runtime::block_on(async move {
-                let mut app_state: AppState = AppState {
-                    current_audio_book: Mutex::new(None),
-                    db: Mutex::new(None),
-                };
-                app_state.current_audio_book = Mutex::new(None);
-        let _ = std::fs::create_dir_all(app.path().app_data_dir().unwrap());
-        let db_path = app.path().app_data_dir().unwrap().join(DATABASE_PATH);
-        let connection_options = SqliteConnectOptions::new()
-            .filename(db_path)
-            .create_if_missing(true);
+            #[cfg(desktop)]
+            {
+                let _ = app
+                    .handle()
+                    .plugin(tauri_plugin_single_instance::init(|_app, _args, _cwd| {}));
+            }
+
+            // Extract app path synchronously BEFORE entering async block
+            let app_data_dir = app.path().app_data_dir().unwrap();
+            std::fs::create_dir_all(&app_data_dir)?;
+
+            let db_path = app_data_dir.join(DATABASE_PATH);
+
+            // Do the async part in block_on
+            let app_state_result = tauri::async_runtime::block_on(async {
+                let connection_options = SqliteConnectOptions::new()
+                    .filename(db_path)
+                    .create_if_missing(true);
+
                 let pool = SqlitePool::connect_with(connection_options)
                     .await
-                    .map_err(|err| err.to_string())?;
-                app_state.db = Mutex::new(Some(pool));
-                app.manage(Arc::new(app_state));
-                Ok(())
-            })
+                    .map_err(|e| e.to_string())?;
+
+                Ok(AppState {
+                    current_audio_book: Mutex::new(None),
+                    db: Mutex::new(Some(pool)),
+                })
+            });
+
+            match app_state_result {
+                Ok(app_state) => {
+                    app.manage(Arc::new(app_state));
+                    Ok(())
+                }
+                Err(e) => Err(e),
+            }
         })
         .plugin(tauri_plugin_fs::init())
         .plugin(
@@ -156,13 +157,13 @@ PRAGMA foreign_keys=on;
         .plugin(tauri_plugin_upload::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_dialog::init())
-        .setup(|app| {
-            #[cfg(desktop)]
-            let _ = app
-                .handle()
-                .plugin(tauri_plugin_single_instance::init(|_app, _args, _cwd| {}));
-            Ok(())
-        })
+        // .setup(|app| {
+        //     #[cfg(desktop)]
+        //     let _ = app
+        //         .handle()
+        //         .plugin(tauri_plugin_single_instance::init(|_app, _args, _cwd| {}));
+        //     Ok(())
+        // })
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             commands::synthesize_audio,

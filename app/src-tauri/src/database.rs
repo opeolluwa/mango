@@ -4,6 +4,15 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use thiserror::Error;
 use ts_rs::TS;
 
+
+
+pub struct Database {}
+
+impl Database {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
 pub trait ModelTrait {
     async fn save(&self);
     async fn find(&self);
