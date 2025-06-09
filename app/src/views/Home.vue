@@ -83,8 +83,8 @@
               class=""
               v-for="(book, index) in audioBooks"
               :key="index"
-              :file-name="book.fileName"
-              :duration="book.playBackDuration.toString()"
+              :file-name="String(book.title)"
+              duration="0"
               :date-last-played="new Date().toLocaleDateString()"
           />
         </div>

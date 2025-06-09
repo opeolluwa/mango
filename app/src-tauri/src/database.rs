@@ -1,14 +1,19 @@
+use crate::error::DbError;
+use chrono::Local;
 use serde::{Deserialize, Serialize};
-use std::time::{SystemTime, UNIX_EPOCH};
+use sqlx::{FromRow, Pool, Sqlite};
+use std::sync::Arc;
 use ts_rs::TS;
 
-pub trait ModelTrait {
-    async fn save(&self);
-    async fn find(&self);
-    async fn update(&self);
+pub trait ModelTrait: Sized + Sync + Send {
+    async fn save(&self, db_conn: &Pool<Sqlite>) -> Result<(), DbError>;
+    async fn find_all(&self, db_conn: &Pool<Sqlite>) -> Result<Vec<Self>, DbError>;
+
+    // async fn find(&self, &self, db_conn: &Pool<Sqlite>) -> Option<Self>;
+    // async fn update(&self, db_conn: &Pool<Sqlite>);
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, TS)]
+#[derive(Debug, Serialize, Deserialize, Clone, TS, FromRow, Default)]
 #[ts(export)]
 #[serde(rename_all = "camelCase")]
 pub struct AudioBook {
@@ -16,7 +21,22 @@ pub struct AudioBook {
     pub title: Option<String>,
     pub created_at: String,
     pub updated_at: String,
-    pub is_loved: i8,
+    pub is_loved: bool,
+}
+
+impl AudioBook {
+    pub(crate) async fn delete_by_title(
+        &self,
+        title: &str,
+        db_conn: &Pool<Sqlite>,
+    ) -> Result<(), DbError> {
+        sqlx::query(r#"DELETE FROM audio_books WHERE title = ?"#)
+            .bind(title)
+            .execute(db_conn)
+            .await
+            .map_err(|err| DbError::QueryFailed)?;
+        Ok(())
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, TS)]
@@ -38,59 +58,14 @@ pub struct History {
 
 impl AudioBook {
     pub fn new(title: Option<String>) -> Self {
-        let now = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .as_secs()
-            .to_string();
-
         Self {
             identifier: uuid::Uuid::new_v4().to_string(),
             title,
-            created_at: now.clone(),
-            updated_at: now,
-            is_loved: 0,
+            created_at: Local::now().to_string(),
+            updated_at: Local::now().to_string(),
+            is_loved: false,
         }
     }
-
-    // pub async fn create(&self, conn: &tauri_plugin_sql::Connection) -> Result<(), DbError> {
-    //     conn.execute(
-    //         "INSERT INTO audio_books (identifier, title, created_at, updated_at, is_loved) VALUES (?, ?, ?, ?, ?)",
-    //         &[&self.identifier, &self.title, &self.created_at, &self.updated_at, &self.is_loved],
-    //     )
-    //     .await
-    //     .map_err(|e| DbError::Database(e.to_string()))?;
-    //     Ok(())
-    // }
-
-    // pub async fn find_by_id(conn: &tauri_plugin_sql::Connection, id: &str) -> Result<Self, DbError> {
-    //     let book = conn
-    //         .select_one::<Self>(
-    //             "SELECT * FROM audio_books WHERE identifier = ?",
-    //             &[id],
-    //         )
-    //         .await
-    //         .map_err(|e| DbError::Database(e.to_string()))?
-    //         .ok_or(DbError::NotFound)?;
-    //     Ok(book)
-    // }
-
-    // pub async fn update(&self, conn: &tauri_plugin_sql::Connection) -> Result<(), DbError> {
-    //     conn.execute(
-    //         "UPDATE audio_books SET title = ?, updated_at = ?, is_loved = ? WHERE identifier = ?",
-    //         &[&self.title, &self.updated_at, &self.is_loved, &self.identifier],
-    //     )
-    //     .await
-    //     .map_err(|e| DbError::Database(e.to_string()))?;
-    //     Ok(())
-    // }
-
-    // pub async fn delete(conn: &tauri_plugin_sql::Connection, id: &str) -> Result<(), DbError> {
-    //     conn.execute("DELETE FROM audio_books WHERE identifier = ?", &[id])
-    //         .await
-    //         .map_err(|e| DbError::Database(e.to_string()))?;
-    //     Ok(())
-    // }
 }
 
 impl Playlist {
@@ -101,45 +76,6 @@ impl Playlist {
             description,
         }
     }
-
-    // pub async fn create(&self, conn: &tauri_plugin_sql::Connection) -> Result<(), DbError> {
-    //     conn.execute(
-    //         "INSERT INTO playlist (identifier, name, description) VALUES (?, ?, ?)",
-    //         &[&self.identifier, &self.name, &self.description],
-    //     )
-    //     .await
-    //     .map_err(|e| DbError::Database(e.to_string()))?;
-    //     Ok(())
-    // }
-
-    // pub async fn find_by_id(conn: &tauri_plugin_sql::Connection, id: &str) -> Result<Self, DbError> {
-    //     let playlist = conn
-    //         .select_one::<Self>(
-    //             "SELECT * FROM playlist WHERE identifier = ?",
-    //             &[id],
-    //         )
-    //         .await
-    //         .map_err(|e| DbError::Database(e.to_string()))?
-    //         .ok_or(DbError::NotFound)?;
-    //     Ok(playlist)
-    // }
-
-    // pub async fn update(&self, conn: &tauri_plugin_sql::Connection) -> Result<(), DbError> {
-    //     conn.execute(
-    //         "UPDATE playlist SET name = ?, description = ? WHERE identifier = ?",
-    //         &[&self.name, &self.description, &self.identifier],
-    //     )
-    //     .await
-    //     .map_err(|e| DbError::Database(e.to_string()))?;
-    //     Ok(())
-    // }
-
-    // pub async fn delete(conn: &tauri_plugin_sql::Connection, id: &str) -> Result<(), DbError> {
-    //     conn.execute("DELETE FROM playlist WHERE identifier = ?", &[id])
-    //         .await
-    //         .map_err(|e| DbError::Database(e.to_string()))?;
-    //     Ok(())
-    // }
 }
 
 impl History {
@@ -149,75 +85,35 @@ impl History {
             audio_book_identifier,
         }
     }
-
-    // pub async fn create(&self, conn: &tauri_plugin_sql::Connection) -> Result<(), DbError> {
-    //     conn.execute(
-    //         "INSERT INTO history (identifier, audio_book_identifier) VALUES (?, ?)",
-    //         &[&self.identifier, &self.audio_book_identifier],
-    //     )
-    //     .await
-    //     .map_err(|e| DbError::Database(e.to_string()))?;
-    //     Ok(())
-    // }
-
-    // pub async fn find_by_id(conn: &tauri_plugin_sql::Connection, id: &str) -> Result<Self, DbError> {
-    //     let history = conn
-    //         .select_one::<Self>(
-    //             "SELECT * FROM history WHERE identifier = ?",
-    //             &[id],
-    //         )
-    //         .await
-    //         .map_err(|e| DbError::Database(e.to_string()))?
-    //         .ok_or(DbError::NotFound)?;
-    //     Ok(history)
-    // }
-
-    // pub async fn delete(conn: &tauri_plugin_sql::Connection, id: &str) -> Result<(), DbError> {
-    //     conn.execute("DELETE FROM history WHERE identifier = ?", &[id])
-    //         .await
-    //         .map_err(|e| DbError::Database(e.to_string()))?;
-    //     Ok(())
-    // }
-}
-
-impl ModelTrait for History {
-    async fn save(&self) {
-        todo!()
-    }
-
-    async fn find(&self) {
-        todo!()
-    }
-
-    async fn update(&self) {
-        todo!()
-    }
 }
 
 impl ModelTrait for AudioBook {
-    async fn save(&self) {
-        todo!()
+    async fn save(&self, db_conn: &Pool<Sqlite>) -> Result<(), DbError> {
+        sqlx::query(
+            r#"
+            INSERT INTO audio_books (identifier, title, created_at, updated_at, is_loved) VALUES (?, ?, ?, ?, ?)"#
+        )
+            .bind(self.identifier.to_owned())
+            .bind(self.title.to_owned())
+            .bind(self.created_at.to_owned())
+            .bind(self.updated_at.to_owned())
+            .bind(self.is_loved.to_owned())
+            .execute(db_conn)
+            .await
+            .map_err(|err| {
+                log::error!("{}", err.to_string());
+                DbError::QueryFailed
+            })?;
+        Ok(())
     }
 
-    async fn find(&self) {
-        todo!()
-    }
-
-    async fn update(&self) {
-        todo!()
-    }
-}
-
-impl ModelTrait for Playlist {
-    async fn save(&self) {
-        todo!()
-    }
-
-    async fn find(&self) {
-        todo!()
-    }
-
-    async fn update(&self) {
-        todo!()
+    async fn find_all(&self, db_conn: &Pool<Sqlite>) -> Result<Vec<Self>, DbError> {
+        sqlx::query_as::<_, AudioBook>(r#"SELECT * FROM audio_books"#)
+            .fetch_all(db_conn)
+            .await
+            .map_err(|err| {
+                log::error!("{}", err.to_string());
+                DbError::QueryFailed
+            })
     }
 }

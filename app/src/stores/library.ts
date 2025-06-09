@@ -3,12 +3,16 @@ import {defineStore} from "pinia";
 import {type AudioLibrary} from "../../src-tauri/bindings/AudioLibrary";
 import {AudioBook} from "../../src-tauri/bindings/AudioBook";
 
-//lib
-//playlists
-// settings
+
+interface State {
+    audioLibrary: AudioLibrary;
+    audioBooks: AudioBook[];
+    isProcessingPdf: boolean;
+
+}
 
 export const useAudioBookLibrary = defineStore("musicLibrary", {
-    state: () => ({
+    state: (): State => ({
         audioLibrary: {} as AudioLibrary,
         audioBooks: [] as AudioBook[],
         isProcessingPdf: false,

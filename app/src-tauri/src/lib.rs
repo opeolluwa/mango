@@ -107,6 +107,33 @@ ALTER TABLE playlist_new RENAME TO playlist;
 PRAGMA foreign_keys=on;
             "#,
         },
+        Migration {
+            version: 3,
+            description: "change_is_loved_to_boolean",
+            kind: MigrationKind::Up,
+            sql: r#"
+-- Step 1: Rename original table
+ALTER TABLE audio_books RENAME TO audio_books_old;
+
+-- Step 2: Create new table with the updated schema
+CREATE TABLE IF NOT EXISTS audio_books (
+    identifier TEXT PRIMARY KEY NOT NULL,
+    title      TEXT,
+    author     TEXT,
+    created_at TEXT,
+    updated_at TEXT,
+    is_loved   BOOLEAN DEFAULT 0
+);
+
+-- Step 3: Copy data over, mapping `is_loved_old` to `is_loved`
+INSERT INTO audio_books (identifier, title, created_at, updated_at, is_loved)
+SELECT identifier, title, created_at, updated_at, is_loved FROM audio_books_old;
+
+-- Step 4: Drop the old table
+DROP TABLE audio_books_old;
+
+            "#,
+        },
     ];
 
     tauri::Builder::default()
@@ -136,7 +163,7 @@ PRAGMA foreign_keys=on;
 
                 Ok(AppState {
                     current_audio_book: Mutex::new(None),
-                    db: Mutex::new(Some(pool)),
+                    db: Arc::new(pool),
                 })
             });
 
@@ -157,13 +184,6 @@ PRAGMA foreign_keys=on;
         .plugin(tauri_plugin_upload::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_dialog::init())
-        // .setup(|app| {
-        //     #[cfg(desktop)]
-        //     let _ = app
-        //         .handle()
-        //         .plugin(tauri_plugin_single_instance::init(|_app, _args, _cwd| {}));
-        //     Ok(())
-        // })
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             commands::synthesize_audio,
@@ -173,7 +193,8 @@ PRAGMA foreign_keys=on;
             commands::set_audio_book_volume,
             commands::seek_audio_book_to_position,
             commands::set_audio_book_playback_speed,
-            commands::resume_playing_audio_book
+            commands::resume_playing_audio_book,
+            commands::sync_playlist
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
