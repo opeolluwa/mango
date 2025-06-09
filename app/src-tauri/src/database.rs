@@ -2,9 +2,10 @@ use crate::error::DbError;
 use chrono::Local;
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, Pool, Sqlite};
+use std::sync::Arc;
 use ts_rs::TS;
 
-pub trait ModelTrait : Sized + Sync + Send{
+pub trait ModelTrait: Sized + Sync + Send {
     async fn save(&self, db_conn: &Pool<Sqlite>) -> Result<(), DbError>;
     async fn find_all(&self, db_conn: &Pool<Sqlite>) -> Result<Vec<Self>, DbError>;
 
@@ -20,7 +21,22 @@ pub struct AudioBook {
     pub title: Option<String>,
     pub created_at: String,
     pub updated_at: String,
-    pub is_loved: i8,
+    pub is_loved: bool,
+}
+
+impl AudioBook {
+    pub(crate) async fn delete_by_title(
+        &self,
+        title: &str,
+        db_conn: &Pool<Sqlite>,
+    ) -> Result<(), DbError> {
+        sqlx::query(r#"DELETE FROM audio_books WHERE title = ?"#)
+            .bind(title)
+            .execute(db_conn)
+            .await
+            .map_err(|err| DbError::QueryFailed)?;
+        Ok(())
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, TS)]
@@ -47,7 +63,7 @@ impl AudioBook {
             title,
             created_at: Local::now().to_string(),
             updated_at: Local::now().to_string(),
-            is_loved: 0,
+            is_loved: false,
         }
     }
 }
@@ -72,32 +88,32 @@ impl History {
 }
 
 impl ModelTrait for AudioBook {
-async fn save(&self, db_conn: &Pool<Sqlite>) -> Result<(), DbError> {
-    sqlx::query(
-        r#"
+    async fn save(&self, db_conn: &Pool<Sqlite>) -> Result<(), DbError> {
+        sqlx::query(
+            r#"
             INSERT INTO audio_books (identifier, title, created_at, updated_at, is_loved) VALUES (?, ?, ?, ?, ?)"#
-    )
-        .bind(self.identifier.to_owned())
-        .bind(self.title.to_owned())
-        .bind(self.created_at.to_owned())
-        .bind(self.updated_at.to_owned())
-        .bind(self.is_loved.to_owned())
-        .execute(db_conn)
-        .await
-        .map_err(|err| {
-            log::error!("{}", err.to_string());
-            DbError::QueryFailed
-        })?;
-    Ok(())
-}
+        )
+            .bind(self.identifier.to_owned())
+            .bind(self.title.to_owned())
+            .bind(self.created_at.to_owned())
+            .bind(self.updated_at.to_owned())
+            .bind(self.is_loved.to_owned())
+            .execute(db_conn)
+            .await
+            .map_err(|err| {
+                log::error!("{}", err.to_string());
+                DbError::QueryFailed
+            })?;
+        Ok(())
+    }
 
-async fn find_all(&self, db_conn: &Pool<Sqlite>) -> Result<Vec<Self>, DbError> {
-    sqlx::query_as::<_, AudioBook>(r#"SELECT * FROM audio_books"#)
-        .fetch_all(db_conn)
-        .await
-        .map_err(|err| {
-            log::error!("{}", err.to_string());
-            DbError::QueryFailed
-        })
-}
+    async fn find_all(&self, db_conn: &Pool<Sqlite>) -> Result<Vec<Self>, DbError> {
+        sqlx::query_as::<_, AudioBook>(r#"SELECT * FROM audio_books"#)
+            .fetch_all(db_conn)
+            .await
+            .map_err(|err| {
+                log::error!("{}", err.to_string());
+                DbError::QueryFailed
+            })
+    }
 }

@@ -13,7 +13,8 @@ use ts_rs::TS;
 use walkdir::WalkDir;
 
 // use crate::adapters::AudioBook;
-use crate::database::ModelTrait;
+use crate::adapters::AudioLibrary;
+use crate::database::{AudioBook, ModelTrait};
 use crate::error::CommandError;
 use crate::state::AppState;
 use futures::future::join_all;
@@ -24,7 +25,6 @@ use std::fs::File;
 use std::io;
 use std::io::BufReader;
 use std::sync::Arc;
-use crate::adapters::AudioLibrary;
 
 #[tauri::command]
 pub async fn synthesize_audio<R: Runtime>(
@@ -110,8 +110,6 @@ pub async fn sync_playlist(state: State<'_, Arc<AppState>>) -> Result<(), Comman
         })
         .collect::<Vec<String>>();
 
-    println!("{:?}", local_audio_books);
-    
     let pool = state.db.clone();
     let handler = database::AudioBook::default();
     let cached_audio_book = handler.find_all(&pool).await?;
@@ -120,8 +118,6 @@ pub async fn sync_playlist(state: State<'_, Arc<AppState>>) -> Result<(), Comman
         .into_iter()
         .map(|book| book.title.unwrap_or_default())
         .collect::<Vec<String>>();
-
-    println!("{:?}", cached_audio_book_names);
 
     for file_name in &local_audio_books {
         if !cached_audio_book_names.contains(file_name) {
@@ -133,13 +129,19 @@ pub async fn sync_playlist(state: State<'_, Arc<AppState>>) -> Result<(), Comman
             }
         }
     }
-    
+
+    for file_name in &cached_audio_book_names {
+        if !local_audio_books.contains(file_name) {
+            if let Err(e) = AudioBook::default().delete_by_title(file_name, &pool).await {
+                eprintln!("Error deleting book: {}", e);
+            }
+        }
+    }
+
     Ok(())
 }
 #[tauri::command]
-pub async fn read_library(
-    state: State<'_, Arc<AppState>>,
-) -> Result<AudioLibrary, CommandError> {
+pub async fn read_library(state: State<'_, Arc<AppState>>) -> Result<AudioLibrary, CommandError> {
     sync_playlist(state.clone()).await?;
 
     let pool = state.db.clone();
