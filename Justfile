@@ -117,12 +117,12 @@ watch target:
 [working-directory: 'lame']
 @build-lame:
     #!/bin/bash
-    if [ "{{os()}}" = "windows" ]; then \
-        echo "Building for Windows in $PWD"
-        mkdir -p "../app/src-tauri/sidecar/lame/bin"
-        mkdir -p "../app/src-tauri/sidecar/binaries"
-        cp "./archive/lame.exe" "../app/src-tauri/sidecar/lame/bin/"
-    fi
+    # if [ "{{os()}}" = "windows" ]; then \
+    #     echo "Building for Windows in $PWD"
+    #     mkdir -p "../app/src-tauri/sidecar/lame/bin"
+    #     mkdir -p "../app/src-tauri/sidecar/binaries"
+    #     cp "./archive/lame.exe" "../app/src-tauri/sidecar/lame/bin/"
+    # fi
 
     if [ ! -f {{LAME_PATH}} ]; then \
         ./configure --disable-shared --enable-static --enable-nasm --prefix="$(pwd)/../app/src-tauri/sidecar/lame" 
@@ -139,7 +139,7 @@ watch target:
     cd app && npm run build && cd ..
     mkdir -p "app/src-tauri/sidecar"
     mkdir -p "app/src-tauri/sidecar/binaries"
-    just build-lame
+    # just build-lame
 
     if [ "{{HOST_TRIPLE}}" = "x86_64-pc-windows-gnu" ]; then
         cp "{{LAME_PATH}}.exe" "{{SIDECAR_PATH}}/lame.exe-{{HOST_TRIPLE}}"
