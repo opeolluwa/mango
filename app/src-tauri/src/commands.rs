@@ -1,7 +1,6 @@
 use crate::{database, LAME_SIDECAR, MEDIA_DIR, MODEL_CONFIG_FILE};
 use libaudify::core::Audify;
 use libaudify::error::AudifyError;
-use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 use std::thread;
 use tauri::path::BaseDirectory;
@@ -9,7 +8,6 @@ use tauri::{AppHandle, Emitter, Manager};
 use tauri::{Runtime, State};
 use tauri_plugin_shell::process::CommandEvent;
 use tauri_plugin_shell::ShellExt;
-use ts_rs::TS;
 use walkdir::WalkDir;
 
 // use crate::adapters::AudioBook;
@@ -17,8 +15,6 @@ use crate::adapters::AudioLibrary;
 use crate::database::{AudioBook, ModelTrait};
 use crate::error::CommandError;
 use crate::state::AppState;
-use futures::future::join_all;
-use rayon::prelude::*;
 use rodio::{Decoder, OutputStream, Sink};
 use std::fs;
 use std::fs::File;
@@ -74,7 +70,7 @@ pub async fn synthesize_audio<R: Runtime>(
     delete_file_if_exists(&audio_output).unwrap();
 
     // save the file to the database
-    let book = database::AudioBook::new(Some(file_name.clone()));
+    let book = database::AudioBook::new(file_name.clone());
     let pool = state.db.clone();
     book.save(&pool).await?;
 
@@ -93,7 +89,7 @@ pub async fn synthesize_audio<R: Runtime>(
 
 #[tauri::command]
 pub async fn sync_playlist(state: State<'_, Arc<AppState>>) -> Result<(), CommandError> {
-    let local_audio_books = WalkDir::new(&format!("{}/", MEDIA_DIR.as_str()))
+    let local_audio_books = WalkDir::new(format!("{}/", MEDIA_DIR.as_str()))
         .into_iter()
         .filter_map(|entry| entry.ok())
         .filter(|entry| entry.path().is_file())
@@ -116,12 +112,12 @@ pub async fn sync_playlist(state: State<'_, Arc<AppState>>) -> Result<(), Comman
 
     let cached_audio_book_names = cached_audio_book
         .into_iter()
-        .map(|book| book.title.unwrap_or_default())
+        .map(|book| book.title)
         .collect::<Vec<String>>();
 
     for file_name in &local_audio_books {
         if !cached_audio_book_names.contains(file_name) {
-            if let Err(e) = database::AudioBook::new(Some(file_name.clone()))
+            if let Err(e) = database::AudioBook::new(file_name.clone())
                 .save(&pool)
                 .await
             {

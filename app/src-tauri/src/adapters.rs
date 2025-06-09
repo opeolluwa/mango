@@ -1,6 +1,6 @@
+use crate::database::AudioBook;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
-use crate::database::AudioBook;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -9,7 +9,6 @@ use crate::database::AudioBook;
 pub struct AudioLibrary {
     audio_books: Vec<AudioBook>,
 }
-
 
 impl AudioLibrary {
     pub fn new(books: Vec<AudioBook>) -> Self {
