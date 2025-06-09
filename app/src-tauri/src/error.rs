@@ -37,6 +37,7 @@ impl From<String> for CommandError {
     }
 }
 
+#[allow(unused)]
 #[derive(Debug, Error)]
 pub enum DbError {
     #[error("Database error: {0}")]

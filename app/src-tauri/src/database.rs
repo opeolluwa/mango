@@ -2,15 +2,11 @@ use crate::error::DbError;
 use chrono::Local;
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, Pool, Sqlite};
-use std::sync::Arc;
 use ts_rs::TS;
 
 pub trait ModelTrait: Sized + Sync + Send {
     async fn save(&self, db_conn: &Pool<Sqlite>) -> Result<(), DbError>;
     async fn find_all(&self, db_conn: &Pool<Sqlite>) -> Result<Vec<Self>, DbError>;
-
-    // async fn find(&self, &self, db_conn: &Pool<Sqlite>) -> Option<Self>;
-    // async fn update(&self, db_conn: &Pool<Sqlite>);
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, TS, FromRow, Default)]
@@ -18,7 +14,7 @@ pub trait ModelTrait: Sized + Sync + Send {
 #[serde(rename_all = "camelCase")]
 pub struct AudioBook {
     pub identifier: String,
-    pub title: Option<String>,
+    pub title: String,
     pub created_at: String,
     pub updated_at: String,
     pub is_loved: bool,
@@ -34,7 +30,7 @@ impl AudioBook {
             .bind(title)
             .execute(db_conn)
             .await
-            .map_err(|err| DbError::QueryFailed)?;
+            .map_err(|_err| DbError::QueryFailed)?;
         Ok(())
     }
 }
@@ -57,7 +53,7 @@ pub struct History {
 }
 
 impl AudioBook {
-    pub fn new(title: Option<String>) -> Self {
+    pub fn new(title: String) -> Self {
         Self {
             identifier: uuid::Uuid::new_v4().to_string(),
             title,
@@ -68,6 +64,7 @@ impl AudioBook {
     }
 }
 
+#[allow(unused)]
 impl Playlist {
     pub fn new(name: Option<String>, description: Option<String>) -> Self {
         Self {
@@ -77,7 +74,7 @@ impl Playlist {
         }
     }
 }
-
+#[allow(unused)]
 impl History {
     pub fn new(audio_book_identifier: String) -> Self {
         Self {
@@ -101,7 +98,7 @@ impl ModelTrait for AudioBook {
             .execute(db_conn)
             .await
             .map_err(|err| {
-                log::error!("{}", err.to_string());
+                log::error!("{}", err);
                 DbError::QueryFailed
             })?;
         Ok(())
@@ -112,7 +109,7 @@ impl ModelTrait for AudioBook {
             .fetch_all(db_conn)
             .await
             .map_err(|err| {
-                log::error!("{}", err.to_string());
+                log::error!("{}", err);
                 DbError::QueryFailed
             })
     }

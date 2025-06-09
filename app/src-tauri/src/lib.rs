@@ -1,6 +1,5 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 use crate::state::AppState;
-use dirs;
 use lazy_static::lazy_static;
 use sqlx::sqlite::SqliteConnectOptions;
 use sqlx::SqlitePool;
