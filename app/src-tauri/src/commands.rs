@@ -10,8 +10,12 @@ use tauri_plugin_shell::process::CommandEvent;
 use tauri_plugin_shell::ShellExt;
 use walkdir::WalkDir;
 
-// use crate::adapters::AudioBook;
 use crate::adapters::AudioLibrary;
+use crate::adapters::AudioSynthesisEvent;
+use crate::adapters::CurrentAudioMetadata;
+use crate::adapters::AUDIO_PROCESSING_EVENT;
+use crate::adapters::CURRENTLY_PLAYING_EVENT;
+use crate::adapters::FINISHED_AUDIO_PROCESSING_EVENT;
 use crate::database::{AudioBook, ModelTrait};
 use crate::error::CommandError;
 use crate::state::AppState;
@@ -49,15 +53,15 @@ pub async fn synthesize_audio<R: Runtime>(
         .unwrap()
         .to_string();
 
-    // app_handle
-    //     .emit(
-    //         "processing-audio",
-    //         AudioSynthesisEvent {
-    //             file_name: file_name.clone(),
-    //             ..Default::default()
-    //         },
-    //     )
-    //     .unwrap();
+    app_handle
+        .emit(
+            AUDIO_PROCESSING_EVENT,
+            AudioSynthesisEvent {
+                file_name: file_name.clone(),
+                ..Default::default()
+            },
+        )
+        .unwrap();
 
     //obtain the wav file
     let audio_output = format!("{}/{}.wav", MEDIA_DIR.as_str(), file_name);
@@ -74,15 +78,15 @@ pub async fn synthesize_audio<R: Runtime>(
     let pool = state.db.clone();
     book.save(&pool).await?;
 
-    // app_handle
-    //     .emit(
-    //         "finished-processing-audio",
-    //         AudioSynthesisEvent {
-    //             file_name,
-    //             audio_src: audio_output,
-    //         },
-    //     )
-    //     .unwrap();
+    app_handle
+        .emit(
+            FINISHED_AUDIO_PROCESSING_EVENT,
+            AudioSynthesisEvent {
+                file_name,
+                audio_src: audio_output,
+            },
+        )
+        .unwrap();
 
     Ok(())
 }
@@ -148,10 +152,10 @@ pub async fn read_library(state: State<'_, Arc<AppState>>) -> Result<AudioLibrar
 }
 
 #[tauri::command]
-//todo: use the primary key from the database
 pub async fn play_audio_book(
     book_title: String,
     state: State<'_, Arc<AppState>>,
+    app_handle: AppHandle,
 ) -> Result<(), CommandError> {
     log::info!("playing {}", book_title);
     let audio_book_canonical_path = format!("{}/{}", MEDIA_DIR.as_str(), book_title);
@@ -192,21 +196,45 @@ pub async fn play_audio_book(
         Ok(())
     });
 
+    app_handle
+        .emit(
+            CURRENTLY_PLAYING_EVENT,
+            CurrentAudioMetadata {
+                ..Default::default()
+            },
+        )
+        .unwrap();
+
     Ok(())
 }
 
 #[tauri::command]
-pub async fn pause_audio_book(state: State<'_, Arc<AppState>>) -> Result<(), String> {
+pub async fn pause_audio_book(
+    state: State<'_, Arc<AppState>>,
+    app_handle: AppHandle,
+) -> Result<(), String> {
     let current_audio_book = state.current_audio_book.lock().unwrap();
     if let Some(ref audio_book) = *current_audio_book {
         audio_book.pause();
     }
 
+    app_handle
+        .emit(
+            CURRENTLY_PLAYING_EVENT,
+            CurrentAudioMetadata {
+                ..Default::default()
+            },
+        )
+        .unwrap();
+
     Ok(())
 }
 
 #[tauri::command]
-pub async fn resume_playing_audio_book(state: State<'_, Arc<AppState>>) -> Result<(), String> {
+pub async fn resume_playing_audio_book(
+    state: State<'_, Arc<AppState>>,
+    app_handle: AppHandle,
+) -> Result<(), String> {
     println!("Resuming audio book");
     let current_audio_book = state.current_audio_book.lock().unwrap();
     if let Some(ref audio_book) = *current_audio_book {
@@ -222,6 +250,15 @@ pub async fn resume_playing_audio_book(state: State<'_, Arc<AppState>>) -> Resul
         }
     }
 
+    app_handle
+        .emit(
+            CURRENTLY_PLAYING_EVENT,
+            CurrentAudioMetadata {
+                ..Default::default()
+            },
+        )
+        .unwrap();
+
     Ok(())
 }
 
@@ -229,21 +266,48 @@ pub async fn resume_playing_audio_book(state: State<'_, Arc<AppState>>) -> Resul
 pub async fn set_audio_book_volume(
     volume: f32,
     state: State<'_, Arc<AppState>>,
+    app_handle: AppHandle,
 ) -> Result<(), String> {
     let current_audio_book = state.current_audio_book.lock().unwrap();
     if let Some(ref audio_book) = *current_audio_book {
         audio_book.set_volume(volume);
     }
+
+    app_handle
+        .emit(
+            CURRENTLY_PLAYING_EVENT,
+            CurrentAudioMetadata {
+                ..Default::default()
+            },
+        )
+        .unwrap();
+
     Ok(())
 }
 
 #[tauri::command]
-pub async fn seek_audio_book_to_position() -> Result<(), String> {
+pub async fn seek_audio_book_to_position(app_handle: AppHandle) -> Result<(), String> {
+    app_handle
+        .emit(
+            CURRENTLY_PLAYING_EVENT,
+            CurrentAudioMetadata {
+                ..Default::default()
+            },
+        )
+        .unwrap();
     todo!()
 }
 
 #[tauri::command]
-pub async fn set_audio_book_playback_speed() -> Result<(), String> {
+pub async fn set_audio_book_playback_speed(app_handle: AppHandle) -> Result<(), String> {
+    app_handle
+        .emit(
+            CURRENTLY_PLAYING_EVENT,
+            CurrentAudioMetadata {
+                ..Default::default()
+            },
+        )
+        .unwrap();
     todo!()
 }
 

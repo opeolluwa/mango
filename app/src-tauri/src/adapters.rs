@@ -2,6 +2,32 @@ use crate::database::AudioBook;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
+pub const AUDIO_PROCESSING_EVENT: &str = "processing-audio";
+pub const FINISHED_AUDIO_PROCESSING_EVENT: &str = "finished-processing-audio";
+pub const CURRENTLY_PLAYING_EVENT: &str = "currently-playing-audio";
+
+
+#[derive(Debug, Serialize, Deserialize, Clone, TS)]
+#[serde(rename_all = "kebab-case")]
+#[ts(export)]
+pub enum Events {
+    #[serde(rename = "processing-audio")]
+    ProcessingAudio,
+    #[serde(rename = "finished-processing-audio")]
+    FinishedProcessingAudio,
+    #[serde(rename = "currently-playing-audio")]
+    CurrentlyPlayingAudio,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+#[serde(rename_all = "camelCase")]
+#[derive(TS)]
+#[ts(export)]
+pub struct CurrentAudioMetadata {
+    pub volume: f32,
+    pub speed: f32,
+    pub duration: u32,
+}
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[derive(TS)]
@@ -23,28 +49,3 @@ pub struct AudioSynthesisEvent {
     pub file_name: String,
     pub audio_src: String,
 }
-
-// #[derive(Debug, Serialize, Deserialize, Clone)]
-// #[serde(rename_all = "camelCase")]
-// #[derive(TS)]
-// #[ts(export)]
-// pub struct AudioBook {
-//     pub file_name: String,
-//     pub play_back_duration: u64,
-//     pub audio_src: String,
-// }
-//
-// impl AudioBook {
-//     pub fn from_path(path: &Path) -> Option<Self> {
-//         let path_buf = path.canonicalize().ok()?;
-//         let file_name = path_buf.file_name()?.to_str()?.to_string();
-//
-//         let display_name = file_name.strip_suffix(".wav").unwrap_or(&file_name);
-//
-//         Some(Self {
-//             file_name: display_name.to_string(),
-//             play_back_duration: 45, // Consider computing real duration later
-//             audio_src: path.canonicalize().ok()?.to_str().unwrap().to_string(),
-//         })
-//     }
-// }
