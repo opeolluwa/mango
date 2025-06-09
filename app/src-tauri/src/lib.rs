@@ -136,7 +136,7 @@ PRAGMA foreign_keys=on;
 
                 Ok(AppState {
                     current_audio_book: Mutex::new(None),
-                    db: Mutex::new(Some(pool)),
+                    db: Arc::new(pool),
                 })
             });
 
@@ -173,7 +173,8 @@ PRAGMA foreign_keys=on;
             commands::set_audio_book_volume,
             commands::seek_audio_book_to_position,
             commands::set_audio_book_playback_speed,
-            commands::resume_playing_audio_book
+            commands::resume_playing_audio_book,
+            commands::sync_playlist
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

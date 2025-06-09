@@ -1,4 +1,4 @@
-use crate::{LAME_SIDECAR, MEDIA_DIR, MODEL_CONFIG_FILE};
+use crate::{database, LAME_SIDECAR, MEDIA_DIR, MODEL_CONFIG_FILE};
 use libaudify::core::Audify;
 use libaudify::error::AudifyError;
 use serde::{Deserialize, Serialize};
@@ -12,38 +12,27 @@ use tauri_plugin_shell::ShellExt;
 use ts_rs::TS;
 use walkdir::WalkDir;
 
+// use crate::adapters::AudioBook;
+use crate::database::ModelTrait;
+use crate::error::CommandError;
 use crate::state::AppState;
+use futures::future::join_all;
+use rayon::prelude::*;
 use rodio::{Decoder, OutputStream, Sink};
 use std::fs;
 use std::fs::File;
 use std::io;
 use std::io::BufReader;
 use std::sync::Arc;
-use crate::adapters::AudioBook;
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-#[serde(rename_all = "camelCase")]
-#[derive(TS)]
-#[ts(export)]
-pub struct AudioLibrary {
-    pub audio_books: Vec<AudioBook>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone, Default)]
-#[serde(rename_all = "camelCase")]
-#[derive(TS)]
-#[ts(export)]
-pub struct AudioSynthesisEvent {
-    pub file_name: String,
-    pub audio_src: String,
-}
+use crate::adapters::AudioLibrary;
 
 #[tauri::command]
 pub async fn synthesize_audio<R: Runtime>(
     pdf_path: &str,
     app_handle: AppHandle,
     _window: tauri::Window<R>,
-) -> Result<(), AudifyError> {
+    state: State<'_, Arc<AppState>>,
+) -> Result<(), CommandError> {
     println!("Received PDF path: {pdf_path}");
 
     let config_path = app_handle
@@ -64,15 +53,15 @@ pub async fn synthesize_audio<R: Runtime>(
         .unwrap()
         .to_string();
 
-    app_handle
-        .emit(
-            "processing-audio",
-            AudioSynthesisEvent {
-                file_name: file_name.clone(),
-                ..Default::default()
-            },
-        )
-        .unwrap();
+    // app_handle
+    //     .emit(
+    //         "processing-audio",
+    //         AudioSynthesisEvent {
+    //             file_name: file_name.clone(),
+    //             ..Default::default()
+    //         },
+    //     )
+    //     .unwrap();
 
     //obtain the wav file
     let audio_output = format!("{}/{}.wav", MEDIA_DIR.as_str(), file_name);
@@ -84,36 +73,80 @@ pub async fn synthesize_audio<R: Runtime>(
     transcode_wav_to_mp3(app_handle.clone(), &audio_output).await;
     delete_file_if_exists(&audio_output).unwrap();
 
-    app_handle
-        .emit(
-            "finished-processing-audio",
-            AudioSynthesisEvent {
-                file_name,
-                audio_src: audio_output,
-            },
-        )
-        .unwrap();
+    // save the file to the database
+    let book = database::AudioBook::new(Some(file_name.clone()));
+    let pool = state.db.clone();
+    book.save(&pool).await?;
+
+    // app_handle
+    //     .emit(
+    //         "finished-processing-audio",
+    //         AudioSynthesisEvent {
+    //             file_name,
+    //             audio_src: audio_output,
+    //         },
+    //     )
+    //     .unwrap();
 
     Ok(())
 }
 
 #[tauri::command]
-pub async fn sync_playlist(state: State<'_, Arc<AppState>>) -> Result<(), String> {
-    todo!()
-}
-#[tauri::command]
-pub fn read_library() -> AudioLibrary {
-    let mut audio_books = WalkDir::new(&format!("{}/", MEDIA_DIR.as_str()))
+pub async fn sync_playlist(state: State<'_, Arc<AppState>>) -> Result<(), CommandError> {
+    let local_audio_books = WalkDir::new(&format!("{}/", MEDIA_DIR.as_str()))
         .into_iter()
         .filter_map(|entry| entry.ok())
         .filter(|entry| entry.path().is_file())
         .filter(|entry| entry.path().extension().unwrap_or_default() == "mp3")
-        .filter_map(|entry| AudioBook::from_path(entry.path()))
-        .collect::<Vec<AudioBook>>();
+        .filter_map(|entry| {
+            let file_name = entry
+                .path()
+                .file_name()
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .to_string();
+            Option::from(file_name)
+        })
+        .collect::<Vec<String>>();
 
-    audio_books.remove(0);
-    let library = AudioLibrary { audio_books };
-    library
+    println!("{:?}", local_audio_books);
+    
+    let pool = state.db.clone();
+    let handler = database::AudioBook::default();
+    let cached_audio_book = handler.find_all(&pool).await?;
+
+    let cached_audio_book_names = cached_audio_book
+        .into_iter()
+        .map(|book| book.title.unwrap_or_default())
+        .collect::<Vec<String>>();
+
+    println!("{:?}", cached_audio_book_names);
+
+    for file_name in &local_audio_books {
+        if !cached_audio_book_names.contains(file_name) {
+            if let Err(e) = database::AudioBook::new(Some(file_name.clone()))
+                .save(&pool)
+                .await
+            {
+                eprintln!("Error saving book: {}", e);
+            }
+        }
+    }
+    
+    Ok(())
+}
+#[tauri::command]
+pub async fn read_library(
+    state: State<'_, Arc<AppState>>,
+) -> Result<AudioLibrary, CommandError> {
+    sync_playlist(state.clone()).await?;
+
+    let pool = state.db.clone();
+    let handler = database::AudioBook::default();
+    let cached_audio_book = handler.find_all(&pool).await?;
+
+    Ok(AudioLibrary::new(cached_audio_book))
 }
 
 #[tauri::command]
@@ -121,8 +154,8 @@ pub fn read_library() -> AudioLibrary {
 pub async fn play_audio_book(
     book_title: String,
     state: State<'_, Arc<AppState>>,
-) -> Result<(), String> {
-    println!("plaing {}", book_title);
+) -> Result<(), CommandError> {
+    log::info!("playing {}", book_title);
     let audio_book_canonical_path = format!("{}/{}", MEDIA_DIR.as_str(), book_title);
     let state = state.inner().clone();
 
@@ -130,38 +163,22 @@ pub async fn play_audio_book(
     thread::spawn(move || {
         let file = match File::open(audio_book_canonical_path) {
             Ok(file) => file,
-            Err(err_message) => {
-                //TODO: emit the error to the FE
-                eprintln!("Error opening file: {}", err_message);
-                return;
-            }
+            Err(err) => return Err(CommandError::from(err.to_string())),
         };
 
         let (_stream, stream_handle) = match OutputStream::try_default() {
             Ok(output) => output,
-            Err(err_message) => {
-                //TODO: emit the error to the FE
-                eprintln!("Error initializing output stream {}", err_message);
-                return;
-            }
+            Err(err) => return Err(CommandError::from(err.to_string())),
         };
 
         let sink = match Sink::try_new(&stream_handle) {
             Ok(sink) => Arc::new(sink),
-            Err(err_message) => {
-                //TODO: emit the error to the FE
-                eprintln!("Error creating sink {}", err_message);
-                return;
-            }
+            Err(err) => return Err(CommandError::from(err.to_string())),
         };
 
         match Decoder::new(BufReader::new(file)) {
             Ok(source) => sink.append(source),
-            Err(err_message) => {
-                //TODO: emit the error to the FE
-                eprintln!("Error decoding audio file: {}", err_message);
-                return;
-            }
+            Err(err) => return Err(CommandError::from(err.to_string())),
         }
 
         {
@@ -172,16 +189,13 @@ pub async fn play_audio_book(
             *current_audio_book = Some(sink.clone());
         }
 
-        //todo: use mutable state
         sink.set_volume(1.0);
         sink.sleep_until_end();
+        Ok(())
     });
 
     Ok(())
 }
-
-
-
 
 #[tauri::command]
 pub async fn pause_audio_book(state: State<'_, Arc<AppState>>) -> Result<(), String> {

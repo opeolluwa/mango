@@ -15,17 +15,19 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 
 [dependencies]
 anyhow = "1.0.98"
-chrono = "0.4.41"
+chrono = { version = "0.4.41", features = ["serde"] }
 dirs = "6.0.0"
+futures = "0.3.31"
 lazy_static = "1.5.0"
 libaudify = { path = "../../lib" }
+log = "0.4.27"
 rayon = "1.10.0"
 rodio = "0.20.1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 sqlx = { version = "0.8.6", features = ["sqlite", "tls-rustls"] }
 
-tauri = { version = "2", features = [] }
+tauri = { version = "2", features = ["tracing"] }
 tauri-plugin-dialog = "2"
 tauri-plugin-fs = "2"
 tauri-plugin-opener = "2"
