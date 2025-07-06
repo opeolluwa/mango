@@ -1,8 +1,18 @@
 #!/bin/sh
 
-NDK_ROOT=/Users/lanshon/Runtime/Android/android-sdk-macosx/ndk-bundle
+export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export NDK_VERSION=$(ls -1 "$ANDROID_HOME/ndk" | tail -n 1)
+export NDK_HOME="$ANDROID_HOME/ndk/$NDK_VERSION"
 
-ANDROID_API_VERSION=15
+# Detect the correct platform (darwin-x86_64 or darwin-arm64)
+PLATFORM=$(ls "$NDK_HOME/toolchains/llvm/prebuilt/" | head -n 1)
+
+
+# NDK_ROOT=/Users/lanshon/Runtime/Android/android-sdk-macosx/ndk-bundle
+NDK_ROOT=$NDK_HOME
+
+ANDROID_API_VERSION=21
 NDK_TOOLCHAIN_ABI_VERSION=4.8
 
 ABIS="armeabi armeabi-v7a arm64-v8a x86 x86_64 mips mips64"
@@ -19,7 +29,7 @@ LDFLAGS="${LDFLAGS} -L${SYSROOT}/usr/lib -L${TOOLCHAINS}/lib"
 CWD=`pwd`
 
 # directories
-SOURCE="lame"
+SOURCE="../../lame"
 FAT="fat-lame"
 
 SCRATCH="scratch-lame"

@@ -60,6 +60,7 @@ SIDECAR_PATH :="src-tauri/sidecar/binaries"
 
         export ORT_LIB_LOCATION=../onnxruntime/build/Android/Debug
 
+        export ESPEAK_BUILD_SHARED_LIBS=true
         npm run tauri android dev 
     elif [ {{target}} = "ios" ]; then \
         npm tauri ios dev 

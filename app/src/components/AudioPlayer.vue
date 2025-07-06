@@ -1,8 +1,8 @@
 <template>
   <footer
-    class="fixed bg-app-dark border-t border-t-gray-50/10 w-screen min-h-12 bottom-0 parent-element py-3 text-small flex items-center justify-between z-5000"
+    class="fixed bg-app-dark border-t-gray-100/10 w-screen min-h-12 bottom-0 parent-element py-3 text-small items-center gap-y-1 justify-between z-5000 flex flex-col"
   >
-    <div class="flex gap-x-4 xs:hidden">
+    <div class="gap-x-4 hidden lg:flex">
       <img
         src="../assets/cover.jpg"
         class="w-10 h-10 rounded col-span-1"
@@ -17,6 +17,7 @@
         </h6>
       </div>
     </div>
+
     <div class="flex gap-x-4 items-center">
       <Icon
         icon="fluent:previous-48-filled"
@@ -55,18 +56,19 @@
       />
       <Icon
         icon="gravity-ui:heart-fill"
-        class="icon text-app-red"
+        class="icon text-app-red hidden"
         v-show="isLoved"
         @click="toggledIsLoved"
       />
       <Icon
         icon="gravity-ui:heart"
-        class="icon text-gray-500"
+        class="icon text-gray-500 hidden"
         v-show="!isLoved"
         @click="toggledIsLoved"
       />
     </div>
-    <div class="flex w-[40%] items-center gap-x-2">
+
+    <div class="flex w-full items-center gap-x-2">
       <div class="text-[12px] text-gray-400">
         {{ formatTime(currentTime) }}
       </div>
@@ -79,7 +81,7 @@
       </div>
     </div>
 
-    <div class="flex w-[10%] items-center gap-x-2">
+    <div class="flex w-[10%] items-center gap-x-2 hidden">
       <Icon icon="fluent-mdl2:volume-3" class="icon" />
       <ProgressBar class="w-4/5" :progress="volume * 100 || 0" />
     </div>

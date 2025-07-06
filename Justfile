@@ -53,6 +53,8 @@ install-dependencies:
     @echo "Installing dependencies"
     cargo install --git https://github.com/cpg314/cargo-group-imports
     cargo install cargo-sort
+    brew install coreutils gnu-sed
+
 
 #>> Test Commands
 [working-directory: 'lib']
