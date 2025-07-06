@@ -136,54 +136,54 @@ DROP TABLE audio_books_old;
     ];
 
     tauri::Builder::default()
-        .setup(|app| {
-            #[cfg(desktop)]
-            {
-                let _ = app
-                    .handle()
-                    .plugin(tauri_plugin_single_instance::init(|_app, _args, _cwd| {}));
-            }
+        // .setup(|app| {
+        //     #[cfg(desktop)]
+        //     {
+        //         let _ = app
+        //             .handle()
+        //             .plugin(tauri_plugin_single_instance::init(|_app, _args, _cwd| {}));
+        //     }
 
-            // Extract app path synchronously BEFORE entering async block
-            let app_data_dir = app.path().app_data_dir().unwrap();
-            std::fs::create_dir_all(&app_data_dir)?;
+        //     // Extract app path synchronously BEFORE entering async block
+        //     let app_data_dir = app.path().app_data_dir().unwrap();
+        //     std::fs::create_dir_all(&app_data_dir)?;
 
-            let db_path = app_data_dir.join(DATABASE_PATH);
+        //     let db_path = app_data_dir.join(DATABASE_PATH);
 
-            // Do the async part in block_on
-            let app_state_result = tauri::async_runtime::block_on(async {
-                let connection_options = SqliteConnectOptions::new()
-                    .filename(db_path)
-                    .create_if_missing(true);
+        //     // Do the async part in block_on
+        //     let app_state_result = tauri::async_runtime::block_on(async {
+        //         let connection_options = SqliteConnectOptions::new()
+        //             .filename(db_path)
+        //             .create_if_missing(true);
 
-                let pool = SqlitePool::connect_with(connection_options)
-                    .await
-                    .map_err(|e| e.to_string())?;
+        //         let pool = SqlitePool::connect_with(connection_options)
+        //             .await
+        //             .map_err(|e| e.to_string())?;
 
-                Ok(AppState {
-                    current_audio_book: Mutex::new(None),
-                    db: Arc::new(pool),
-                })
-            });
+        //         Ok(AppState {
+        //             current_audio_book: Mutex::new(None),
+        //             db: Arc::new(pool),
+        //         })
+        //     });
 
-            match app_state_result {
-                Ok(app_state) => {
-                    app.manage(Arc::new(app_state));
-                    Ok(())
-                }
-                Err(e) => Err(e),
-            }
-        })
-        .plugin(tauri_plugin_fs::init())
-        .plugin(
-            tauri_plugin_sql::Builder::default()
-                .add_migrations(&DATABASE_FILE, migrations)
-                .build(),
-        )
-        .plugin(tauri_plugin_upload::init())
-        .plugin(tauri_plugin_shell::init())
-        .plugin(tauri_plugin_dialog::init())
-        .plugin(tauri_plugin_opener::init())
+        //     match app_state_result {
+        //         Ok(app_state) => {
+        //             app.manage(Arc::new(app_state));
+        //             Ok(())
+        //         }
+        //         Err(e) => Err(e),
+        //     }
+        // })
+        // .plugin(tauri_plugin_fs::init())
+        // .plugin(
+        //     tauri_plugin_sql::Builder::default()
+        //         .add_migrations(&DATABASE_FILE, migrations)
+        //         .build(),
+        // )
+        // .plugin(tauri_plugin_upload::init())
+        // .plugin(tauri_plugin_shell::init())
+        // .plugin(tauri_plugin_dialog::init())
+        // .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             // commands::synthesize_audio,
             // commands::read_library,
