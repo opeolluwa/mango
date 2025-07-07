@@ -25,12 +25,12 @@
         :class="[
           isFirstBookIndex
             ? 'text-gray-400/50 cursor-not-allowed hover:text-gray-400/50 size-5'
-            : 'icon',
+            : 'icon text-white/90',
         ]"
       />
 
       <div
-        class="w-8 h-8 border rounded-full border-gray-600 flex items-center justify-center text-white/80"
+        class="w-8 h-8 rounded-lg bg-app-orange/90 shadow shadow-bg-app-orange/60 border-gray-600 flex items-center justify-center text-white/60"
       >
         <Icon
           icon="fluent:play-48-filled"
@@ -72,16 +72,27 @@
       <div class="text-[12px] text-gray-400">
         {{ formatTime(currentTime) }}
       </div>
-      <ProgressBar
-        class="w-4/5"
-        :progress="(currentTime / duration) * 100 || 0"
-      />
+      <SliderRoot
+        v-model="sliderValue"
+        class="relative flex items-center select-none touch-none w-full h-5"
+        :max="100"
+        :step="1"
+      >
+        <SliderTrack class="bg-app-gray relative grow rounded-full h-1">
+          <SliderRange class="absolute bg-grass8 rounded-full h-full" />
+        </SliderTrack>
+        <SliderThumb
+          class="block w-4 h-4 p-1 bg-app-orange rounded-full hover:bg-app-orange shadow-sm focus:outline-none  border-none outline-none"
+          aria-label="Volume"
+        />
+      </SliderRoot>
+
       <div class="text-[12px] text-gray-400">
         {{ formatTime(duration) }}
       </div>
     </div>
 
-    <div class="flex w-[10%] items-center gap-x-2 hidden">
+    <div class=" w-[10%] items-center gap-x-2 hidden">
       <Icon icon="fluent-mdl2:volume-3" class="icon" />
       <ProgressBar class="w-4/5" :progress="volume * 100 || 0" />
     </div>
@@ -99,6 +110,7 @@ import ProgressBar from "./ProgressBar.vue";
 import { computed, ref } from "vue";
 import { useCurrentBook } from "../stores/book.ts";
 import { useBookProcesses } from "../stores/process.ts";
+import { SliderRange, SliderRoot, SliderThumb, SliderTrack } from "reka-ui";
 import {
   pauseAudioBook,
   playTheNextBook,
@@ -118,6 +130,8 @@ const isLoved = ref(false);
 const currentTime = ref(0);
 const duration = ref(0);
 const volume = ref(0.25);
+
+const sliderValue = ref([(currentTime.value / duration.value) * 100 || 0]);
 
 // audioRef.value?.volume = volume.value;
 const toggledIsLoved = () => {

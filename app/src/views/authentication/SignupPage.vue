@@ -53,6 +53,25 @@
           placeholder="********"
         />
       </div>
+      <div class="flex flex-col gap-2.5">
+        <label
+          class="flex flex-row gap-4 items-center [&>.checkbox]:hover:bg-neutral-100"
+        >
+          <CheckboxRoot
+            v-model="checkboxOne"
+            class="hover:bg-app-orange flex h-5 w-5 appearance-none items-center justify-center rounded-md bg-app-orange shadow-sm border-none outline-none "
+          >
+            <CheckboxIndicator
+              class="bg-app-orange h-full w-full rounded flex items-center justify-center"
+            >
+              <Icon icon="radix-icons:check" class="h-5 w-5 text-app-white" />
+            </CheckboxIndicator>
+          </CheckboxRoot>
+          <span class="select-none text-gray-400 text-sm"
+            >Accept terms and conditions.</span
+          >
+        </label>
+      </div>
       <AppButton
         type="submit"
         class="bg-linear-210 rounded-lg font-medium text-[18px] from-app-orange/20 via-15% via-app-dark to bg-app-orange w-full"
@@ -71,8 +90,10 @@ import AppButton from "../../components/button/AppButton.vue";
 import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
 import { useRouter } from "vue-router";
-
+import { CheckboxIndicator, CheckboxRoot } from "reka-ui";
+import { ref } from "vue";
 const router = useRouter();
+const checkboxOne = ref(true);
 const sendForm = async () => {};
 </script>
 
