@@ -42,11 +42,15 @@ body {
     @apply px-4;
 }
 
+/* .layout {
+    @apply pt-8  px-6 h-screen overflow-scroll scroll-smooth;
+
+} */
+
 .layout {
-    @apply pt-8  px-8 h-screen overflow-hidden scroll-smooth;
+    @apply pt-8 px-6 h-screen overflow-scroll scroll-smooth scroll-m-1;
 
 }
-
 /* For global styling */
 *::-webkit-scrollbar {
     width: 12px;
@@ -85,3 +89,14 @@ body {
   @apply border-app-orange/10 border hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange 
 
 }
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+

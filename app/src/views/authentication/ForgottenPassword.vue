@@ -20,7 +20,8 @@
         <input
           id="email"
           class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
-          type="text"
+          type="email"
+          placeholder="jane@mailer.com"
         />
       </div>
 
@@ -30,6 +31,11 @@
       >
         Continue
       </AppButton>
+      <RouterLink
+        to="/login"
+        class="text-stone-500 flex justify-end -mt-4"
+        >Return to login</RouterLink
+      >
     </form>
   </div>
 </template>

@@ -1,6 +1,7 @@
-use crate::database::AudioBook;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
+
+use crate::database::AudioBook;
 
 pub const AUDIO_PROCESSING_EVENT: &str = "processing-audio";
 pub const FINISHED_AUDIO_PROCESSING_EVENT: &str = "finished-processing-audio";

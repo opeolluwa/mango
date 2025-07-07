@@ -1,5 +1,5 @@
 <template>
-  <div class="layout h-screen overflow-y-hidden">
+  <div class="layout">
     <ArrowLongLeftIcon
       class="size-12 text-app-orange mb-4"
       @click="router.back"
@@ -19,15 +19,17 @@
           id="firstName"
           class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
           type="text"
+          placeholder="jane"
         />
-      </div> -->
+      </div> 
 
-      <!-- <div class="flex flex-col w-full">
+      <div class="flex flex-col w-full">
         <AppFormLabel text="Last name" for="" />
         <input
           id="firstName"
           class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
           type="text"
+          placeholder="doe"
         />
       </div> -->
 
@@ -36,7 +38,8 @@
         <input
           id="email"
           class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
-          type="text"
+          type="email"
+          placeholder="jane@mailer.com"
         />
       </div>
 
@@ -46,8 +49,28 @@
         <input
           id="password"
           class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
-          type="text"
+          type="password"
+          placeholder="********"
         />
+      </div>
+      <div class="flex flex-col gap-2.5">
+        <label
+          class="flex flex-row gap-4 items-center [&>.checkbox]:hover:bg-neutral-100"
+        >
+          <CheckboxRoot
+            v-model="checkboxOne"
+            class="hover:bg-app-orange flex h-5 w-5 appearance-none items-center justify-center rounded-md bg-app-orange shadow-sm border-none outline-none "
+          >
+            <CheckboxIndicator
+              class="bg-app-orange h-full w-full rounded flex items-center justify-center"
+            >
+              <Icon icon="radix-icons:check" class="h-5 w-5 text-app-white" />
+            </CheckboxIndicator>
+          </CheckboxRoot>
+          <span class="select-none text-gray-400 text-sm"
+            >Accept terms and conditions.</span
+          >
+        </label>
       </div>
       <AppButton
         type="submit"
@@ -55,8 +78,8 @@
       >
         Continue
       </AppButton>
-      <RouterLink to="/login" class="text-stone-500 flex justify-end"
-        >Already hav an account? Login</RouterLink
+      <RouterLink to="/login" class="text-stone-500 flex justify-end -mt-4"
+        >Already have an account? Login</RouterLink
       >
     </form>
   </div>
@@ -67,8 +90,10 @@ import AppButton from "../../components/button/AppButton.vue";
 import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
 import { useRouter } from "vue-router";
-
+import { CheckboxIndicator, CheckboxRoot } from "reka-ui";
+import { ref } from "vue";
 const router = useRouter();
+const checkboxOne = ref(true);
 const sendForm = async () => {};
 </script>
 

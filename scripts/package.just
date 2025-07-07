@@ -9,4 +9,7 @@ package target:
 @package-server:
 
 
+[working-directory :'app']
 @package-android:
+    mkdir -p build
+    cp  /Users/USER/Desktop/projects/audify/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/*apk build/eckko-mobile.apk
