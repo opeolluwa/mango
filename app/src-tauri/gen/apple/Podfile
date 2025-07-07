@@ -1,13 +1,13 @@
 # Uncomment the next line to define a global platform for your project
 
-target 'audify_iOS' do
+target 'eckko_iOS' do
 platform :ios, '13.0'
-  # Pods for audify_iOS
+  # Pods for eckko_iOS
 end
 
-target 'audify_macOS' do
+target 'eckko_macOS' do
 platform :osx, '11.0'
-  # Pods for audify_macOS
+  # Pods for eckko_macOS
 end
 
 # Delete the deployment target for iOS and macOS, causing it to be inherited from the Podfile

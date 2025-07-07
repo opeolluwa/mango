@@ -38,12 +38,12 @@ body {
 }
 
 .icon {
-    @apply size-5 cursor-pointer hover:text-app-orange;
+    @apply size-4 lg:size-5 cursor-pointer hover:text-app-orange ;
 }
 
 
 .parent-element {
-    @apply px-8;
+    @apply px-4;
 }
 
 .layout {

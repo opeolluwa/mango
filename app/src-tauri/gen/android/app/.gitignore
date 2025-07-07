@@ -1,4 +1,4 @@
-/src/main/java/com/audify/app/generated
+/src/main/java/com/eckko/app/generated
 /src/main/jniLibs/**/*.so
 /src/main/assets/tauri.conf.json
 /tauri.build.gradle.kts

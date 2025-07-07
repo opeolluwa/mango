@@ -1,4 +1,4 @@
-name: audify
+name: eckko
 options:
   bundleIdPrefix: com.audify.app
   deploymentTarget:
@@ -24,20 +24,20 @@ targetTemplates:
     settings:
       groups: [app]
 targets:
-  audify_iOS:
+  eckko_iOS:
     type: application
     platform: iOS
     sources:
       - path: Sources
       - path: Assets.xcassets
       - path: Externals
-      - path: audify_iOS
+      - path: eckko_iOS
       - path: assets
         buildPhase: resources
         type: folder
       - path: LaunchScreen.storyboard
     info:
-      path: audify_iOS/Info.plist
+      path: eckko_iOS/Info.plist
       properties:
         LSRequiresIPhoneOS: true
         UILaunchStoryboardName: LaunchScreen
@@ -51,10 +51,10 @@ targets:
           - UIInterfaceOrientationPortraitUpsideDown
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
-        CFBundleShortVersionString: 0.1.2
-        CFBundleVersion: 0.1.2
+        CFBundleShortVersionString: 0.1.3
+        CFBundleVersion: 0.1.3
     entitlements:
-      path: audify_iOS/audify_iOS.entitlements
+      path: eckko_iOS/eckko_iOS.entitlements
     scheme:
       environmentVariables:
         RUST_BACKTRACE: full

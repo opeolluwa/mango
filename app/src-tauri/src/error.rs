@@ -1,4 +1,4 @@
-use libaudify::error::AudifyError;
+// use libaudify::error::AudifyError;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
@@ -15,13 +15,13 @@ impl From<DbError> for CommandError {
     }
 }
 
-impl From<AudifyError> for CommandError {
-    fn from(err: AudifyError) -> Self {
-        CommandError {
-            message: err.to_string(),
-        }
-    }
-}
+// impl From<AudifyError> for CommandError {
+//     fn from(err: AudifyError) -> Self {
+//         CommandError {
+//             message: err.to_string(),
+//         }
+//     }
+// }
 
 impl From<std::io::Error> for CommandError {
     fn from(err: std::io::Error) -> Self {

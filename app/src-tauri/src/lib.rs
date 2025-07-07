@@ -8,7 +8,7 @@ use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
 
 mod adapters;
-mod commands;
+// mod commands;
 mod database;
 mod error;
 mod state;
@@ -161,7 +161,7 @@ DROP TABLE audio_books_old;
                     .map_err(|e| e.to_string())?;
 
                 Ok(AppState {
-                    current_audio_book: Mutex::new(None),
+                    // current_audio_book: Mutex::new(None),
                     db: Arc::new(pool),
                 })
             });
@@ -185,15 +185,15 @@ DROP TABLE audio_books_old;
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
-            commands::synthesize_audio,
-            commands::read_library,
-            commands::play_audio_book,
-            commands::pause_audio_book,
-            commands::set_audio_book_volume,
-            commands::seek_audio_book_to_position,
-            commands::set_audio_book_playback_speed,
-            commands::resume_playing_audio_book,
-            commands::sync_playlist
+            // commands::synthesize_audio,
+            // commands::read_library,
+            // commands::play_audio_book,
+            // commands::pause_audio_book,
+            // commands::set_audio_book_volume,
+            // commands::seek_audio_book_to_position,
+            // commands::set_audio_book_playback_speed,
+            // commands::resume_playing_audio_book,
+            // commands::sync_playlist
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

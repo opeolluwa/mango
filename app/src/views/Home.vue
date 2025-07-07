@@ -19,12 +19,10 @@
     </div>
   </template>
   <template v-else>
-    <!-- <PdfObject url="Oyegoke Rebecca.pdf" :options="{ page: 2 }" class="h-[95%] border-none rounded my-2 mt-6"/> -->
-    <!--    <embed src="Oyegoke Rebecca.pdf" type="application/pdf" width="100%" height="90%" />-->
     <ColumnLayout class="">
-      <div class="grid grid-cols-12 h-48 mt-16 gap-12">
+      <div class="flex flex-col mt-16 gap-12">
         <div
-            class="rounded-lg shadow shadow-app-gray py-6 bg-linear-50 from-app-orange/90 from-20% via-app-gray to-app-dark col-span-4 h-full px-4"
+            class="rounded-lg shadow w-full shadow-app-gray py-6 bg-linear-60 from-app-orange/90 from-20%  via-app-dark  to-app-orange  h-48  px-4"
         >
           <small class="text-[12px] text-gray-400"
           >69 tracks . 4 hours 37 minutes</small
@@ -37,7 +35,7 @@
         </div>
 
         <div
-            class="rounded-lg col-span-8 h-full px-4 shadow-app-gray py-6 bg-blend-multiply bg-[url(../assets/cover.jpg)] bg-center bg-cover bg-app-gray/90 bg-no-repeat relative"
+            class="rounded-lg  h-48 px-4 hidden shadow-app-gray py-6 bg-blend-multiply bg-[url(../assets/cover.jpg)] bg-center bg-cover bg-app-gray/90 bg-no-repeat relative"
         >
           <div class="flex justify-between">
             <small class="text-[12px] text-gray-400"

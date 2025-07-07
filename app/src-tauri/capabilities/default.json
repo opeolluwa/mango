@@ -7,20 +7,7 @@
   ],
   "permissions": [
     "core:default",
-    "opener:default",
-    "dialog:default",
-    "shell:default",
-    {
-      "identifier": "shell:allow-execute",
-      "allow": [
-        {
-          "name": "lame",
-          "sidecar": true
-        }
-      ]
-    },
-    "shell:allow-open",
-    "upload:default",
+
     "sql:default",
     "sql:allow-execute"
   ]

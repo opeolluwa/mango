@@ -1,6 +1,6 @@
 <template>
-  <AppLayout>
-    <AppNavigation class="col-span-3 xl:col-span-2" />
+  <AppLayout class="overflow-x-hidden">
+    <AppNavigation class="col-span-3 xl:col-span-2 hidden lg:block" />
     <AppMain class="col-span-9 xl:col-span-8" />
     <aside class="hidden xl:block xl:col-span-2"></aside>
     <AudioPlayer />
