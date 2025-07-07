@@ -43,7 +43,7 @@ body {
 
 
 .parent-element {
-    @apply px-8;
+    @apply px-4;
 }
 
 .layout {

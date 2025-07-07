@@ -1,4 +1,11 @@
 <template>
+  <div
+    class="w-screen z-101 absolute top-2 bg-app-dark/80 h-[100vh]"
+    @click="toggleSideNav"
+    v-show="showSideNav"
+  >
+    <AppNavigation class="w-[70vw] absolute bg-app-dark" />
+  </div>
   <header class="flex gap-x-4 items-center justify-between">
     <div class="gap-x-3 items-center hidden lg:flex">
       <Icon
@@ -13,11 +20,11 @@
       />
     </div>
 
-      <Icon
-        icon="material-symbols:menu-rounded"
-        class="text-gray-400/50 size-6 flex items-center h-full "
-
-      />
+    <Icon
+      icon="material-symbols:menu-rounded"
+      class="text-gray-400/50 size-6 flex items-center h-full cursor-pointer"
+      @click="toggleSideNav"
+    />
 
     <form
       action=""
@@ -58,4 +65,9 @@
 import { Icon } from "@iconify/vue";
 import { goBack, goForward } from "../../hooks/router";
 import { createNewBook } from "../../hooks/book";
+import { ref } from "vue";
+import AppNavigation from "./AppNavigation.vue";
+
+const showSideNav = ref(false);
+const toggleSideNav = () => (showSideNav.value = !showSideNav.value);
 </script>
