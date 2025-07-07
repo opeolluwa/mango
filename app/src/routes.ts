@@ -11,6 +11,8 @@ import AppLayout from "@views/app/layout.vue";
 
 import AuthenticationLayout from "./views/authentication/layout.vue";
 import WelcomePage from "./views/authentication/WelcomePage.vue";
+import SignupPage from "./views/authentication/SignupPage.vue";
+import LoginPage from "./views/authentication/LoginPage.vue";
 
 const routes = [
   {
@@ -33,6 +35,14 @@ const routes = [
       {
         path: "",
         component: WelcomePage,
+      },
+      {
+        path: "signup",
+        component: SignupPage,
+      },
+      {
+        path: "login",
+        component: LoginPage,
       },
     ],
   },

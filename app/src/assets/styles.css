@@ -43,7 +43,7 @@ body {
 }
 
 .layout {
-    @apply pt-4 h-screen overflow-scroll scroll-smooth scroll-m-1 pb-24;
+    @apply pt-4  px-3 h-screen overflow-scroll scroll-smooth scroll-m-1 pb-24;
 
 }
 
@@ -74,3 +74,8 @@ body {
 
 /* Defaults hover styles on all devices */
 @custom-variant hover (&:hover);
+
+
+.app-form-input {
+    @apply py-3 px-4 outline-none rounded-lg font-medium text-[18px] placeholder:text-sm placeholder:text-base;
+}
