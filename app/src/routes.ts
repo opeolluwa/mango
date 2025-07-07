@@ -1,15 +1,24 @@
 import { createMemoryHistory, createRouter } from "vue-router";
 
-import Home from "./views/Home.vue";
-import Favourites from "./views/Favourites.vue";
-import History from "./views/History.vue";
-import Scheduled from "./views/Scheduled.vue";
-import Library from "./views/Library.vue";
-import Voices from "./views/Voices.vue";
-import Notification from "./views/Notification.vue";
+import Home from "@views/app/HomePage.vue";
+import Favourites from "@views/app/FavouritesPage.vue";
+import History from "@views/app/HistoryPage.vue";
+import Scheduled from "@views/app/ScheduledPage.vue";
+import Library from "@views/app/LibraryPage.vue";
+import Voices from "@views/app/VoicesPage.vue";
+import Notification from "@views/app/NotificationPage.vue";
+import AppLayout from "@views/app/layout.vue";
+
+import AuthenticationLayout from "./views/authentication/layout.vue";
+import WelcomePage from "./views/authentication/WelcomePage.vue";
+import SignupPage from "./views/authentication/SignupPage.vue";
+import LoginPage from "./views/authentication/LoginPage.vue";
+import ForgottenPassword from "./views/authentication/ForgottenPassword.vue";
+import ConfirmOtpPage from "./views/authentication/ConfirmOtpPage.vue";
+
 const routes = [
   {
-    path: "/",
+    path: "/app",
     children: [
       { path: "", component: Home },
       { path: "favourites", component: Favourites },
@@ -19,13 +28,39 @@ const routes = [
       { path: "scheduled", component: Scheduled },
       { path: "notification", component: Notification },
     ],
+    component: AppLayout,
+  },
+  {
+    path: "/",
+    coponent: AuthenticationLayout,
+    children: [
+      {
+        path: "",
+        component: WelcomePage,
+      },
+      {
+        path: "signup",
+        component: SignupPage,
+      },
+      {
+        path: "login",
+        component: LoginPage,
+      },
+      {
+        path: "forgotten-password",
+        component: ForgottenPassword,
+      },
+      {
+        path: "confirm-otp",
+        component: ConfirmOtpPage,
+      },
+    ],
   },
 ];
 
 const router = createRouter({
   history: createMemoryHistory(),
   routes,
-
 });
 
 export default router;

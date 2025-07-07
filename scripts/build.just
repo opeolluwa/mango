@@ -35,7 +35,7 @@
 
 [working-directory: 'app']
 @build-android:
-    just b android
+    npm run tauri android build
 
 [working-directory: 'app']
 @build-ios:
