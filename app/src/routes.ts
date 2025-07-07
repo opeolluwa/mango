@@ -13,6 +13,8 @@ import AuthenticationLayout from "./views/authentication/layout.vue";
 import WelcomePage from "./views/authentication/WelcomePage.vue";
 import SignupPage from "./views/authentication/SignupPage.vue";
 import LoginPage from "./views/authentication/LoginPage.vue";
+import ForgottenPassword from "./views/authentication/ForgottenPassword.vue";
+import ConfirmOtpPage from "./views/authentication/ConfirmOtpPage.vue";
 
 const routes = [
   {
@@ -43,6 +45,14 @@ const routes = [
       {
         path: "login",
         component: LoginPage,
+      },
+      {
+        path: "forgotten-password",
+        component: ForgottenPassword,
+      },
+      {
+        path: "confirm-otp",
+        component: ConfirmOtpPage,
       },
     ],
   },

@@ -43,7 +43,7 @@ body {
 }
 
 .layout {
-    @apply pt-4  px-3 h-screen overflow-scroll scroll-smooth scroll-m-1 pb-24;
+    @apply pt-8  px-8 h-screen overflow-hidden scroll-smooth;
 
 }
 
@@ -77,5 +77,11 @@ body {
 
 
 .app-form-input {
-    @apply py-3 px-4 outline-none rounded-lg font-medium text-[18px] placeholder:text-sm placeholder:text-base;
+    @apply py-3 px-2 outline-none rounded-lg font-medium text-[18px] placeholder:text-sm placeholder:text-base;
+}
+
+
+.input-box {
+  @apply border-app-orange/10 border hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input
+
 }

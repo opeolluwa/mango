@@ -12,6 +12,7 @@
   "dependencies": {
     "@any-touch/core": "^2.2.0",
     "@any-touch/pan": "^2.2.0",
+    "@heroicons/vue": "^2.2.0",
     "@iconify/vue": "^5.0.0",
     "@tailwindcss/vite": "^4.1.5",
     "@tato30/vue-pdf": "^1.11.3",
