@@ -19,15 +19,17 @@
           id="firstName"
           class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
           type="text"
+          placeholder="jane"
         />
-      </div> -->
+      </div> 
 
-      <!-- <div class="flex flex-col w-full">
+      <div class="flex flex-col w-full">
         <AppFormLabel text="Last name" for="" />
         <input
           id="firstName"
           class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
           type="text"
+          placeholder="doe"
         />
       </div> -->
 
@@ -36,7 +38,8 @@
         <input
           id="email"
           class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
-          type="text"
+          type="email"
+          placeholder="jane@mailer.com"
         />
       </div>
 
@@ -46,7 +49,8 @@
         <input
           id="password"
           class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
-          type="text"
+          type="password"
+          placeholder="********"
         />
       </div>
       <AppButton
@@ -55,8 +59,8 @@
       >
         Continue
       </AppButton>
-      <RouterLink to="/login" class="text-stone-500 flex justify-end"
-        >Already hav an account? Login</RouterLink
+      <RouterLink to="/login" class="text-stone-500 flex justify-end -mt-4"
+        >Already have an account? Login</RouterLink
       >
     </form>
   </div>

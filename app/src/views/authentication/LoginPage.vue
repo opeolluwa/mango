@@ -21,6 +21,7 @@
           id="email"
           class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
           type="text"
+          placeholder="jane@mailer.com"
         />
       </div>
 
@@ -30,6 +31,7 @@
           id="email"
           class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
           type="text"
+          placeholder="********"
         />
       </div>
       <AppButton
@@ -40,7 +42,7 @@
       </AppButton>
       <RouterLink
         to="/forgotten-password"
-        class="text-stone-500 flex justify-end"
+        class="text-stone-500 flex justify-end -mt-4"
         >Forgotten password?</RouterLink
       >
     </form>

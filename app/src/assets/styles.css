@@ -43,7 +43,7 @@ body {
 }
 
 .layout {
-    @apply pt-8  px-8 h-screen overflow-hidden scroll-smooth;
+    @apply pt-8  px-6 h-screen overflow-hidden scroll-smooth;
 
 }
 
@@ -84,4 +84,14 @@ body {
 .input-box {
   @apply border-app-orange/10 border hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange 
 
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
