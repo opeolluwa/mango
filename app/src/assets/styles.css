@@ -82,6 +82,6 @@ body {
 
 
 .input-box {
-  @apply border-app-orange/10 border hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input
+  @apply border-app-orange/10 border hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange 
 
 }
