@@ -1,5 +1,5 @@
 <template>
-  <div class="layout h-screen overflow-y-hidden">
+  <div class="layout">
     <ArrowLongLeftIcon
       class="size-12 text-app-orange mb-4"
       @click="router.back"

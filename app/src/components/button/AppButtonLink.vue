@@ -1,7 +1,7 @@
 <template>
   <RouterLink
     :to="href"
-    class="py-3 px-8 hover:scale-90 transition delay-75 ease-initial block"
+    class="py-3 px-8 hover:scale-90 transition delay-75 duration-200 ease-initial block"
   >
     <slot />
   </RouterLink>

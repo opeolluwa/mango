@@ -41,7 +41,7 @@
         Continue
       </AppButton>
       <RouterLink
-        to="/app"
+        to="/forgotten-password"
         class="text-stone-500 flex justify-end -mt-4"
         >Forgotten password?</RouterLink
       >

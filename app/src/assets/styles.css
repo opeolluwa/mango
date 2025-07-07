@@ -42,11 +42,15 @@ body {
     @apply px-4;
 }
 
+/* .layout {
+    @apply pt-8  px-6 h-screen overflow-scroll scroll-smooth;
+
+} */
+
 .layout {
-    @apply pt-8  px-6 h-screen overflow-hidden scroll-smooth;
+    @apply pt-8 px-6 h-screen overflow-scroll scroll-smooth scroll-m-1;
 
 }
-
 /* For global styling */
 *::-webkit-scrollbar {
     width: 12px;
@@ -95,3 +99,4 @@ body {
 .fade-leave-to {
   opacity: 0;
 }
+

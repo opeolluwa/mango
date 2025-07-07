@@ -35,11 +35,11 @@
 
 [working-directory: 'app']
 @build-android:
-    npm run tauri android build
+    npm run tauri android build -- --apk
 
 [working-directory: 'app']
 @build-ios:
-    just b ios
+    npm run tauri android build -- --aab
 
 [working-directory: 'app']
 @build-desktop:

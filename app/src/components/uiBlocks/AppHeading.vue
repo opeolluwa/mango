@@ -69,7 +69,6 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import { goBack, goForward } from "../../hooks/router";
-import { createNewBook } from "../../hooks/book";
 import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
 import { ref } from "vue";
 import AppNavigation from "./AppNavigation.vue";
