@@ -17,7 +17,7 @@ watch target:
 
 [working-directory: 'app']
 @watch-ios:
-    npm tauri ios dev 
+    npm run tauri ios dev 'iphone 15'
 
 [working-directory: 'app']
 @watch-desktop:

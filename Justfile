@@ -6,7 +6,6 @@ import 'scripts/server.just'
 import 'scripts/lint.just'
 
 
-set quiet := true 
 
 # Alias
 alias install := install-dependencies

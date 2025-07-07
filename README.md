@@ -12,7 +12,7 @@
 ## Getting started
 
 ```sh
-git clone https://github.com/opeolluwa/audify
+git clone https://github.com/opeolluwa/eckko
 cd audify
 just configure
 ```

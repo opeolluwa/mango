@@ -6,7 +6,6 @@ pub const AUDIO_PROCESSING_EVENT: &str = "processing-audio";
 pub const FINISHED_AUDIO_PROCESSING_EVENT: &str = "finished-processing-audio";
 pub const CURRENTLY_PLAYING_EVENT: &str = "currently-playing-audio";
 
-
 #[derive(Debug, Serialize, Deserialize, Clone, TS)]
 #[serde(rename_all = "kebab-case")]
 #[ts(export)]
