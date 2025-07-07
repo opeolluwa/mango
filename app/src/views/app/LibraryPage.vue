@@ -27,8 +27,8 @@
 
 <script lang="ts" setup>
 import {ref} from "vue";
-import AudioBook from "../components/AudioBook.vue";
-import {useAudioBookLibrary} from "../stores/library";
+import AudioBook from "../../components/AudioBook.vue";
+import {useAudioBookLibrary} from "../../stores/library";
 import {Icon} from "@iconify/vue";
 
 const musicStore = useAudioBookLibrary();

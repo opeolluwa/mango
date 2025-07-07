@@ -95,11 +95,11 @@
 <script lang="ts" setup>
 import {Icon} from "@iconify/vue";
 import {computed, ref} from "vue";
-import AudioBook from "../components/AudioBook.vue";
-import ColumnLayout from "../components/layouts/ColumnLayout.vue";
-import ProgressBar from "../components/ProgressBar.vue";
-import {useAudioBookLibrary} from "../stores/library.ts";
-import {createNewBook} from "../hooks/book.ts";
+import AudioBook from "../../components/AudioBook.vue";
+import ColumnLayout from "../../components/layouts/ColumnLayout.vue";
+import ProgressBar from "../../components/ProgressBar.vue";
+import {useAudioBookLibrary} from "../../stores/library.ts";
+import {createNewBook} from "../../hooks/book.ts";
 
 const empty = ref(false);
 const library = useAudioBookLibrary();

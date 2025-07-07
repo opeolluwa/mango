@@ -2,8 +2,7 @@
 
 @plugin "@tailwindcss/typography";
 
-@import "preline/variants.css";
-@source "../../node_modules/preline/dist/*.js";
+
 
 * {
     box-sizing: border-box;
@@ -16,10 +15,6 @@
 }
 
 @theme {
-    --color-accent: #537D5D;
-    --color-accent-mid: #73946B;
-    --color-accent-light: #9EBC8A;
-    --color-accent-secondary: #D2D0A0;
     --wrapper-padding: @apply px-8;
     --color-app-dark: #09090f;
     --color-app-red: #F7374F;
@@ -30,11 +25,12 @@
 
 html,
 body {
-    @apply bg-app-dark;
+    @apply bg-app-dark text-white/90;
     overscroll-behavior: none;
     margin: 0;
     padding: 0;
     height: 100%;
+    user-select: none;
 }
 
 .icon {
