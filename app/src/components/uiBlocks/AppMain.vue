@@ -1,24 +1,16 @@
 <template>
   <main class="layout pt-3 parent-element">
-    <!-- <AppHeading /> -->
-    <ModalContainer class="flex flex-col items-center justify-center"></ModalContainer>
-    <!--    <RouterView v-slot="{ Component }">-->
-    <!--      <Transition name="fade" mode="out-in">-->
-    <!--        <component :is="Component" />-->
-    <!--      </Transition>-->
-    <!--    </RouterView>-->
-
+    <ModalContainer
+      class="flex flex-col items-center justify-center"
+    ></ModalContainer>
     <Transition name="fade" mode="out-in">
-      <RouterView/>
+      <RouterView />
     </Transition>
-
   </main>
 </template>
 
 <script lang="ts" setup>
-import AppHeading from "./AppHeading.vue";
-import {container as ModalContainer} from "jenesius-vue-modal";
-
+import { container as ModalContainer } from "jenesius-vue-modal";
 </script>
 
 <style scoped>

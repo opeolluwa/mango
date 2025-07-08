@@ -62,78 +62,19 @@
 
       <div class="mb-10">
         <small class="text-gray-400">Recent books</small>
-      </div>
-    </div>
-
-    <!-- 
-
-
-
-    <div
-      class="rounded-lg shadow w-full shadow-app-gray py-6 bg-linear-60 from-app-orange/90 from-20% via-app-dark to-app-orange h-48 px-4 mt-6"
-    >
-      <small class="text-[12px] text-gray-400"
-        >69 tracks . 4 hours 37 minutes</small
-      >
-      <h2
-        class="text-leading-loose prose-h1:first-letter:capitalize text-white/90"
-      >
-        Playlist for the day
-      </h2>
-    </div>
-
-    <div
-      class="rounded-lg h-48 px-4 hidden shadow-app-gray py-6 bg-blend-multiply bg-[url(../assets/cover.jpg)] bg-center bg-cover bg-app-gray/90 bg-no-repeat relative"
-    >
-      <div class="flex justify-between">
-        <small class="text-[12px] text-gray-400"
-          >69 tracks . 4 hours 37 minutes</small
-        >
-        <Icon
-          icon="gravity-ui:heart-fill"
-          class="icon text-app-red"
-          v-show="isLoved"
-          @click="toggledIsLoved"
-        />
-        <Icon
-          icon="gravity-ui:heart"
-          class="icon text-gray-500"
-          v-show="!isLoved"
-          @click="toggledIsLoved"
-        />
-      </div>
-      <h2>Bands of sacrifice</h2>
-
-      <div
-        class="size-16 absolute top-[calc(50%-1rem)] left-[calc(50%-var(--spacing)*16)] rounded-full flex items-center justify-center bg-white/10"
-      >
-        <Icon icon="fluent:play-48-filled" class="size-6" />
-      </div>
-      <ProgressBar :progress="60" class="absolute bottom-1.5 w-[80%]" />
-    </div>
-
-    <div>
-      <ul class="flex items-center gap-x-6 w-full">
-        <li
-          v-for="(tab, index) in tabs"
-          :key="index"
-          class="first-letter:capitalize text-gray-400/50 border-b-2 border-b-transparent hover:border-b-app-orange hover:text-app-orange pt-4 cursor-pointer"
-        >
-          {{ tab.label }}
-        </li>
-      </ul>
-
-      <div class="flex flex-col gap-y-4 mt-4">
-        <AudioBook
+        <div class="flex flex-col gap-y-4 mt-4">
+          <!-- <AudioBook
           class=""
           v-for="(book, index) in audioBooks"
           :key="index"
           :file-name="String(book.title)"
           duration="0"
           :date-last-played="new Date().toLocaleDateString()"
-        />
-      </div> -->
-    <!-- </div> -->
+        /> -->
+        </div>
+      </div>
+    </div>
+    <AppDock class="left-0"/>
   </template>
 </template>
 
@@ -143,6 +84,7 @@ import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
 import { computed } from "vue";
 import { createNewBook } from "../../hooks/book.ts";
 import { useAudioBookLibrary } from "../../stores/library.ts";
+import AppDock from "../../components/uiBlocks/AppDock.vue";
 
 const library = useAudioBookLibrary();
 

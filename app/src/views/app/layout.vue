@@ -1,7 +1,6 @@
 <template>
   <AppLayout class="overflow-x-hidden">
     <AppMain class="px-2" />
-    <AppDock />
   </AppLayout>
 </template>
 
@@ -13,7 +12,6 @@ import { onMounted } from "vue";
 import { type AudioSynthesisEvent } from "../../../src-tauri/bindings/AudioSynthesisEvent.ts";
 import { type CurrentAudioMetadata } from "../../../src-tauri/bindings/CurrentAudioMetadata.ts";
 import { type Events } from "../../../src-tauri/bindings/Events.ts";
-import AppDock from "../../components/uiBlocks/AppDock.vue";
 import { useAudioBookLibrary } from "../../stores/library.ts";
 
 const store = useAudioBookLibrary();

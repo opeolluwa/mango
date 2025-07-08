@@ -36,6 +36,12 @@
         class="text-stone-500 flex justify-end -mt-4"
         >Return to login</RouterLink
       >
+
+      <RouterLink
+        to="/confirm-otp"
+        class="text-stone-500 flex justify-end -mt-4"
+        >confirm otp</RouterLink
+      >
     </form>
   </div>
 </template>

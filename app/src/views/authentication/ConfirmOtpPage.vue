@@ -37,6 +37,13 @@
         <small>Did&apos;t get an OTP? Request new after</small>
         <small class="text-app-orange">86s</small>
       </div>
+
+
+      <RouterLink
+        to="/set-new-password"
+        class="text-stone-500 flex justify-end -mt-4"
+        >new pswd</RouterLink
+      >
     </form>
   </div>
 </template>
