@@ -1,12 +1,17 @@
 <template>
   <AppLayout class="overflow-x-hidden">
-    <AppMain class="px-2" />
+    <main class="layout pt-3 parent-element">
+      <router-view v-slot="{ Component }">
+        <transition name="fade">
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </main>
   </AppLayout>
 </template>
 
 <script lang="ts" setup>
 import AppLayout from "@/components/layouts/AppLayout.vue";
-import AppMain from "@/components/uiBlocks/AppMain.vue";
 import { listen } from "@tauri-apps/api/event";
 import { onMounted } from "vue";
 import { type AudioSynthesisEvent } from "../../../src-tauri/bindings/AudioSynthesisEvent.ts";

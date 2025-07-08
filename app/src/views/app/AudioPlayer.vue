@@ -1,24 +1,23 @@
 <template>
   <div class="">
-    <div
-      class="w-screen z-101 absolute top-2 left-0 bg-app-dark/80 h-[100vh]"
-      @click="toggleSideNav"
-      v-show="showSideNav"
-    >
-      <Transition name="fade">
-        <AppNavigation class="w-full absolute bg-app-dark" />
-      </Transition>
-    </div>
+    <Transition>
+      <AppNavigation
+        class="w-full absolute top-0 left-0 h-screen z-110 bg-app-dark/95"
+        v-if="show"
+        @click="show = !show"
+      />
+    </Transition>
 
     <div class="flex justify-between mb-10">
       <Icon
         icon="fluent:chevron-left-32-filled"
-        @click="playThePreviousBook"
+        @click="goBack"
         :class="['icon size-5 text-white/90']"
       />
+
       <Icon
         icon="tabler:dots"
-       @click="toggleSideNav"
+        @click="show = !show"
         :class="['icon size-5 text-white/90']"
       />
     </div>
@@ -28,11 +27,9 @@
       alt=""
     />
 
-    <div class="mb-12 text-center">
-      <h6 class="text-5xl text-center text-white/80">
-        Barking up the wrong tree
-      </h6>
-      <p class="small text-gray-400 mt-2">Eric humming bird</p>
+    <div class="mb-20 text-center">
+      <h6 class="text-5xl text-center text-white/80">Half of a yellow sun</h6>
+      <p class="small text-gray-400 mt-2">Chimamanda Nogozi</p>
     </div>
 
     <div class="flex gap-x-4 items-center justify-center">
@@ -44,29 +41,28 @@
 
       <div
         class="size-16 rounded-full bg-app-orange/90 shadow shadow-bg-app-orange/60 border-gray-600 flex items-center justify-center text-white"
+        @click="togglePlaying"
       >
-        <Icon
-          icon="fluent:play-48-filled"
-          class="icon"
-          v-show="!isPlaying"
-          @click="togglePlaying"
-        />
+        <Icon icon="fluent:play-48-filled" class="icon" v-show="!isPlaying" />
         <Icon
           icon="fluent:pause-48-filled"
           class="icon p-[2px]"
           v-show="isPlaying"
-          @click="togglePlaying"
         />
       </div>
 
-      <!-- <Icon icon="fluent-mdl2:volume-3" class="icon" /> -->
       <Icon icon="mingcute:rewind-forward-10-line" class="icon" />
     </div>
 
-    <div class="flex w-full items-center gap-x-2 mt-12">
-      <div class="text-[12px] text-gray-400">
+    <div class="flex w-full items-center justify-between gap-x-2 mt-12">
+      <small class="text-[12px] text-gray-400">
         {{ formatTime(currentTime) }}
-      </div>
+      </small>
+      <small class="text-[12px] text-gray-400">
+        {{ formatTime(duration) }}
+      </small>
+    </div>
+    <div>
       <SliderRoot
         v-model="sliderValue"
         class="relative flex items-center select-none touch-none w-full h-5"
@@ -81,46 +77,37 @@
           aria-label="Volume"
         />
       </SliderRoot>
-
-      <div class="text-[12px] text-gray-400">
-        {{ formatTime(duration) }}
-      </div>
-    </div>
-
-    <div class="w-[10%] items-center gap-x-2 hidden">
-      <Icon icon="fluent-mdl2:volume-3" class="icon" />
-      <!-- <ProgressBar class="w-4/5" :progress="volume * 100 || 0" /> -->
-    </div>
-    <div class="gap-x-2 items-center hidden">
-      <Icon icon="iconamoon:playlist-shuffle-fill" class="size-5" />
-      <Icon icon="iconamoon:playlist-repeat-list-light" class="size-5" />
-      <Icon icon="solar:playlist-outline" class="size-5" />
     </div>
   </div>
+  <footer
+    class="fixed left-0 w-full py-3 text-small items-center gap-y-1 justify-between gap-x-2 z-100 flex min-h-12 tems-center bottom-0 px-5"
+  >
+    <RouterLink
+      :to="'/app/player'"
+      v-for="(item, index) in routes"
+      class="flex gap-y-1 flex-col items-center justify-center capitalize text-stone-500"
+    >
+      <Icon :icon="item.default" :key="index" class="size-5" />
+    </RouterLink>
+  </footer>
 </template>
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import { SliderRange, SliderRoot, SliderThumb, SliderTrack } from "reka-ui";
 import { ref } from "vue";
-import { playThePreviousBook } from "../../hooks/book.ts";
 import AppNavigation from "../../components/uiBlocks/AppNavigation.vue";
-
+import { playThePreviousBook } from "../../hooks/book.ts";
+import { goBack } from "../../hooks/router.ts";
 const player = ref(new Audio());
 const isPlaying = ref(false);
 
 const currentTime = ref(0);
 const duration = ref(0);
-
 const sliderValue = ref([(currentTime.value / duration.value) * 100 || 0]);
-
-const showSideNav = ref(false);
-const toggleSideNav = () => (showSideNav.value = !showSideNav.value);
+const show = ref(false);
 
 const togglePlaying = async () => {
-  // if (player.value.paused){
-
-  // }
   if (isPlaying.value) {
     pause();
   } else {
@@ -130,18 +117,6 @@ const togglePlaying = async () => {
   isPlaying.value = !isPlaying.value;
   // processes.isPlayingBook = !processes.isPlayingBook;
 };
-
-// const updateCurrentTime = () => {
-//   if (audioRef.value) {
-//     currentTime.value = audioRef.value.currentTime;
-//   }
-// };
-//
-// const updateDuration = () => {
-//   if (audioRef.value) {
-//     duration.value = audioRef.value.duration;
-//   }
-// };
 
 const formatTime = (time: number): string => {
   const minutes = Math.floor(time / 60);
@@ -164,8 +139,47 @@ const play = () => {
 };
 
 const pause = () => {
-  player.value.addEventListener("loadedmetadata", () => {
-    player.value.pause();
-  });
+  player.value.pause();
 };
+
+const routes: Array<{ default: string; active: string; route: string }> = [
+  {
+    default: "material-symbols-light:speed-2x-sharp",
+    active: "material-symbols-light:speed-2x-sharp",
+    route: "Home",
+  },
+  {
+    default: "fluent:search-12-regular",
+    active: "fluent:search-16-filled",
+    route: "Explore",
+  },
+  {
+    default: "solar:playlist-bold",
+    active: "solar:playlist-bold",
+    route: "favorites",
+  },
+  {
+    default: "fluent:bookmark-20-regular",
+    active: "fluent:bookmark-20-filled",
+    route: "bookmark",
+  },
+  {
+    active: "fluent-mdl2:volume-2",
+    default: "fluent-mdl2:volume-disabled",
+    route: "player",
+  },
+];
 </script>
+
+<style scoped>
+/* we will explain what these classes do next! */
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+</style>

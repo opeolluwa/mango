@@ -10,7 +10,6 @@ import Notification from "@views/app/NotificationPage.vue";
 import AppLayout from "@views/app/layout.vue";
 import AudioPlayer from "@views/app/AudioPlayer.vue";
 
-
 import AuthenticationLayout from "./views/authentication/layout.vue";
 import WelcomePage from "./views/authentication/WelcomePage.vue";
 import SignupPage from "./views/authentication/SignupPage.vue";

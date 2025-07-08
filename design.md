@@ -17,3 +17,5 @@ https://dribbble.com/shots/19753283-Web-Music-Player-Concept
 
 https://dribbble.com/shots/24978659-Luister-Music-Player-Mobile-App-UI-Design-Template
 
+
+https://dribbble.com/shots/15147120-Audiobook-Mobile-Application-Homescreen-Audio-Player
