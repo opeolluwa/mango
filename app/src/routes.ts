@@ -8,6 +8,8 @@ import Library from "@views/app/LibraryPage.vue";
 import Voices from "@views/app/VoicesPage.vue";
 import Notification from "@views/app/NotificationPage.vue";
 import AppLayout from "@views/app/layout.vue";
+import AudioPlayer from "@views/app/AudioPlayer.vue";
+
 
 import AuthenticationLayout from "./views/authentication/layout.vue";
 import WelcomePage from "./views/authentication/WelcomePage.vue";
@@ -15,10 +17,11 @@ import SignupPage from "./views/authentication/SignupPage.vue";
 import LoginPage from "./views/authentication/LoginPage.vue";
 import ForgottenPassword from "./views/authentication/ForgottenPassword.vue";
 import ConfirmOtpPage from "./views/authentication/ConfirmOtpPage.vue";
+import SetNewPassword from "./views/authentication/SetNewPassword.vue";
 
 const routes = [
   {
-    path: "/",
+    path: "/app",
     children: [
       { path: "", component: Home },
       { path: "favourites", component: Favourites },
@@ -27,11 +30,12 @@ const routes = [
       { path: "voices", component: Voices },
       { path: "scheduled", component: Scheduled },
       { path: "notification", component: Notification },
+      { path: "player", component: AudioPlayer },
     ],
     component: AppLayout,
   },
   {
-    path: "/auth",
+    path: "/",
     coponent: AuthenticationLayout,
     children: [
       {
@@ -53,6 +57,11 @@ const routes = [
       {
         path: "confirm-otp",
         component: ConfirmOtpPage,
+      },
+
+      {
+        path: "set-new-password",
+        component: SetNewPassword,
       },
     ],
   },

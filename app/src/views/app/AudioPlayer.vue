@@ -1,29 +1,49 @@
 <template>
-  <footer
-    class="fixed bg-app-dark border-t-gray-100/10 w-screen min-h-12 bottom-0 parent-element py-3 text-small items-center gap-y-1 justify-between z-5000 flex flex-col"
-  >
-    <h6 class="text-4xl overflow-ellipsis truncate leading-3.5">
-      Barking up the wront tree
-    </h6>
+  <div class="">
+    <div
+      class="w-screen z-101 absolute top-2 left-0 bg-app-dark/80 h-[100vh]"
+      @click="toggleSideNav"
+      v-show="showSideNav"
+    >
+      <Transition name="fade">
+        <AppNavigation class="w-full absolute bg-app-dark" />
+      </Transition>
+    </div>
 
-    <div class="flex gap-x-4 items-center justify-between">
+    <div class="flex justify-between mb-10">
+      <Icon
+        icon="fluent:chevron-left-32-filled"
+        @click="playThePreviousBook"
+        :class="['icon size-5 text-white/90']"
+      />
+      <Icon
+        icon="tabler:dots"
+       @click="toggleSideNav"
+        :class="['icon size-5 text-white/90']"
+      />
+    </div>
+    <img
+      src="@/assets/test.jpg"
+      class="contain mb-12 h-[200px] mx-auto rounded"
+      alt=""
+    />
+
+    <div class="mb-12 text-center">
+      <h6 class="text-5xl text-center text-white/80">
+        Barking up the wrong tree
+      </h6>
+      <p class="small text-gray-400 mt-2">Eric humming bird</p>
+    </div>
+
+    <div class="flex gap-x-4 items-center justify-center">
       <Icon
         icon="mingcute:rewind-backward-10-line"
         @click="playThePreviousBook"
         :class="['icon size-5 text-white/90']"
       />
-      <!-- <Icon
-        icon="fluent:previous-48-filled"
-        @click="playThePreviousBook"
-        :class="[
-          isFirstBookIndex
-            ? 'text-gray-400/50 cursor-not-allowed hover:text-gray-400/50 size-5'
-            : 'icon text-white/90',
-        ]"
-      /> -->
 
       <div
-        class="size-12 rounded-full bg-app-orange/90 shadow shadow-bg-app-orange/60 border-gray-600 flex items-center justify-center text-white"
+        class="size-16 rounded-full bg-app-orange/90 shadow shadow-bg-app-orange/60 border-gray-600 flex items-center justify-center text-white"
       >
         <Icon
           icon="fluent:play-48-filled"
@@ -38,33 +58,12 @@
           @click="togglePlaying"
         />
       </div>
-      <!-- <Icon
-        icon="fluent:next-48-filled"
-        @click="playTheNextBook"
-        :class="[
-          isLastBookIndex
-            ? 'text-gray-400/50 cursor-not-allowed hover:text-gray-400/50 size-5'
-            : 'icon',
-        ]"
-      /> -->
-      <Icon
-        icon="gravity-ui:heart-fill"
-        class="icon text-app-red hidden"
-        v-show="isLoved"
-        @click="toggledIsLoved"
-      />
-      <Icon
-        icon="gravity-ui:heart"
-        class="icon text-gray-500 hidden"
-        v-show="!isLoved"
-        @click="toggledIsLoved"
-      />
 
       <!-- <Icon icon="fluent-mdl2:volume-3" class="icon" /> -->
       <Icon icon="mingcute:rewind-forward-10-line" class="icon" />
     </div>
 
-    <div class="flex w-full items-center gap-x-2">
+    <div class="flex w-full items-center gap-x-2 mt-12">
       <div class="text-[12px] text-gray-400">
         {{ formatTime(currentTime) }}
       </div>
@@ -90,59 +89,33 @@
 
     <div class="w-[10%] items-center gap-x-2 hidden">
       <Icon icon="fluent-mdl2:volume-3" class="icon" />
-      <ProgressBar class="w-4/5" :progress="volume * 100 || 0" />
+      <!-- <ProgressBar class="w-4/5" :progress="volume * 100 || 0" /> -->
     </div>
     <div class="gap-x-2 items-center hidden">
       <Icon icon="iconamoon:playlist-shuffle-fill" class="size-5" />
       <Icon icon="iconamoon:playlist-repeat-list-light" class="size-5" />
       <Icon icon="solar:playlist-outline" class="size-5" />
     </div>
-  </footer>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import { SliderRange, SliderRoot, SliderThumb, SliderTrack } from "reka-ui";
-import { computed, ref } from "vue";
-import {
-  playThePreviousBook
-} from "../hooks/book.ts";
-import { useCurrentBook } from "../stores/book.ts";
-import { useBookProcesses } from "../stores/process.ts";
-import ProgressBar from "./ProgressBar.vue";
+import { ref } from "vue";
+import { playThePreviousBook } from "../../hooks/book.ts";
+import AppNavigation from "../../components/uiBlocks/AppNavigation.vue";
 
-const songs = ref([
-  {
-    title: "some title",
-    audioSrc:
-      "https://ik.imagekit.io/nethbooks/tes.edited-v2.pdf_Yanwb0U8U.mp3?updatedAt=1751924145616",
-  },
-  {
-    title: "adeoye",
-    audioSrc:
-      "https://ik.imagekit.io/nethbooks/Adeoye%20Testimony%20Toluwanimi%20-%20Cover%20Pages.pdf_Titdm2bgI.mp3?updatedAt=1751924085915",
-  },
-]);
 const player = ref(new Audio());
-const store = useCurrentBook();
-const processes = useBookProcesses();
-
-const fileName = computed(() => store.currentBook?.title);
 const isPlaying = ref(false);
-const isLastBookIndex = computed(() => processes.isPlayingLastBook);
-const isFirstBookIndex = computed(() => processes.isPlayingFirstBook);
 
-const isLoved = ref(false);
 const currentTime = ref(0);
 const duration = ref(0);
-const volume = ref(0.25);
 
 const sliderValue = ref([(currentTime.value / duration.value) * 100 || 0]);
 
-// audioRef.value?.volume = volume.value;
-const toggledIsLoved = () => {
-  isLoved.value = !isLoved.value;
-};
+const showSideNav = ref(false);
+const toggleSideNav = () => (showSideNav.value = !showSideNav.value);
 
 const togglePlaying = async () => {
   // if (player.value.paused){
@@ -183,7 +156,7 @@ const play = () => {
   player.value.src =
     "https://ik.imagekit.io/nethbooks/tes.edited-v2.pdf_Yanwb0U8U.mp3?updatedAt=1751924145616";
 
-    player.value.playbackRate = 0.95
+  player.value.playbackRate = 0.95;
 
   player.value.addEventListener("loadedmetadata", () => {
     player.value.play();

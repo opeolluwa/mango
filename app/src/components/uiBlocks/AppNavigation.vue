@@ -68,12 +68,7 @@ import AppLogo from "./AppLogo.vue";
 import { Icon } from "@iconify/vue";
 import { createNewPlaylist } from "../../hooks/modals.ts";
 
-// const playlists = ref([
-// { name: "Metalcore", color: "red" },
-// { name: "Electro", color: "lime" },
-// { name: "Func", color: "yellow" },
-// { name: "Disco", color: "purple" }
-// ]);
+
 const playlists = ref<{ name: string; color: string }[]>([]);
 </script>
 
