@@ -1,71 +1,72 @@
 <template>
   <nav
-      class="border-r border-r-gray-500/10 layout flex flex-col gap-y-16 h-screen text-app-white/60"
+    class="border-r border-r-gray-500/10 layout flex flex-col gap-y-16 h-screen text-app-white/60"
   >
-    <AppLogo class="parent px-8"/>
+    <AppLogo class="parent px-8" />
 
     <div class="nav-section">
-      <AppLabeledIcon icon="mynaui:signal" label="Feed" to="/"/>
+      <AppLabeledIcon icon="mynaui:signal" label="Feed" to="/" />
       <AppLabeledIcon
-          icon="ph:playlist-duotone"
-          label="Library"
-          to="/library"
+        icon="ph:playlist-duotone"
+        label="Library"
+        to="/library"
       />
-      <AppLabeledIcon icon="hugeicons:bot" label="AI Voice" to="/voices"/>
+      <AppLabeledIcon icon="hugeicons:bot" label="AI Voice" to="/voices" />
     </div>
 
     <div class="nav-section">
       <small class="nav-section-heading parent-element">Your audio books</small>
       <AppLabeledIcon
-          icon="mdi:book-plus-outline"
-          label="Import new"
-          @click="createNewBook"
+        icon="mdi:book-plus-outline"
+        label="Import new"
+        @click="createNewBook"
       />
       <AppLabeledIcon
-          icon="fluent:heart-28-regular"
-          label="Favourites"
-          to="/favourites"
+        icon="fluent:heart-28-regular"
+        label="Favourites"
+        to="/favourites"
       />
       <AppLabeledIcon
-          icon="fluent:clock-16-regular"
-          label="Recent"
-          to="/recent"
+        icon="fluent:clock-16-regular"
+        label="Recent"
+        to="/recent"
       />
       <AppLabeledIcon
-          icon="solar:calendar-broken"
-          label="History"
-          class=""
-          to="/history"
+        icon="solar:calendar-broken"
+        label="History"
+        class=""
+        to="/history"
       />
     </div>
 
     <div class="nav-section">
       <small class="nav-section-heading parent-element">Your playlist</small>
       <PlayListTag
-          v-for="(playlist, index) in playlists"
-          :key="index"
-          :name="playlist.name"
-          :color="playlist.color"
+        v-for="(playlist, index) in playlists"
+        :key="index"
+        :name="playlist.name"
+        :color="playlist.color"
       />
 
       <button
-          class="outline-none border-none text-app-orange flex items-center gap-x-2 px-6 cursor-pointer text-sm"
-          @click="createNewPlaylist()">
-        Create a new playlist
-        <Icon icon="stash:plus" class="icon"/>
+        class="outline-none border-none text-app-orange flex items-center gap-x-2 px-6 cursor-pointer text-sm"
+        @click="createNewPlaylist()"
+      >
+        Import new book
+        <Icon icon="stash:plus" class="icon" />
       </button>
     </div>
   </nav>
 </template>
 
 <script lang="ts" setup>
-import {ref} from "vue";
-import {createNewBook} from "../../hooks/book";
+import { ref } from "vue";
+import { createNewBook } from "../../hooks/book";
 import PlayListTag from "../PlayListTag.vue";
 import AppLabeledIcon from "./AppLabeledIcon.vue";
 import AppLogo from "./AppLogo.vue";
-import {Icon} from "@iconify/vue";
-import {createNewPlaylist} from "../../hooks/modals.ts";
+import { Icon } from "@iconify/vue";
+import { createNewPlaylist } from "../../hooks/modals.ts";
 
 // const playlists = ref([
 // { name: "Metalcore", color: "red" },

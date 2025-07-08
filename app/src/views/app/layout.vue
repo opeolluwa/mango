@@ -1,23 +1,20 @@
 <template>
   <AppLayout class="overflow-x-hidden">
-    <AppNavigation class="col-span-3 xl:col-span-2 hidden lg:block" />
-    <AppMain class="col-span-9 xl:col-span-8" />
-    <aside class="hidden xl:block xl:col-span-2"></aside>
-    <AudioPlayer />
+    <AppMain class="px-2" />
+    <AppDock />
   </AppLayout>
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from "vue";
-import AudioPlayer from "@/components/AudioPlayer.vue";
 import AppLayout from "@/components/layouts/AppLayout.vue";
 import AppMain from "@/components/uiBlocks/AppMain.vue";
-import AppNavigation from "@/components/uiBlocks/AppNavigation.vue";
-import { useAudioBookLibrary } from "../../stores/library.ts";
 import { listen } from "@tauri-apps/api/event";
+import { onMounted } from "vue";
 import { type AudioSynthesisEvent } from "../../../src-tauri/bindings/AudioSynthesisEvent.ts";
 import { type CurrentAudioMetadata } from "../../../src-tauri/bindings/CurrentAudioMetadata.ts";
 import { type Events } from "../../../src-tauri/bindings/Events.ts";
+import AppDock from "../../components/uiBlocks/AppDock.vue";
+import { useAudioBookLibrary } from "../../stores/library.ts";
 
 const store = useAudioBookLibrary();
 onMounted(async () => {

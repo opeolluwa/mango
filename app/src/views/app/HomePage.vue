@@ -1,5 +1,5 @@
 <template>
-  <template v-if="empty">
+  <template v-if="!emptyLibrary">
     <div
       class="overflow-hidden bg-secondary bg-center-center bg-blend-multiply bg-cover bg-no-repeat relative flex flex-col justify-center items-center px-4 h-[90%] text-gray-400"
     >
@@ -19,6 +19,56 @@
     </div>
   </template>
   <template v-else>
+    <div class="flex flex-col">
+      <div class="flex justify-between">
+        <div>
+          <h1 class="text-4xl text-gray-400/60">Hello,</h1>
+          <h2 class="text-4xl text-gray-400">Emmanuel!</h2>
+        </div>
+
+        <AvatarRoot
+          class="bg-blackA3 inline-flex size-[35px] shadow select-none items-center justify-center overflow-hidden rounded-full align-middle border-app-orange/50 border-2"
+        >
+          <AvatarImage
+            class="h-full w-full rounded-[inherit] object-cover"
+            src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
+            alt="Colm Tuite"
+          />
+          <AvatarFallback
+            class="text-grass11 dark:text-stone-300 leading-1 flex h-full w-full items-center justify-center bg-white dark:bg-stone-800 text-sm font-medium"
+            :delay-ms="600"
+          >
+            CT
+          </AvatarFallback>
+        </AvatarRoot>
+      </div>
+
+      <div class="mt-12 mb-10">
+        <small class="text-gray-400">continue listening</small>
+        <div class="card flex rounded-xl gap-3 mt-4 bg-app-gray/70 py-4 px-2">
+          <img
+            src="@/assets/test.jpg"
+            class="contain w-[120px] h-[150px]"
+            alt=""
+          />
+          <div class="text-gray-400">
+            <h1 class="text-3xl">Barking up the wrong tree</h1>
+            <p>Erick mamardor</p>
+
+            <small class="text-gray-700">33% complete</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-10">
+        <small class="text-gray-400">Recent books</small>
+      </div>
+    </div>
+
+    <!-- 
+
+
+
     <div
       class="rounded-lg shadow w-full shadow-app-gray py-6 bg-linear-60 from-app-orange/90 from-20% via-app-dark to-app-orange h-48 px-4 mt-6"
     >
@@ -82,43 +132,19 @@
           duration="0"
           :date-last-played="new Date().toLocaleDateString()"
         />
-      </div>
-    </div>
+      </div> -->
+    <!-- </div> -->
   </template>
 </template>
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
-import { computed, ref } from "vue";
-import AudioBook from "../../components/AudioBook.vue";
-import ProgressBar from "../../components/ProgressBar.vue";
-import { useAudioBookLibrary } from "../../stores/library.ts";
+import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
+import { computed } from "vue";
 import { createNewBook } from "../../hooks/book.ts";
+import { useAudioBookLibrary } from "../../stores/library.ts";
 
-const empty = ref(false);
 const library = useAudioBookLibrary();
 
-const audioBooks = computed(() => library.audioBooks);
-const isLoved = ref(false);
-const toggledIsLoved = () => {
-  isLoved.value = !isLoved.value;
-};
-const tabs: { route: string; label: string }[] = [
-  {
-    route: "",
-    label: "Playlist",
-  },
-  {
-    route: "",
-    label: "artist",
-  },
-  {
-    route: "",
-    label: "album",
-  },
-  {
-    route: "",
-    label: "friend's playlist",
-  },
-];
+const emptyLibrary = computed(() => library.audioBooks.length == 0);
 </script>

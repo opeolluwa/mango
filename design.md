@@ -11,3 +11,9 @@ https://dribbble.com/shots/25707972-Dashboard
 
 player
 https://dribbble.com/shots/15724059-Music-Player-App
+https://dribbble.com/shots/25401469-Music-Player-Concept
+
+https://dribbble.com/shots/19753283-Web-Music-Player-Concept
+
+https://dribbble.com/shots/24978659-Luister-Music-Player-Mobile-App-UI-Design-Template
+

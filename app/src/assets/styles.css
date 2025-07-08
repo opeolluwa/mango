@@ -34,7 +34,7 @@ body {
 }
 
 .icon {
-    @apply size-4 lg:size-5 cursor-pointer hover:text-app-orange ;
+    @apply size-5 lg:size-5 cursor-pointer hover:text-app-orange ;
 }
 
 
@@ -48,7 +48,7 @@ body {
 } */
 
 .layout {
-    @apply pt-8 px-6 h-screen overflow-scroll scroll-smooth scroll-m-1;
+    @apply pt-8 px-3 h-screen overflow-scroll scroll-smooth scroll-m-1;
 
 }
 /* For global styling */
