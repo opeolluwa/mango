@@ -52,8 +52,8 @@
             alt=""
           />
           <div class="text-gray-400">
-            <h1 class="text-3xl">Barking up the wrong tree</h1>
-            <p>Erick mamardor</p>
+            <h1 class="text-3xl">Half of a yellow sun</h1>
+            <p>Chimamanda Ngozi</p>
 
             <small class="text-gray-700">33% complete</small>
           </div>
