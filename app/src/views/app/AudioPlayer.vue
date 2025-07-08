@@ -28,7 +28,7 @@
     />
 
     <div class="mb-20 text-center">
-      <h6 class="text-5xl text-center text-white/80">Half of a yellow sun</h6>
+      <h6 class="text-3xl text-center text-gray-500">Half of a yellow sun </h6>
       <p class="small text-gray-400 mt-2">Chimamanda Nogozi</p>
     </div>
 
