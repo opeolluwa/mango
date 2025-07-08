@@ -1,6 +1,6 @@
 <template>
   <main class="layout pt-3 parent-element">
-    <AppHeading />
+    <!-- <AppHeading /> -->
     <ModalContainer class="flex flex-col items-center justify-center"></ModalContainer>
     <!--    <RouterView v-slot="{ Component }">-->
     <!--      <Transition name="fade" mode="out-in">-->

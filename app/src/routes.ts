@@ -18,7 +18,7 @@ import ConfirmOtpPage from "./views/authentication/ConfirmOtpPage.vue";
 
 const routes = [
   {
-    path: "/app",
+    path: "/",
     children: [
       { path: "", component: Home },
       { path: "favourites", component: Favourites },
@@ -31,7 +31,7 @@ const routes = [
     component: AppLayout,
   },
   {
-    path: "/",
+    path: "/auth",
     coponent: AuthenticationLayout,
     children: [
       {

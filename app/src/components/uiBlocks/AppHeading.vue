@@ -1,10 +1,12 @@
 <template>
   <div
-    class="w-screen z-101 absolute top-2 bg-app-dark/80 h-[100vh]"
+    class="w-screen z-101 absolute top-2 left-0 bg-app-dark/80 h-[100vh]"
     @click="toggleSideNav"
     v-show="showSideNav"
   >
-    <AppNavigation class="w-[70vw] absolute bg-app-dark" />
+  <Transition name="fase">
+      <AppNavigation class="w-[70vw] absolute bg-app-dark" />
+  </Transition>
   </div>
   <header class="flex gap-x-4 items-center justify-between">
     <div class="gap-x-3 items-center hidden lg:flex">
@@ -38,6 +40,7 @@
         type="search"
         class="w-full h-10 outline-none border-none pr-6 placeholder:text-gray-50/10 placeholder:text-sm placeholder:leading-loose"
         placeholder="Search by artist, song or albulm"
+        v-show="!emptyLibrary"
       />
     </form>
     <div class="col-span-4 flex gap-x-3 items-center">
@@ -70,9 +73,36 @@
 import { Icon } from "@iconify/vue";
 import { goBack, goForward } from "../../hooks/router";
 import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import AppNavigation from "./AppNavigation.vue";
+import { useAudioBookLibrary } from "../../stores/library";
+const store = useAudioBookLibrary();
+const emptyLibrary = computed(() => store.audioBooks.length == 0);
 
 const showSideNav = ref(false);
 const toggleSideNav = () => (showSideNav.value = !showSideNav.value);
 </script>
+
+
+<style>
+/* we will explain what these classes do next! */
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
