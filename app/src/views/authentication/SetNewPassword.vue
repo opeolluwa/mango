@@ -5,7 +5,7 @@
       @click="router.back"
     />
 
-    <h1 class="text-5xl">Set new Password</h1>
+    <h1 class="text-5xl w-[70%]">Set new Password</h1>
     <p class="small text-gray-400">
       Get crank up where you stopped your last audio book!
     </p>
@@ -63,11 +63,3 @@ const router = useRouter();
 const sendForm = async () => {};
 </script>
 
-<style scoped>
-*::-webkit-scrollbar-thumb {
-  background-color: transparent;
-  opacity: 0.75;
-  border-radius: 6px;
-  border: 3px solid transparent;
-}
-</style>

@@ -5,7 +5,7 @@
       @click="router.back"
     />
 
-    <h1 class="text-5xl">Confirm reset OTP</h1>
+    <h1 class="text-5xl w-[70%]">Confirm reset OTP</h1>
     <p class="small text-gray-400">Return the reset otp back to us</p>
 
     <form
@@ -14,11 +14,9 @@
       class="mt-8 flex flex-col gap-y-8"
     >
       <div class="flex flex-col w-full">
-        <AppFormLabel text="Otp" for="email" />
         <PinInputRoot
           id="otp"
           v-model="value"
-          placeholder="○"
           class="flex gap-2 items-center justify-evenly mt-1"
           @complete="handleComplete"
         >
@@ -26,18 +24,17 @@
             v-for="(id, index) in 5"
             :key="id"
             :index="index"
-            class="w-12 h-12 bg-app-orange/50 border-app-gray hover:border-app-orange rounded-lg text-center shadow-sm border text-green10 placeholder:text-mauve8 focus:shadow-[0_0_0_2px] focus:shadow-stone-800 outline-none"
+            class="w-12 h-12 border-stone-600 hover:border-app-orange rounded-lg text-center shadow-sm border text-green10 placeholder:text-mauve8 focus:shadow-[0_0_0_2px] focus:shadow-stone-800 outline-none"
           />
         </PinInputRoot>
       </div>
       <div
         to="/forgotten-password"
-        class="text-stone-500 justify-end flex items-center"
+        class="text-stone-500 justify-end flex items-center text-[14px]"
       >
-        <small>Did&apos;t get an OTP? Request new after</small>
-        <small class="text-app-orange">86s</small>
+        <span>Did&apos;t get an OTP? Request new after</span>
+        <span class="text-app-orange">86s</span>
       </div>
-
 
       <RouterLink
         to="/set-new-password"
@@ -64,12 +61,3 @@ function handleComplete(e: string[]) {
 const router = useRouter();
 const sendForm = async () => {};
 </script>
-
-<style scoped>
-*::-webkit-scrollbar-thumb {
-  background-color: transparent;
-  opacity: 0.75;
-  border-radius: 6px;
-  border: 3px solid transparent;
-}
-</style>

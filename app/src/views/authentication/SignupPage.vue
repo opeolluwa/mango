@@ -5,7 +5,7 @@
       @click="router.back"
     />
 
-    <h1 class="text-5xl">Create a free account</h1>
+    <h1 class="text-5xl w-[70%]">Create a free account</h1>
     <p class="small text-gray-400">Register a free account to get started!</p>
 
     <form
@@ -97,11 +97,3 @@ const checkboxOne = ref(true);
 const sendForm = async () => {};
 </script>
 
-<style scoped>
-*::-webkit-scrollbar-thumb {
-  background-color: transparent;
-  opacity: 0.75;
-  border-radius: 6px;
-  border: 3px solid transparent;
-}
-</style>

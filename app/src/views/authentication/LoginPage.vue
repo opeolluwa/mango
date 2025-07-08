@@ -63,11 +63,3 @@ const router = useRouter();
 const sendForm = async () => {};
 </script>
 
-<style scoped>
-*::-webkit-scrollbar-thumb {
-  background-color: transparent;
-  opacity: 0.75;
-  border-radius: 6px;
-  border: 3px solid transparent;
-}
-</style>

@@ -9,6 +9,7 @@ set dotenv-required
 set dotenv-load := true
 set dotenv-path := "server/.env"
 set export :=  true
+# set working-directory :="server"
 
 #>> the root Server Commands, it abstarcts other commands like watch-server, build-server, kill-server, e.t.c
 @server target:

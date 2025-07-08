@@ -2,7 +2,7 @@
   <nav
     class="border-r border-r-gray-500/10 layout flex flex-col gap-y-16 h-screen text-app-white/60"
   >
-    <AppLogo class="parent px-8" />
+    <!-- <AppLogo class="parent px-8" /> -->
 
     <div class="nav-section">
       <AppLabeledIcon icon="mynaui:signal" label="Feed" to="/" />
