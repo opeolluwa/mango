@@ -1,11 +1,11 @@
 <template>
   <AppLayout class="overflow-x-hidden">
     <main class="layout pt-3 parent-element">
-      <router-view v-slot="{ Component }">
-        <transition name="fade">
-          <component :is="Component" />
-        </transition>
-      </router-view>
+      <RouterView v-slot="{ Component }">
+        <Transition>
+          <Component :is="Component" />
+        </Transition>
+      </RouterView>
     </main>
   </AppLayout>
 </template>

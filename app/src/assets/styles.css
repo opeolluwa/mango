@@ -56,22 +56,6 @@ body {
 
 }
 
-/* For global styling */
-/* *::-webkit-scrollbar {
-    width: 12px;
-}
-
-*::-webkit-scrollbar-track {
-    background: var(--color-app-dark);
-}
-
-*::-webkit-scrollbar-thumb {
-    background-color: var(--color-app-gray);
-    opacity: 0.75;
-    border-radius: 6px;
-    border: 3px solid var(--color-app-dark);
-} */
-
 
 /* Adds pointer cursor to buttons */
 @layer base {
