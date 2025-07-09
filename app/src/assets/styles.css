@@ -29,12 +29,24 @@
 
 html,
 body {
-    @apply bg-app-dark text-white/90;
+    @apply text-app-dark bg-white/90;
     overscroll-behavior: none;
     margin: 0;
     padding: 0;
     height: 100%;
     user-select: none;
+}
+
+@media (prefers-color-scheme: dark) {
+    html,
+    body {
+        @apply bg-app-dark text-white/90;
+        overscroll-behavior: none;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        user-select: none;
+    }
 }
 
 .icon {

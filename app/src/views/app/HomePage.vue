@@ -45,7 +45,7 @@
 
       <div class="mt-12 mb-10">
         <small class="text-gray-400">continue listening</small>
-        <div class="card flex rounded-xl gap-3 mt-4 bg-app-gray/70 py-4 px-2">
+        <div class="card flex rounded-xl gap-3 mt-4 bg-gray-200 dark:bg-app-gray/70 py-4 px-2">
           <img
             src="@/assets/test.jpg"
             class="contain w-[120px] h-[150px]"

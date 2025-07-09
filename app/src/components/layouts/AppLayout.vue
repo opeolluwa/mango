@@ -1,10 +1,7 @@
 <template>
-  <div
-    class="bg-app-dark h-screen w-screen text-white "
-  >
+  <div class="h-screen w-screen">
     <slot />
   </div>
 </template>
-
 
 <script lang="ts" setup></script>
