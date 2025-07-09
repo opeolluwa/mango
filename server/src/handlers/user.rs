@@ -6,10 +6,11 @@ use crate::{
         response::api_response::{ApiResponse, ApiResponseBuilder},
     },
     errors::user_service_error::UserServiceError,
-    services::user_service::UserService,
+    services::user::UserService,
 };
 
-use crate::services::user_service::UserServiceTrait;
+use crate::services::user::UserServiceTrait;
+
 pub async fn retrieve_information(
     State(user_service): State<UserService>,
     claim: Claims,
@@ -21,3 +22,9 @@ pub async fn retrieve_information(
         .message("User's profile fetched successfully")
         .build())
 }
+
+pub async fn update_profile_picture() {}
+
+pub async fn update_profile() {}
+
+pub async fn update_password() {}

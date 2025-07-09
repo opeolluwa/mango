@@ -5,7 +5,7 @@ use crate::adapters::dto::user::UserDto;
 use crate::errors::user_service_error::UserServiceError;
 use crate::repositories::user_repository::{UserRepository, UserRepositoryTrait};
 
-// use super::user_helper_service::{UserHelperService, UserHelperServiceTrait};
+// use super::user_helper_service::{ServiceHelpers, ServiceHelpersTrait};
 
 #[derive(Clone)]
 pub struct UserService {
@@ -16,7 +16,7 @@ impl UserService {
     pub fn init(pool: &Pool<Postgres>) -> Self {
         Self {
             user_repository: UserRepository::init(pool),
-            // user_helper_service: UserHelperService::init(),
+            // user_helper_service: ServiceHelpers::init(),
         }
     }
 }

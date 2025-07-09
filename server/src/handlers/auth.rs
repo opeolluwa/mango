@@ -14,7 +14,7 @@ use crate::{
         },
     },
     errors::auth_service_error::AuthenticationServiceError,
-    services::auth_service::{AuthenticationService, AuthenticationServiceTrait},
+    services::auth::{AuthenticationService, AuthenticationServiceTrait},
 };
 use axum::extract::State;
 use axum::http::StatusCode;

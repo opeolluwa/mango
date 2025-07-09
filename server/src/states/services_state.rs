@@ -1,7 +1,8 @@
 use axum::extract::FromRef;
 
 use crate::services::{
-    auth_service::AuthenticationService, root_service::RootService, user_service::UserService,
+    audio_book::AudioBooksService, auth::AuthenticationService, playlist::PlaylistService,
+    root::RootService, user::UserService,
 };
 
 #[derive(Clone)]
@@ -9,6 +10,8 @@ pub struct ServicesState {
     pub user_service: UserService,
     pub root_service: RootService,
     pub auth_service: AuthenticationService,
+    pub playlist_service: PlaylistService,
+    pub audio_book_service: AudioBooksService,
 }
 
 impl FromRef<ServicesState> for UserService {
@@ -26,5 +29,17 @@ impl FromRef<ServicesState> for RootService {
 impl FromRef<ServicesState> for AuthenticationService {
     fn from_ref(input: &ServicesState) -> AuthenticationService {
         input.auth_service.clone()
+    }
+}
+
+impl FromRef<ServicesState> for PlaylistService {
+    fn from_ref(input: &ServicesState) -> PlaylistService {
+        input.playlist_service.clone()
+    }
+}
+
+impl FromRef<ServicesState> for AudioBooksService {
+    fn from_ref(input: &ServicesState) -> AudioBooksService {
+        input.audio_book_service.clone()
     }
 }
