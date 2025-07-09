@@ -11,6 +11,7 @@ set dotenv-path := "server/.env"
 set export :=  true
 # set working-directory :="server"
 
+DOCKER_CMD := "docker compose -f server/docker-compose.yaml"
 #>> the root Server Commands, it abstarcts other commands like watch-server, build-server, kill-server, e.t.c
 [working-directory: 'server']
 @server target:
@@ -23,24 +24,19 @@ set export :=  true
 @server-lint:
     cargo fmt && cargo fix 
 
-[working-directory: 'server']
 @server-watch: 
-    docker compose up -d 
-    @just l
+    {{DOCKER_CMD}} up -d 
+    @just sl
 
-[working-directory: 'server']
 @server-logs:
-    docker compose logs -f --tail='30' app
+    {{DOCKER_CMD}} logs -f --tail='30' app
 
-[working-directory: 'server']
 @server-build:
     cargo run build --release 
 
-[working-directory: 'server']
 @server-kill:  
-    docker compose down -v 
+    {{DOCKER_CMD}} down -v 
 
-[working-directory: 'server']
 @server-restart:
     @just kill
     @just watch

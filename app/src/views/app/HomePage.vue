@@ -82,7 +82,7 @@
 import { Icon } from "@iconify/vue";
 import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
 import { computed } from "vue";
-import { createNewBook } from "../../hooks/book.ts";
+import { createNewBook } from "../../composibles/book.ts";
 import { useAudioBookLibrary } from "../../stores/library.ts";
 import AppDock from "../../components/uiBlocks/AppDock.vue";
 

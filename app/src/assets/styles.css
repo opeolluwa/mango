@@ -14,6 +14,10 @@
     height: 100% !important;
 }
 
+:root {
+    --accent-color: #FF6500;
+}
+
 @theme {
     --wrapper-padding: @apply px-8;
     --color-app-dark: #09090f;
@@ -34,7 +38,7 @@ body {
 }
 
 .icon {
-    @apply size-5 lg:size-5 cursor-pointer hover:text-app-orange ;
+    @apply size-5 lg:size-5 cursor-pointer hover:text-app-orange;
 }
 
 
@@ -48,9 +52,10 @@ body {
 } */
 
 .layout {
-    @apply pt-8 px-5 h-screen overflow-scroll scroll-smooth ;
+    @apply pt-8 px-5 h-screen overflow-scroll scroll-smooth;
 
 }
+
 /* For global styling */
 /* *::-webkit-scrollbar {
     width: 12px;
@@ -70,6 +75,7 @@ body {
 
 /* Adds pointer cursor to buttons */
 @layer base {
+
     button:not(:disabled),
     [role="button"]:not(:disabled) {
         cursor: pointer;
@@ -86,17 +92,15 @@ body {
 
 
 .input-box {
-  @apply border-app-orange/10 border hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange 
-
+    @apply border-app-orange/10 border hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange
 }
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+    transition: opacity 0.5s ease;
 }
 
 .fade-enter-from,
 .fade-leave-to {
-  opacity: 0;
+    opacity: 0;
 }
-

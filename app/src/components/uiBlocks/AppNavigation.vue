@@ -61,12 +61,11 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { createNewBook } from "../../hooks/book";
+import { createNewBook } from "../../composibles/book.ts";
 import PlayListTag from "../PlayListTag.vue";
 import AppLabeledIcon from "./AppLabeledIcon.vue";
-import AppLogo from "./AppLogo.vue";
 import { Icon } from "@iconify/vue";
-import { createNewPlaylist } from "../../hooks/modals.ts";
+import { createNewPlaylist } from "../../composibles/modals.ts";
 
 
 const playlists = ref<{ name: string; color: string }[]>([]);

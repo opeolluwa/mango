@@ -31,7 +31,7 @@
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
-import { playAudioBook } from "../hooks/book";
+import { playAudioBook } from "../composibles/book";
 
 const props = defineProps<{
   fileName: string;

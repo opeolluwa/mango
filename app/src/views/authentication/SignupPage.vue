@@ -10,7 +10,7 @@
 
     <form
       action=""
-      @submit.prevent="sendForm"
+      @submit.prevent="submitForm"
       class="mt-8 flex flex-col gap-y-8"
     >
       <!-- <div class="flex flex-col w-full">
@@ -59,7 +59,7 @@
         >
           <CheckboxRoot
             v-model="checkboxOne"
-            class="hover:bg-app-orange flex h-5 w-5 appearance-none items-center justify-center rounded-md bg-app-orange shadow-sm border-none outline-none "
+            class="hover:bg-app-orange flex h-5 w-5 appearance-none items-center justify-center rounded-md bg-app-orange shadow-sm border-none outline-none"
           >
             <CheckboxIndicator
               class="bg-app-orange h-full w-full rounded flex items-center justify-center"
@@ -72,12 +72,7 @@
           >
         </label>
       </div>
-      <AppButton
-        type="submit"
-        class="bg-linear-210 rounded-lg font-medium text-[18px] from-app-orange/20 via-15% via-app-dark to bg-app-orange w-full"
-      >
-        Continue
-      </AppButton>
+      <SubmitButton :loading="processingRequest" />
       <RouterLink to="/login" class="text-stone-500 flex justify-end -mt-4"
         >Already have an account? Login</RouterLink
       >
@@ -86,14 +81,19 @@
 </template>
 
 <script lang="ts" setup>
-import AppButton from "../../components/button/AppButton.vue";
-import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
-import { useRouter } from "vue-router";
 import { CheckboxIndicator, CheckboxRoot } from "reka-ui";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+import AppFormLabel from "../../components/form/AppFormLabel.vue";
 const router = useRouter();
 const checkboxOne = ref(true);
-const sendForm = async () => {};
-</script>
+const processingRequest = ref(false);
+const submitForm = async () => {
+  processingRequest.value = true;
 
+  window.setTimeout(() => {
+    processingRequest.value = false;
+  }, 3000);
+};
+</script>

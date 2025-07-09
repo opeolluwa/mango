@@ -31,3 +31,12 @@
 LICENSE
 README.md
 .env.production
+
+target
+docs 
+docker
+.github
+.env*
+.git*
+*md
+LICENSE

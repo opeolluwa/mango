@@ -14,7 +14,7 @@
       class="grid grid-cols-2 items-center gap-x-4 justify-between font-medium mt-12"
     >
       <AppButtonLink
-        href="/login"
+        href="/login2"
         class="border-app-orange col-span-1 text-app-orange rounded-2xl border flex justify-center"
         >Login
       </AppButtonLink>

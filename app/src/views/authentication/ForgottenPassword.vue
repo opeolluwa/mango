@@ -12,7 +12,7 @@
 
     <form
       action=""
-      @submit.prevent="sendForm"
+      @submit.prevent="submitForm"
       class="mt-8 flex flex-col gap-y-8"
     >
       <div class="flex flex-col w-full">
@@ -25,12 +25,7 @@
         />
       </div>
 
-      <AppButton
-        type="submit"
-        class="bg-linear-210 rounded-lg font-medium text-[18px] from-app-orange/20 via-15% via-app-dark to-app-orange w-full"
-      >
-        Continue
-      </AppButton>
+      <SubmitButton :loading="processingRequest" />
       <RouterLink to="/login" class="text-stone-500 flex justify-end -mt-4"
         >Return to login</RouterLink
       >
@@ -45,13 +40,19 @@
 </template>
 
 <script lang="ts" setup>
-import AppButton from "../../components/button/AppButton.vue";
-import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
+import AppFormLabel from "../../components/form/AppFormLabel.vue";
+import SubmitButton from "../../components/form/SubmitButton.vue";
 
 const router = useRouter();
-const sendForm = async () => {};
+const processingRequest = ref(false);
+const submitForm = async () => {
+  processingRequest.value = true;
+
+  window.setTimeout(() => {
+    processingRequest.value = false;
+  }, 3000);
+};
 </script>
-
-

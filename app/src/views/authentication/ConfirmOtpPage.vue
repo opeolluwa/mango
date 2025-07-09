@@ -1,4 +1,13 @@
 <template>
+  <div
+    class="w-full h-full bg-gray-900/60 absolute left-0 bottom-0 flex justify-center items-center z-500"
+    v-if="processingRequest"
+  >
+    <Transition>
+      <FormLoader />
+    </Transition>
+  </div>
+
   <div class="layout h-screen overflow-y-hidden">
     <ArrowLongLeftIcon
       class="size-12 text-app-orange mb-4"
@@ -10,7 +19,7 @@
 
     <form
       action=""
-      @submit.prevent="sendForm"
+      @submit.prevent="submitForm"
       class="mt-8 flex flex-col gap-y-8"
     >
       <div class="flex flex-col w-full">
@@ -46,18 +55,21 @@
 </template>
 
 <script lang="ts" setup>
-import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
 import { useRouter } from "vue-router";
 import { PinInputInput, PinInputRoot } from "reka-ui";
 import { ref } from "vue";
+import FormLoader from "../../components/form/FormLoader.vue";
 
 const value = ref<string[]>([]);
-function handleComplete(e: string[]) {
-  // eslint-disable-next-line no-alert
-  alert(e.join(""));
+function handleComplete(otp: string[]) {
+  console.log(otp);
+  submitForm();
 }
 
 const router = useRouter();
-const sendForm = async () => {};
+const processingRequest = ref(false);
+const submitForm = async () => {
+  processingRequest.value = true;
+};
 </script>
