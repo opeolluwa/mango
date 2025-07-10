@@ -136,6 +136,8 @@ DROP TABLE audio_books_old;
     ];
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_stronghold::Builder::new(|pass| todo!()).build())
+        .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_http::init())
         .setup(|app| {
             #[cfg(desktop)]
