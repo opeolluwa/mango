@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+
+
+
+* {
+    box-sizing: border-box;
+}
+
+
+#app {
+    position: fixed;
+    height: 100% !important;
+}
+
+:root {
+    --accent-color: #FF6500;
+}
+
+@theme {
+    --wrapper-padding: @apply px-8;
+    --color-app-dark: #09090f;
+    --color-app-red: #F7374F;
+    --color-app-orange: #FF6500;
+    --color-app-gray: #282830
+}
+
+
+html,
+body {
+    overscroll-behavior: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    user-select: none;
+    background: var(--color-app-dark);
+    color: #f7f7f7;
+}
+
+main,
+nav,
+footer {
+    @apply px-4 md:px-28;
+}
