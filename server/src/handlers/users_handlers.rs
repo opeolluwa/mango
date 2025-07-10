@@ -1,15 +1,14 @@
 use axum::extract::State;
 
 use crate::{
-    adapters::{
-        dto::{jwt::Claims, user::UserDto},
-        response::api_response::{ApiResponse, ApiResponseBuilder},
-    },
+    adapters::api_response::{ApiResponse, ApiResponseBuilder},
+    adapters::jwt::Claims,
+    adapters::users::UserDto,
     errors::user_service_error::UserServiceError,
-    services::user::UserService,
+    services::user_service::UserService,
 };
 
-use crate::services::user::UserServiceTrait;
+use crate::services::user_service::UserServiceTrait;
 
 pub async fn retrieve_information(
     State(user_service): State<UserService>,

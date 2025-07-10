@@ -1,7 +1,7 @@
 use axum::{http::StatusCode, response::IntoResponse};
 
-use crate::adapters::response::api_response::ApiResponseBuilder;
-use crate::adapters::response::api_response::EmptyResponseBody;
+use crate::adapters::api_response::ApiResponseBuilder;
+use crate::adapters::api_response::EmptyResponseBody;
 
 #[derive(thiserror::Error, Debug, Clone)]
 pub enum AppError {

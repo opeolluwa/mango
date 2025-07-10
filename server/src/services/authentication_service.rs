@@ -1,23 +1,18 @@
 use sqlx::{Pool, Postgres};
 
-use crate::adapters::dto::jwt::{Claims, JwtCredentials, TEN_MINUTES, TWENTY_FIVE_MINUTES};
+use crate::adapters::jwt::{Claims, JwtCredentials, TEN_MINUTES, TWENTY_FIVE_MINUTES};
 use crate::entities::user::UserEntity;
 use crate::{
-    adapters::{
-        requests::auth::{
-            CreateUserRequest, ForgottenPasswordRequest, LoginRequest, RefreshTokenRequest,
-            SetNewPasswordRequest, VerifyAccountRequest,
-        },
-        response::auth::{
-            ForgottenPasswordResponse, LoginResponse, RefreshTokenResponse, SetNewPasswordResponse,
-            VerifyAccountResponse,
-        },
+    adapters::authentication::{
+        CreateUserRequest, ForgottenPasswordRequest, ForgottenPasswordResponse, LoginRequest,
+        LoginResponse, RefreshTokenRequest, RefreshTokenResponse, SetNewPasswordRequest,
+        SetNewPasswordResponse, VerifyAccountRequest, VerifyAccountResponse,
     },
     errors::{
         auth_service_error::AuthenticationServiceError, user_service_error::UserServiceError,
     },
     repositories::user_repository::{UserRepository, UserRepositoryTrait},
-    services::helper::{ServiceHelpers, ServiceHelpersTrait},
+    services::helper_service::{ServiceHelpers, ServiceHelpersTrait},
 };
 
 #[derive(Clone)]

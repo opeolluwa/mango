@@ -1,6 +1,6 @@
-use crate::adapters::response::api_response::{ApiResponse, ApiResponseBuilder};
-use crate::services::root::RootServiceTrait;
-use crate::{errors::app_error::AppError, services::root::RootService};
+use crate::adapters::api_response::{ApiResponse, ApiResponseBuilder};
+use crate::services::root_serice::RootServiceTrait;
+use crate::{errors::app_error::AppError, services::root_serice::RootService};
 use axum::extract::State;
 
 pub async fn health_check(

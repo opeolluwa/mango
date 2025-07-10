@@ -1,6 +1,6 @@
-pub mod audio_book;
-pub mod auth;
-pub mod helper;
-pub mod playlist;
-pub mod root;
-pub mod user;
+pub mod audio_book_service;
+pub mod authentication_service;
+pub mod helper_service;
+pub mod playlist_service;
+pub mod root_serice;
+pub mod user_service;

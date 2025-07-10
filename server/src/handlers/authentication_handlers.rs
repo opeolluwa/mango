@@ -1,20 +1,18 @@
-use crate::adapters::dto::jwt::Claims;
-use crate::adapters::requests::auth::VerifyAccountRequest;
-use crate::adapters::response::api_response::ApiResponseBuilder;
-use crate::adapters::response::auth::{ForgottenPasswordResponse, RefreshTokenResponse};
+use crate::adapters::api_response::ApiResponseBuilder;
+use crate::adapters::authentication::VerifyAccountRequest;
+use crate::adapters::authentication::{ForgottenPasswordResponse, RefreshTokenResponse};
+use crate::adapters::jwt::Claims;
 use crate::middlewares::validator::ValidatedRequest;
 use crate::{
     adapters::{
-        requests::auth::{
-            CreateUserRequest, ForgottenPasswordRequest, LoginRequest, SetNewPasswordRequest,
-        },
-        response::{
-            api_response::ApiResponse,
-            auth::{CreateUserResponse, LoginResponse, VerifyAccountResponse},
+        api_response::ApiResponse,
+        authentication::{
+            CreateUserRequest, CreateUserResponse, ForgottenPasswordRequest, LoginRequest,
+            LoginResponse, SetNewPasswordRequest, VerifyAccountResponse,
         },
     },
     errors::auth_service_error::AuthenticationServiceError,
-    services::auth::{AuthenticationService, AuthenticationServiceTrait},
+    services::authentication_service::{AuthenticationService, AuthenticationServiceTrait},
 };
 use axum::extract::State;
 use axum::http::StatusCode;
