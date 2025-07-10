@@ -83,13 +83,10 @@ pub struct MarkFavouriteRequest {}
 #[serde(rename_all = "camelCase")]
 pub struct MarkFavouriteResponse {}
 
-
-
 #[derive(Debug, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 
 pub struct FetchBookRequest {}
-
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
