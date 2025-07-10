@@ -4,7 +4,7 @@ use axum::{
 };
 
 use crate::{
-    controllers::auth::{
+    handlers::authentication_handlers::{
         create_account, forgotten_password, login, request_refresh_token, set_new_password,
         verify_account,
     },

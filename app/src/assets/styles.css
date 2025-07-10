@@ -14,6 +14,10 @@
     height: 100% !important;
 }
 
+:root {
+    --accent-color: #FF6500;
+}
+
 @theme {
     --wrapper-padding: @apply px-8;
     --color-app-dark: #09090f;
@@ -25,7 +29,7 @@
 
 html,
 body {
-    @apply bg-app-dark text-white/90;
+    @apply text-app-dark bg-white/90;
     overscroll-behavior: none;
     margin: 0;
     padding: 0;
@@ -33,8 +37,20 @@ body {
     user-select: none;
 }
 
+@media (prefers-color-scheme: dark) {
+    html,
+    body {
+        @apply bg-app-dark text-white/90;
+        overscroll-behavior: none;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        user-select: none;
+    }
+}
+
 .icon {
-    @apply size-5 lg:size-5 cursor-pointer hover:text-app-orange ;
+    @apply size-5 lg:size-5 cursor-pointer hover:text-app-orange;
 }
 
 
@@ -48,28 +64,14 @@ body {
 } */
 
 .layout {
-    @apply pt-8 px-3 h-screen overflow-scroll scroll-smooth scroll-m-1;
+    @apply pt-8 px-5 h-screen overflow-scroll scroll-smooth;
 
-}
-/* For global styling */
-*::-webkit-scrollbar {
-    width: 12px;
-}
-
-*::-webkit-scrollbar-track {
-    background: var(--color-app-dark);
-}
-
-*::-webkit-scrollbar-thumb {
-    background-color: var(--color-app-gray);
-    opacity: 0.75;
-    border-radius: 6px;
-    border: 3px solid var(--color-app-dark);
 }
 
 
 /* Adds pointer cursor to buttons */
 @layer base {
+
     button:not(:disabled),
     [role="button"]:not(:disabled) {
         cursor: pointer;
@@ -86,17 +88,15 @@ body {
 
 
 .input-box {
-  @apply border-app-orange/10 border hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange 
-
+    @apply border-app-orange/10 border hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange
 }
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+    transition: opacity 0.5s ease;
 }
 
 .fade-enter-from,
 .fade-leave-to {
-  opacity: 0;
+    opacity: 0;
 }
-

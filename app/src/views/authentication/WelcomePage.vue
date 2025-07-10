@@ -1,6 +1,6 @@
 <template>
   <div
-    class="px-8 flex flex-col h-screen pb-[15vh] justify-end w-screen bg-linear-210 from-app-orange/60 from-10% via-app-dark to-app-orange/20 relative"
+    class="bg-app-dark text-white/90 px-8 flex flex-col h-screen pb-[15vh] justify-end w-screen bg-linear-210 from-app-orange/60 from-10% via-app-dark to-app-orange/20 relative"
   >
     <AppLogo
       class="text-center rounded-full border-app-orange/10 bg-app-dark/10 border-2 w-fit mx-auto px-4 py-[2px]"
@@ -14,7 +14,7 @@
       class="grid grid-cols-2 items-center gap-x-4 justify-between font-medium mt-12"
     >
       <AppButtonLink
-        href="/login"
+        href="/login2"
         class="border-app-orange col-span-1 text-app-orange rounded-2xl border flex justify-center"
         >Login
       </AppButtonLink>

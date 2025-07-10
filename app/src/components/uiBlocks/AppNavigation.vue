@@ -2,7 +2,7 @@
   <nav
     class="border-r border-r-gray-500/10 layout flex flex-col gap-y-16 h-screen text-app-white/60"
   >
-    <AppLogo class="parent px-8" />
+    <!-- <AppLogo class="parent px-8" /> -->
 
     <div class="nav-section">
       <AppLabeledIcon icon="mynaui:signal" label="Feed" to="/" />
@@ -61,12 +61,11 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { createNewBook } from "../../hooks/book";
+import { createNewBook } from "../../composibles/book.ts";
 import PlayListTag from "../PlayListTag.vue";
 import AppLabeledIcon from "./AppLabeledIcon.vue";
-import AppLogo from "./AppLogo.vue";
 import { Icon } from "@iconify/vue";
-import { createNewPlaylist } from "../../hooks/modals.ts";
+import { createNewPlaylist } from "../../composibles/modals.ts";
 
 
 const playlists = ref<{ name: string; color: string }[]>([]);

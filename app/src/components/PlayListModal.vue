@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import {ref} from "vue";
-import {Playlist} from "../hooks/database.ts";
+import {Playlist} from "../composibles/database.ts";
 import {message} from '@tauri-apps/plugin-dialog';
 import _ from "lodash";
 import {closeModal} from "jenesius-vue-modal";

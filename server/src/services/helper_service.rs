@@ -2,20 +2,20 @@ use crate::errors::user_service_error::UserServiceError;
 use bcrypt::{DEFAULT_COST, hash, verify};
 
 #[derive(Clone)]
-pub struct UserHelperService {}
+pub struct ServiceHelpers {}
 
-impl UserHelperService {
+impl ServiceHelpers {
     pub fn init() -> Self {
         Self {}
     }
 }
 
-pub trait UserHelperServiceTrait {
+pub trait ServiceHelpersTrait {
     fn hash_password(&self, raw_password: &str) -> Result<String, UserServiceError>;
     fn validate_password(&self, raw_password: &str, hash: &str) -> Result<bool, UserServiceError>;
 }
 
-impl UserHelperServiceTrait for UserHelperService {
+impl ServiceHelpersTrait for ServiceHelpers {
     fn hash_password(&self, raw_password: &str) -> Result<String, UserServiceError> {
         hash(raw_password.trim(), DEFAULT_COST)
             .map_err(|err| UserServiceError::OperationFailed(err.to_string()))

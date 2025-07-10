@@ -1,15 +1,15 @@
 use axum::extract::State;
 
 use crate::{
-    adapters::{
-        dto::{jwt::Claims, user::UserDto},
-        response::api_response::{ApiResponse, ApiResponseBuilder},
-    },
+    adapters::api_response::{ApiResponse, ApiResponseBuilder},
+    adapters::jwt::Claims,
+    adapters::users::UserDto,
     errors::user_service_error::UserServiceError,
     services::user_service::UserService,
 };
 
 use crate::services::user_service::UserServiceTrait;
+
 pub async fn retrieve_information(
     State(user_service): State<UserService>,
     claim: Claims,
@@ -21,3 +21,9 @@ pub async fn retrieve_information(
         .message("User's profile fetched successfully")
         .build())
 }
+
+pub async fn update_profile_picture() {}
+
+pub async fn update_profile() {}
+
+pub async fn update_password() {}

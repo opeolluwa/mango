@@ -5,14 +5,14 @@
       @click="router.back"
     />
 
-    <h1 class="text-5xl">Set new Password</h1>
+    <h1 class="text-5xl w-[70%]">Set new Password</h1>
     <p class="small text-gray-400">
       Get crank up where you stopped your last audio book!
     </p>
 
     <form
       action=""
-      @submit.prevent="sendForm"
+      @submit.prevent="submitForm"
       class="mt-8 flex flex-col gap-y-8"
     >
       <div class="flex flex-col w-full">
@@ -34,12 +34,7 @@
           placeholder="********"
         />
       </div>
-      <AppButton
-        type="submit"
-        class="bg-linear-210 rounded-lg font-medium text-[18px] from-app-orange/20 via-15% via-app-dark to bg-app-orange w-full"
-      >
-        Continue
-      </AppButton>
+      <SubmitButton :loading="processingRequest" />
       <RouterLink
         to="/forgotten-password"
         class="text-stone-500 flex justify-end -mt-4"
@@ -54,20 +49,14 @@
 </template>
 
 <script lang="ts" setup>
-import AppButton from "../../components/button/AppButton.vue";
-import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
+import AppFormLabel from "../../components/form/AppFormLabel.vue";
 
 const router = useRouter();
-const sendForm = async () => {};
+const processingRequest = ref(false);
+const submitForm = async () => {
+  processingRequest.value = true;
+};
 </script>
-
-<style scoped>
-*::-webkit-scrollbar-thumb {
-  background-color: transparent;
-  opacity: 0.75;
-  border-radius: 6px;
-  border: 3px solid transparent;
-}
-</style>

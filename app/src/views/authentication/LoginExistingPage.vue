@@ -5,10 +5,8 @@
       @click="router.back"
     />
 
-    <h1 class="text-5xl">Login to continue!</h1>
-    <p class="small text-gray-400">
-      Get crank up where you stopped your last audio book!
-    </p>
+    <h1 class="text-5xl">Welcome back, Emmanuel!</h1>
+    <p class="small text-gray-400">Login with your password to continue</p>
 
     <form
       action=""
@@ -16,33 +14,17 @@
       class="mt-8 flex flex-col gap-y-8"
     >
       <div class="flex flex-col w-full">
-        <AppFormLabel text="Email" for="email" />
+        <AppFormLabel text="Password" for="password" />
         <input
-          id="email"
+          id="password"
           class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
-          type="text"
-          placeholder="jane@mailer.com"
-        />
-      </div>
-
-      <div class="flex flex-col w-full">
-        <AppFormLabel text="password" for="email" />
-        <input
-          id="email"
-          class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
-          type="text"
+          type="password"
           placeholder="********"
         />
       </div>
       <SubmitButton type="submit" :loading="processingRequest" />
-      <RouterLink
-        to="/forgotten-password"
-        class="text-stone-500 flex justify-end -mt-4"
-        >Forgotten password?</RouterLink
-      >
-
-      <RouterLink to="/app" class="text-stone-500 flex justify-end -mt-4"
-        >go to app</RouterLink
+      <RouterLink to="/login" class="text-stone-500 flex justify-end -mt-4"
+        >Not emmanuel?</RouterLink
       >
     </form>
   </div>

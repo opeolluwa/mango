@@ -1,5 +1,5 @@
 <template>
-  <Label class="font-medium text-stone-500 leading-[35px]" >
+  <Label class="font-medium text-stone-500 leading-[35px]">
     {{ text }}
   </Label>
 </template>
@@ -8,7 +8,7 @@
 import { Label } from "reka-ui";
 
 const props = defineProps(["text", "for"]);
- const {text, } = props
+const { text } = props;
 </script>
 
 <style scoped></style>

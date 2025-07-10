@@ -3,7 +3,7 @@
 use uralium_lib::{errors, routes, shared};
 
 use errors::app_error::AppError;
-use routes::router::load_routes;
+use routes::app_router::load_routes;
 use shared::extract_env::extract_env;
 use sqlx::migrate::Migrator;
 use sqlx::postgres::PgPoolOptions;
@@ -48,4 +48,3 @@ async fn main() -> Result<(), AppError> {
 
     Ok(())
 }
-

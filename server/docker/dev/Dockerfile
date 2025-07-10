@@ -2,13 +2,16 @@ FROM rust:1.86.0-slim-bullseye
 
 ENV CARGO_TARGET_DIR=/cargo-target 
 
+# RUN apt update && apt install libmp3lame0
+# RUN lame --version 
+
 WORKDIR /app
 
 COPY . .
 
 RUN cargo install cargo-watch
 
-RUN argo build 
+RUN cargo build 
 
 VOLUME ["/app", "/cargo-target", "/usr/local/cargo/registry"]
 

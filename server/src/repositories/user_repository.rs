@@ -4,7 +4,8 @@ use sqlx::{Pool, Postgres};
 use uuid::Uuid;
 
 use crate::{
-    adapters::{dto::user::UserDto, requests::auth::CreateUserRequest},
+    adapters::authentication::CreateUserRequest,
+    adapters::users::UserDto,
     entities::user::UserEntity,
     errors::{common_service_error::ServiceError, user_service_error::UserServiceError},
 };
