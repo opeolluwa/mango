@@ -49,8 +49,6 @@ pub struct VerifyAccountRequest {
 
 pub type RefreshTokenRequest = Claims;
 
-
-
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateUserResponse {

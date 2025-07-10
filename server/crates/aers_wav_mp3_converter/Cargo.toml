@@ -1,0 +1,6 @@
+[package]
+name = "aers_wav_mp3_converter"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

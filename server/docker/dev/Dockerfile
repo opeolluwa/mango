@@ -2,6 +2,10 @@ FROM rust:1.86.0-slim-bullseye
 
 ENV CARGO_TARGET_DIR=/cargo-target 
 
+RUN apt-get update && \
+    apt-get install -y pkg-config libssl-dev build-essential && \
+    rm -rf /var/lib/apt/lists/*
+    
 # RUN apt update && apt install libmp3lame0
 # RUN lame --version 
 

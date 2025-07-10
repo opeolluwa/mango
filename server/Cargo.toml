@@ -11,6 +11,10 @@ name = "uralium_lib"
 path = "src/lib.rs"
 
 [dependencies]
+aers_audify = { version = "0.1.0", path = "crates/aers_audify" }
+aers_email_client = { version = "0.1.0", path = "crates/aers_email_client" }
+aers_imagekit_client = { version = "0.1.0", path = "crates/aers_imagekit_client" }
+aers_wav_mp3_converter = { version = "0.1.0", path = "crates/aers_wav_mp3_converter" }
 axum = { version = "0.8.3", features = ["tracing"] }
 axum-extra = { version = "0.10.1", features = ["typed-header"] }
 bcrypt = "0.17.0"

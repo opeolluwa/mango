@@ -5,7 +5,6 @@ use crate::adapters::users::UserDto;
 use crate::errors::user_service_error::UserServiceError;
 use crate::repositories::user_repository::{UserRepository, UserRepositoryTrait};
 
-
 #[derive(Clone)]
 pub struct UserService {
     user_repository: UserRepository,
