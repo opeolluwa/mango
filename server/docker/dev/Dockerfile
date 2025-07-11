@@ -13,6 +13,7 @@ RUN set -e && \
         llvm-dev \
         cmake \
         git \
+        zlib1g-dev \
         build-essential && \
     rm -rf /var/lib/apt/lists/*
 
