@@ -13,7 +13,7 @@
   <main class="pt-28 bg-blend-multiply backdrop-grayscale-100 bg-linear-to-bl rounded-t-xl shadow-current from-app-orange/30 via-app-dark to-app-orange/50  bg-center">
     <div id="hero" class="flex justify-center items-center mx-auto">
       <div>
-        <h1 class="text-7xl text-balance">Supercharge your text documents</h1>
+        <h1 class="text-7xl w-fit text-balance">Supercharge your text documents</h1>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure
           temporibus deserunt q.

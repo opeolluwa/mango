@@ -6,7 +6,8 @@ edition = "2024"
 
 
 [dependencies]
-extractous = "0.3.0"
-piper-rs = "0.1.9"
+espeak-rs-sys = "0.1.9"
+# extractous = "0.3.0"
+piper-rs = {path = "../../../../piper-rs"}
 serde = { version = "1.0.219", features = ["derive"] }
 thiserror = "2.0.12"
