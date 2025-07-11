@@ -15,35 +15,35 @@ pub struct AudioBooksService {
 }
 
 pub trait AudioBooksServiceExt {
-    async fn create_new(
+    fn create_new(
         &self,
         request: CreateAudioBookRequest,
-    ) -> Result<CreateAudioBookResponse, ServiceError>;
+    ) -> impl std::future::Future<Output = Result<CreateAudioBookResponse, ServiceError>> + Send;
 
-    async fn add_to_playlist(
+    fn add_to_playlist(
         &self,
         request: AddBookToPlaylistRequest,
-    ) -> Result<AddBookToPlaylistResponse, ServiceError>;
+    ) -> impl std::future::Future<Output = Result<AddBookToPlaylistResponse, ServiceError>> + Send;
 
-    async fn remove_from_playlist(
+    fn remove_from_playlist(
         &self,
         request: RemoveBookFromPlaylistRequest,
-    ) -> Result<RemoveBookFromPlaylistResponse, ServiceError>;
+    ) -> impl std::future::Future<Output = Result<RemoveBookFromPlaylistResponse, ServiceError>> + Send;
 
-    async fn update_book(
+    fn update_book(
         &self,
         request: UpdateBookRequest,
-    ) -> Result<UpdateBookResponse, ServiceError>;
+    ) -> impl std::future::Future<Output = Result<UpdateBookResponse, ServiceError>> + Send;
 
-    async fn delete_book(
+    fn delete_book(
         &self,
         request: DeleteBookRequest,
-    ) -> Result<DeleteBookResponse, ServiceError>;
+    ) -> impl std::future::Future<Output = Result<DeleteBookResponse, ServiceError>> + Send;
 
-    async fn mark_favourite(
+    fn mark_favourite(
         &self,
         request: MarkFavouriteRequest,
-    ) -> Result<MarkFavouriteResponse, ServiceError>;
+    ) -> impl std::future::Future<Output = Result<MarkFavouriteResponse, ServiceError>> + Send;
 }
 
 impl AudioBooksService {

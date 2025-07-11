@@ -22,27 +22,51 @@ impl AudioBookRepository {
 }
 
 pub trait AudioBookRepositoryExt {
-    async fn create(&self, payload: &CreateAudioBook) -> Result<(), ServiceError>;
+    fn create(
+        &self,
+        payload: &CreateAudioBook,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 
-    async fn find_one(&self, payload: &CreateAudioBook) -> Result<Option<AudioBook>, ServiceError>;
+    fn find_one(
+        &self,
+        payload: &CreateAudioBook,
+    ) -> impl std::future::Future<Output = Result<Option<AudioBook>, ServiceError>> + Send;
 
-    async fn find_many(&self, payload: &CreateAudioBook) -> Result<Vec<AudioBook>, ServiceError>;
+    fn find_many(
+        &self,
+        payload: &CreateAudioBook,
+    ) -> impl std::future::Future<Output = Result<Vec<AudioBook>, ServiceError>> + Send;
 
-    async fn update(&self, payload: &UpdateAudioBook) -> Result<Option<AudioBook>, ServiceError>;
+    fn update(
+        &self,
+        payload: &UpdateAudioBook,
+    ) -> impl std::future::Future<Output = Result<Option<AudioBook>, ServiceError>> + Send;
 
-    async fn delete(&self, identifier: &Uuid) -> Result<(), ServiceError>;
+    fn delete(
+        &self,
+        identifier: &Uuid,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 
-    async fn add_to_playlist(
+    fn add_to_playlist(
         &self,
         identifier: &Uuid,
         playlist_identifier: &Uuid,
-    ) -> Result<(), ServiceError>;
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 
-    async fn remove_from_playlist(&self, identifier: &Uuid) -> Result<(), ServiceError>;
+    fn remove_from_playlist(
+        &self,
+        identifier: &Uuid,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 
-    async fn mark_favourite(&self, identifier: &Uuid) -> Result<(), ServiceError>;
+    fn mark_favourite(
+        &self,
+        identifier: &Uuid,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 
-    async fn unmark_favourite(&self, identifier: &Uuid) -> Result<(), ServiceError>;
+    fn unmark_favourite(
+        &self,
+        identifier: &Uuid,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 }
 
 impl AudioBookRepositoryExt for AudioBookRepository {

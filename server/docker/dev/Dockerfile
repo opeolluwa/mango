@@ -1,11 +1,22 @@
-FROM rust:1.86.0-slim-bullseye
+FROM rust:1.86.0-slim
 
 ENV CARGO_TARGET_DIR=/cargo-target 
 
-RUN apt-get update && \
-    apt-get install -y pkg-config libssl-dev build-essential && \
+RUN set -e && \
+    apt-get update -q && \
+    apt-get install -yq \
+        libgcc-s1 \
+        libssl-dev \
+        pkg-config \
+        clang \
+        libclang-dev \
+        llvm-dev \
+        cmake \
+        git \
+        build-essential && \
     rm -rf /var/lib/apt/lists/*
-    
+
+RUN rustup component add rustfmt
 # RUN apt update && apt install libmp3lame0
 # RUN lame --version 
 
