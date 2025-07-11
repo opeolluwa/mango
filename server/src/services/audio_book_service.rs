@@ -5,7 +5,7 @@ use crate::adapters::audio_books::{
     UpdateBookRequest, UpdateBookResponse,
 };
 use crate::errors::common_service_error::ServiceError;
-use crate::repositories::audio_book_repository::{AudioBookRepository, AudioBookRepositoryExt};
+use crate::repositories::audio_book_repository::AudioBookRepository;
 use sqlx::Postgres;
 use sqlx::pool::Pool;
 
