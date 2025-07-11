@@ -3,6 +3,8 @@ alias sk:= server-kill
 alias sb:= server-build
 alias sl:= server-logs
 alias sr:= server-restart
+alias srb:= server-restart
+
 
 
 set dotenv-required
@@ -38,5 +40,8 @@ DOCKER_CMD := "docker compose -f server/docker-compose.yaml"
     {{DOCKER_CMD}} down -v 
 
 @server-restart:
-    @just kill
-    @just watch
+    @just server-kill
+    @just server-watch
+
+@server-rebuild:
+    docker compose -f server/docker-compose.yaml up --build 

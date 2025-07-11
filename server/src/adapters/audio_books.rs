@@ -8,7 +8,7 @@ use validator::Validate;
 
 pub struct CreateAudioBook {
     pub name: String,
-    pub url: String,
+    pub src: String,
     pub user_identifier: Uuid,
     pub playlist_identifier: Option<Uuid>,
 }
@@ -37,7 +37,11 @@ pub struct UpdateAudioBook {
 
 #[derive(Debug, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
-pub struct CreateAudioBookRequest {}
+pub struct CreateAudioBookRequest {
+    pub name: String,
+    pub src: String,
+    pub playlist_identifier: Option<Uuid>,
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -92,3 +96,10 @@ pub struct FetchBookRequest {}
 #[serde(rename_all = "camelCase")]
 
 pub struct FetchBookResponse {}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FindAudioBook {
+    pub user_identifier: Uuid,
+    pub identifier: Uuid,
+}
