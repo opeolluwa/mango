@@ -12,8 +12,6 @@ use std::{
     path::Path,
 };
 
-
-
 #[tokio::main]
 async fn main() -> Result<(), AppError> {
     tracing_subscriber::fmt()

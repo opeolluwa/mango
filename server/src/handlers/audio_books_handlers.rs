@@ -10,7 +10,7 @@ use crate::adapters::audio_books::{
 use crate::adapters::jwt::Claims;
 use crate::errors::common_service_error::ServiceError;
 use crate::middlewares::validator::ValidatedRequest;
-use crate::services::audio_book_service::AudioBooksService;
+use crate::services::audio_book_service::{AudioBooksService, AudioBooksServiceExt};
 
 pub async fn fetch_book(
     State(audio_book_service): State<AudioBooksService>,
@@ -25,6 +25,9 @@ pub async fn create_new_book(
     claim: Claims,
     ValidatedRequest(request): ValidatedRequest<CreateAudioBookRequest>,
 ) -> Result<ApiResponse<CreateAudioBookResponse>, ServiceError> {
+    audio_book_service
+        .create_new(&request, &claim.identifier)
+        .await?;
     todo!()
 }
 

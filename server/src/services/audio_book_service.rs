@@ -1,13 +1,14 @@
 use crate::adapters::audio_books::{
-    AddBookToPlaylistRequest, AddBookToPlaylistResponse, CreateAudioBookRequest,
+    AddBookToPlaylistRequest, AddBookToPlaylistResponse, CreateAudioBook, CreateAudioBookRequest,
     CreateAudioBookResponse, DeleteBookRequest, DeleteBookResponse, MarkFavouriteRequest,
     MarkFavouriteResponse, RemoveBookFromPlaylistRequest, RemoveBookFromPlaylistResponse,
     UpdateBookRequest, UpdateBookResponse,
 };
 use crate::errors::common_service_error::ServiceError;
-use crate::repositories::audio_book_repository::AudioBookRepository;
+use crate::repositories::audio_book_repository::{AudioBookRepository, AudioBookRepositoryExt};
 use sqlx::Postgres;
 use sqlx::pool::Pool;
+use uuid::Uuid;
 
 #[derive(Clone)]
 pub struct AudioBooksService {
@@ -17,7 +18,8 @@ pub struct AudioBooksService {
 pub trait AudioBooksServiceExt {
     fn create_new(
         &self,
-        request: CreateAudioBookRequest,
+        payload: &CreateAudioBookRequest,
+        user_identifier: &Uuid,
     ) -> impl std::future::Future<Output = Result<CreateAudioBookResponse, ServiceError>> + Send;
 
     fn add_to_playlist(
@@ -57,8 +59,12 @@ impl AudioBooksService {
 impl AudioBooksServiceExt for AudioBooksService {
     async fn create_new(
         &self,
-        request: CreateAudioBookRequest,
+        payload: &CreateAudioBookRequest,
+        user_identifier: &Uuid,
     ) -> Result<CreateAudioBookResponse, ServiceError> {
+        self.audio_book_repository
+            .create(payload, user_identifier)
+            .await?;
         todo!()
     }
 
