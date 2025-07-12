@@ -6,7 +6,7 @@ use crate::adapters::audio_books::{
 };
 use crate::adapters::jwt::Claims;
 use crate::entities::audio_book::AudioBookEntity;
-use crate::errors::common_service_error::ServiceError;
+use crate::errors::service_error::ServiceError;
 use crate::errors::repository_error::RepositoryError;
 use crate::repositories::audio_book_repository::{AudioBookRepository, AudioBookRepositoryExt};
 use aers_imagekit_client::{ImagekitClient, ImagekitUploadResponse};

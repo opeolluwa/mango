@@ -1,4 +1,4 @@
-use crate::errors::user_service_error::UserServiceError;
+use crate::errors::{service_error::ServiceError, user_service_error::UserServiceError};
 use bcrypt::{DEFAULT_COST, hash, verify};
 
 #[derive(Clone)]
@@ -11,16 +11,21 @@ impl ServiceHelpers {
 }
 
 pub trait ServiceHelpersTrait {
-    fn hash_password(&self, raw_password: &str) -> Result<String, UserServiceError>;
-    fn validate_password(&self, raw_password: &str, hash: &str) -> Result<bool, UserServiceError>;
+    fn hash_password(&self, raw_password: &str) -> Result<String, ServiceError>;
+    fn validate_password(&self, raw_password: &str, hash: &str) -> Result<bool, ServiceError>;
 }
 
 impl ServiceHelpersTrait for ServiceHelpers {
-    fn hash_password(&self, raw_password: &str) -> Result<String, UserServiceError> {
-        hash(raw_password.trim(), DEFAULT_COST)
-            .map_err(|err| UserServiceError::OperationFailed(err.to_string()))
+    fn hash_password(&self, raw_password: &str) -> Result<String, ServiceError> {
+        hash(raw_password.trim(), DEFAULT_COST).map_err(|err| {
+            log::error!("operation failed due to {}", err);
+            ServiceError::OperationFailed
+        })
     }
-    fn validate_password(&self, password: &str, hash: &str) -> Result<bool, UserServiceError> {
-        verify(password, hash).map_err(|err| UserServiceError::OperationFailed(err.to_string()))
+    fn validate_password(&self, password: &str, hash: &str) -> Result<bool, ServiceError> {
+        verify(password, hash).map_err(|err| {
+            log::error!("operation failed due to {}", err);
+            ServiceError::OperationFailed
+        })
     }
 }

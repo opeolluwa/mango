@@ -9,7 +9,7 @@ use crate::{
         pagination::PaginationParams,
     },
     entities::audio_book::AudioBookEntity,
-    errors::common_service_error::ServiceError,
+    errors::service_error::ServiceError,
 };
 
 #[derive(Clone)]

@@ -10,7 +10,7 @@ use crate::adapters::audio_books::{
 };
 use crate::adapters::jwt::Claims;
 use crate::entities::audio_book::AudioBookEntity;
-use crate::errors::common_service_error::ServiceError;
+use crate::errors::service_error::ServiceError;
 use crate::middlewares::validator::ValidatedRequest;
 use crate::services::audio_book_service::{AudioBooksService, AudioBooksServiceExt};
 

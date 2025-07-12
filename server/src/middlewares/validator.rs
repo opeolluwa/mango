@@ -1,4 +1,4 @@
-use crate::errors::common_service_error::ServiceError;
+use crate::errors::service_error::ServiceError;
 use axum::extract::rejection::FormRejection;
 use axum::extract::{FromRequest, Request};
 use axum::{Form, Json};

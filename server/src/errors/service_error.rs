@@ -3,7 +3,9 @@ use axum::response::Response;
 use axum::{http::StatusCode, response::IntoResponse};
 
 use crate::adapters::api_response::ApiResponseBuilder;
+use crate::errors::auth_error::AuthenticationError;
 use crate::errors::repository_error::RepositoryError;
+use crate::errors::user_service_error::UserServiceError;
 
 #[derive(thiserror::Error, Debug)]
 pub enum ServiceError {
@@ -19,6 +21,10 @@ pub enum ServiceError {
     OperationFailed,
     #[error(transparent)]
     RepositoryError(#[from] RepositoryError),
+    #[error(transparent)]
+    AuthenticationError(#[from] AuthenticationError),
+    #[error(transparent)]
+    UserServiceError(#[from] UserServiceError),
 }
 
 impl ServiceError {
@@ -30,6 +36,8 @@ impl ServiceError {
             ServiceError::AxumJsonRejection(_) => StatusCode::BAD_REQUEST,
             ServiceError::OperationFailed => StatusCode::INTERNAL_SERVER_ERROR,
             ServiceError::RepositoryError(err) => err.status_code(),
+            ServiceError::AuthenticationError(err) => err.status_code(),
+            ServiceError::UserServiceError(err) => err.status_code(),
         }
     }
 }
