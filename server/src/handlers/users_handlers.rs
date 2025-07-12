@@ -14,7 +14,9 @@ pub async fn retrieve_information(
     State(user_service): State<UserService>,
     claim: Claims,
 ) -> Result<ApiResponse<UserDto>, UserServiceError> {
-    let user_data = user_service.retrieve_information(claim.identifier).await?;
+    let user_data = user_service
+        .retrieve_information(claim.user_identifier)
+        .await?;
 
     Ok(ApiResponseBuilder::new()
         .data(user_data)

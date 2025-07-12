@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
-
 #[derive(Debug, Serialize, Deserialize, FromRow, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct AudioBookEntity {

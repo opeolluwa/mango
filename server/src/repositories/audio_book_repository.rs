@@ -5,7 +5,7 @@ use uuid::Uuid;
 
 use crate::{
     adapters::{
-        audio_books::{AudioBook, CreateAudioBookRequest, FindAudioBook, UpdateAudioBook},
+        audio_books::{AudioBook, CreateAudioBookRequest, UpdateAudioBook},
         pagination::PaginationParams,
     },
     entities::audio_book::AudioBookEntity,
@@ -30,11 +30,12 @@ pub trait AudioBookRepositoryExt {
         &self,
         payload: &CreateAudioBookRequest,
         user_identifier: &Uuid,
-    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
+    ) -> impl std::future::Future<Output = Result<Uuid, ServiceError>> + Send;
 
     fn find_one(
         &self,
-        payload: &FindAudioBook,
+        book_identifier: &Uuid,
+        user_identifier: &Uuid,
     ) -> impl std::future::Future<Output = Result<Option<AudioBookEntity>, ServiceError>> + Send;
 
     fn find_many(
@@ -85,10 +86,12 @@ impl AudioBookRepositoryExt for AudioBookRepository {
         &self,
         payload: &CreateAudioBookRequest,
         user_identifier: &Uuid,
-    ) -> Result<(), ServiceError> {
+    ) -> Result<Uuid, ServiceError> {
+        let identifier = Uuid::new_v4();
+
         sqlx::query(r#"INSERT INTO audio_books(identifier, name, src, user_identifier, playlist_identifier) VALUES($1, $2, $3, $4, $5) "#)
-            .bind(Uuid::new_v4())
-            .bind(&payload.name)
+            .bind(&identifier)
+            .bind(&payload.file_name)
             .bind(&payload.src)
             .bind(&user_identifier)
             .bind(&payload.playlist_identifier)
@@ -96,18 +99,19 @@ impl AudioBookRepositoryExt for AudioBookRepository {
             .await
             .map_err(ServiceError::from)?;
 
-        Ok(())
+        Ok(identifier)
     }
 
     async fn find_one(
         &self,
-        payload: &FindAudioBook,
+        book_identifier: &Uuid,
+        user_identifier: &Uuid,
     ) -> Result<Option<AudioBookEntity>, ServiceError> {
         let audio_book = sqlx::query_as::<_, AudioBookEntity>(
             r#"SELECT * audio_books WHERE identifier = $1 AND user_identifier =$2"#,
         )
-        .bind(payload.identifier)
-        .bind(&payload.user_identifier)
+        .bind(book_identifier)
+        .bind(user_identifier)
         .fetch_one(self.pool.as_ref())
         .await
         .ok();
@@ -130,7 +134,7 @@ impl AudioBookRepositoryExt for AudioBookRepository {
         .await.map_err(ServiceError::from)
     }
 
-    async fn update(&self, payload: &UpdateAudioBook) -> Result<Option<AudioBook>, ServiceError> {
+    async fn update(&self, _payload: &UpdateAudioBook) -> Result<Option<AudioBook>, ServiceError> {
         todo!()
     }
 

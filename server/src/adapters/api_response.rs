@@ -6,11 +6,23 @@ use axum::response::{IntoResponse, Response};
 use serde::Serialize;
 use serde_json::json;
 
+use crate::errors::common_service_error::ServiceError;
+
 #[derive(Debug)]
 pub struct ApiResponse<T: Serialize> {
     message: String,
     data: Option<T>,
     status_code: StatusCode,
+}
+
+impl From<ServiceError> for ApiResponse<()> {
+    fn from(value: ServiceError) -> Self {
+        ApiResponse {
+            message: value.to_string(),
+            data: Some(()),
+            status_code: value.into_response().status(),
+        }
+    }
 }
 
 pub type EmptyResponseBody = ();

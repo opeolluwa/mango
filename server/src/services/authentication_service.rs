@@ -148,7 +148,7 @@ impl AuthenticationServiceTrait for AuthenticationService {
 
         if self
             .user_repository
-            .find_by_identifier(&claims.identifier)
+            .find_by_identifier(&claims.user_identifier)
             .await
             .is_none()
         {
@@ -156,7 +156,7 @@ impl AuthenticationServiceTrait for AuthenticationService {
         };
 
         self.user_repository
-            .update_password(&claims.identifier, &new_password)
+            .update_password(&claims.user_identifier, &new_password)
             .await?;
 
         Ok(SetNewPasswordResponse {})
@@ -169,7 +169,7 @@ impl AuthenticationServiceTrait for AuthenticationService {
     ) -> Result<VerifyAccountResponse, AuthenticationServiceError> {
         if self
             .user_repository
-            .find_by_identifier(&claims.identifier)
+            .find_by_identifier(&claims.user_identifier)
             .await
             .is_none()
         {
@@ -178,7 +178,7 @@ impl AuthenticationServiceTrait for AuthenticationService {
 
         //todo: validate account credentials
         self.user_repository
-            .update_account_status(&claims.identifier)
+            .update_account_status(&claims.user_identifier)
             .await?;
         Ok(VerifyAccountResponse {})
     }
@@ -187,7 +187,7 @@ impl AuthenticationServiceTrait for AuthenticationService {
         &self,
         request: &RefreshTokenRequest,
     ) -> Result<RefreshTokenResponse, AuthenticationServiceError> {
-        let refresh_token = JwtCredentials::new(&request.email, &request.identifier)
+        let refresh_token = JwtCredentials::new(&request.email, &request.user_identifier)
             .generate_token(TWENTY_FIVE_MINUTES)?;
 
         Ok(RefreshTokenResponse {
