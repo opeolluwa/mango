@@ -1,13 +1,20 @@
 use std::fmt::Debug;
 
-use axum::extract::{FromRequest, FromRequestParts, Request};
+use axum::{
+    Json,
+    extract::{FromRequest, FromRequestParts, Request},
+};
 use serde::{Serialize, de::DeserializeOwned};
+use validator::Validate;
 
-use crate::{adapters::jwt::Claims, errors::auth_error::AuthenticationError};
+use crate::{
+    adapters::jwt::Claims,
+    errors::{auth_error::AuthenticationError, service_error::ServiceError},
+};
 
 pub struct AuthenticatedRequest<T>
 where
-    T: Debug + Serialize + DeserializeOwned,
+    T: Debug + Serialize + DeserializeOwned + Validate,
 {
     pub data: T,
     pub claims: Claims,
@@ -15,11 +22,11 @@ where
 
 impl<S, T> FromRequest<S> for AuthenticatedRequest<T>
 where
-    T: FromRequest<S> + Send + Serialize + DeserializeOwned + Debug,
+    T:  Send + Serialize + DeserializeOwned + Debug + Validate,
     Claims: FromRequestParts<S> + Send,
     S: Send + Sync,
 {
-    type Rejection = AuthenticationError;
+    type Rejection = ServiceError;
 
     async fn from_request(req: Request, state: &S) -> Result<Self, Self::Rejection> {
         let (parts, body) = req.into_parts();
@@ -29,11 +36,12 @@ where
                 .await
                 .map_err(|_| AuthenticationError::MissingCredentials)?;
 
-        let data = T::from_request(Request::from_parts(parts, body), state)
+        let Json(data) = Json::<T>::from_request(Request::from_parts(parts, body), state)
             .await
-            .map_err(|_| AuthenticationError::MissingCredentials)?;
+            .map_err(ServiceError::from)?;
 
-        //todo: validate the data
+        data.validate().map_err(ServiceError::from)?;
+
         Ok(Self { data, claims })
     }
 }

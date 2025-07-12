@@ -1,3 +1,4 @@
+use crate::adapters::api_request::AuthenticatedRequest;
 use crate::adapters::api_response::ApiResponseBuilder;
 use crate::adapters::authentication::VerifyAccountRequest;
 use crate::adapters::authentication::{ForgottenPasswordResponse, RefreshTokenResponse};
@@ -12,7 +13,6 @@ use crate::{
             LoginResponse, SetNewPasswordRequest, VerifyAccountResponse,
         },
     },
-    errors::auth_error::AuthenticationError,
     services::authentication_service::{AuthenticationService, AuthenticationServiceTrait},
 };
 use axum::extract::State;
@@ -65,10 +65,9 @@ pub async fn forgotten_password(
 
 pub async fn set_new_password(
     State(auth_service): State<AuthenticationService>,
-    claims: Claims,
-    ValidatedRequest(request): ValidatedRequest<SetNewPasswordRequest>,
+    AuthenticatedRequest { data, claims }: AuthenticatedRequest<SetNewPasswordRequest>, // claims: Claims,
 ) -> Result<ApiResponse<()>, ServiceError> {
-    let _ = auth_service.set_new_password(&request, &claims).await?;
+    let _ = auth_service.set_new_password(&data, &claims).await?;
 
     Ok(ApiResponseBuilder::new()
         .data(())

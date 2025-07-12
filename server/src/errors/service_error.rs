@@ -25,6 +25,8 @@ pub enum ServiceError {
     AuthenticationError(#[from] AuthenticationError),
     #[error(transparent)]
     UserServiceError(#[from] UserServiceError),
+    #[error("badly formatted request")]
+    BadRequest,
 }
 
 impl ServiceError {
@@ -38,6 +40,7 @@ impl ServiceError {
             ServiceError::RepositoryError(err) => err.status_code(),
             ServiceError::AuthenticationError(err) => err.status_code(),
             ServiceError::UserServiceError(err) => err.status_code(),
+            ServiceError::BadRequest => StatusCode::BAD_REQUEST,
         }
     }
 }

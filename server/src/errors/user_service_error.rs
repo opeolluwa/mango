@@ -1,7 +1,7 @@
 use axum::{http::StatusCode, response::IntoResponse};
 
 use crate::adapters::api_response::ApiResponseBuilder;
-use crate::errors::service_error::ServiceError;
+
 
 #[derive(thiserror::Error, Debug)]
 pub enum UserServiceError {

@@ -9,7 +9,7 @@ use crate::adapters::api_response::ApiResponseBuilder;
 pub enum RepositoryError {
     #[error("Record not found")]
     RecordNotFound,
-    #[error("Duplicate Record ")]
+    #[error("Duplicate Record")]
     DuplicateREcord,
 }
 

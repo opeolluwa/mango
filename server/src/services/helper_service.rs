@@ -1,4 +1,4 @@
-use crate::errors::{service_error::ServiceError, user_service_error::UserServiceError};
+use crate::errors::service_error::ServiceError;
 use bcrypt::{DEFAULT_COST, hash, verify};
 
 #[derive(Clone)]
