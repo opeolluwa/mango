@@ -2,6 +2,7 @@
 
 use aers_lib::{errors, routes, shared};
 
+use axum::extract::DefaultBodyLimit;
 use errors::app_error::AppError;
 use routes::app_router::load_routes;
 use shared::extract_env::extract_env;
@@ -11,6 +12,7 @@ use std::{
     net::{Ipv4Addr, SocketAddr, SocketAddrV4},
     path::Path,
 };
+use tower_http::limit::RequestBodyLimitLayer;
 
 #[tokio::main]
 async fn main() -> Result<(), AppError> {
@@ -34,7 +36,13 @@ async fn main() -> Result<(), AppError> {
         .await
         .map_err(|err| AppError::StartupError(err.to_string()))?;
 
-    let app = load_routes(pool);
+    let app = load_routes(pool)
+        .layer(DefaultBodyLimit::disable())
+        .layer(RequestBodyLimitLayer::new(
+            25 * 1024 * 1024, //25mb
+        ))
+        .layer(tower_http::trace::TraceLayer::new_for_http());
+    
     let port = extract_env::<u16>("PORT")?;
     let ip_address = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, port));
     log::info!("Application listening on http://{}", ip_address);

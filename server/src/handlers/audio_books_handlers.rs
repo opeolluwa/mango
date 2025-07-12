@@ -1,4 +1,4 @@
-use axum::extract::State;
+use axum::extract::{Multipart, State};
 
 use crate::adapters::api_response::ApiResponse;
 use crate::adapters::audio_books::{
@@ -12,22 +12,24 @@ use crate::errors::common_service_error::ServiceError;
 use crate::middlewares::validator::ValidatedRequest;
 use crate::services::audio_book_service::{AudioBooksService, AudioBooksServiceExt};
 
+// #[axum::debug_handler]
+pub async fn create_new_book(
+    claim: Claims,
+    State(audio_book_service): State<AudioBooksService>,
+    ValidatedRequest(request): ValidatedRequest<CreateAudioBookRequest>,
+    // mut multipart: Multipart,
+) -> Result<ApiResponse<CreateAudioBookResponse>, ServiceError> {
+    audio_book_service
+        .create_new(&request, &claim.identifier)
+        .await?;
+    todo!()
+}
+
 pub async fn fetch_book(
     State(audio_book_service): State<AudioBooksService>,
     claim: Claims,
     ValidatedRequest(request): ValidatedRequest<FetchBookRequest>,
 ) -> Result<ApiResponse<FetchBookResponse>, ServiceError> {
-    todo!()
-}
-
-pub async fn create_new_book(
-    State(audio_book_service): State<AudioBooksService>,
-    claim: Claims,
-    ValidatedRequest(request): ValidatedRequest<CreateAudioBookRequest>,
-) -> Result<ApiResponse<CreateAudioBookResponse>, ServiceError> {
-    audio_book_service
-        .create_new(&request, &claim.identifier)
-        .await?;
     todo!()
 }
 

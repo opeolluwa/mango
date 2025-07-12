@@ -5,17 +5,18 @@ edition = "2024"
 
 [workspace]
 members = ["crates/*"]
+resolver = "2"
 
 [lib]
 name = "aers_lib"
 path = "src/lib.rs"
 
 [dependencies]
-# aers_audify = { version = "0.1.0", path = "crates/aers_audify" }
+aers_audify = { version = "0.1.0", path = "crates/aers_audify" }
 aers_email_client = { version = "0.1.0", path = "crates/aers_email_client" }
 aers_imagekit_client = { version = "0.1.0", path = "crates/aers_imagekit_client" }
 aers_wav_mp3_converter = { version = "0.1.0", path = "crates/aers_wav_mp3_converter" }
-axum = { version = "0.8.3", features = ["tracing"] }
+axum = { version = "0.8.3", features = ["multipart", "tracing"] }
 axum-extra = { version = "0.10.1", features = ["typed-header"] }
 bcrypt = "0.17.0"
 chrono = { version = "0.4.41", features = ["serde"] }
@@ -35,7 +36,7 @@ sqlx = { version = "0.8", features = [
 sqlx-paginated = { version = "0.2.32", features = ["postgres"] }
 thiserror = "2.0.12"
 tokio = { version = "1.44.2", features = ["full"] }
-tower-http = { version = "0.6.1", features = ["trace"] }
+tower-http = { version = "0.6.1", features = ["limit", "trace"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 uuid = { version = "1.16.0", features = ["serde", "v4"] }
