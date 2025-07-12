@@ -1,7 +1,9 @@
+use crate::adapters::api_request::AuthenticatedRequest;
 use crate::adapters::api_response::ApiResponseBuilder;
 use crate::adapters::authentication::VerifyAccountRequest;
 use crate::adapters::authentication::{ForgottenPasswordResponse, RefreshTokenResponse};
 use crate::adapters::jwt::Claims;
+use crate::errors::service_error::ServiceError;
 use crate::middlewares::validator::ValidatedRequest;
 use crate::{
     adapters::{
@@ -11,7 +13,6 @@ use crate::{
             LoginResponse, SetNewPasswordRequest, VerifyAccountResponse,
         },
     },
-    errors::auth_service_error::AuthenticationServiceError,
     services::authentication_service::{AuthenticationService, AuthenticationServiceTrait},
 };
 use axum::extract::State;
@@ -20,7 +21,7 @@ use axum::http::StatusCode;
 pub async fn create_account(
     State(auth_service): State<AuthenticationService>,
     ValidatedRequest(request): ValidatedRequest<CreateUserRequest>,
-) -> Result<ApiResponse<CreateUserResponse>, AuthenticationServiceError> {
+) -> Result<ApiResponse<CreateUserResponse>, ServiceError> {
     auth_service.create_account(&request).await?;
 
     Ok(ApiResponseBuilder::new()
@@ -31,7 +32,7 @@ pub async fn create_account(
 pub async fn login(
     State(auth_service): State<AuthenticationService>,
     ValidatedRequest(request): ValidatedRequest<LoginRequest>,
-) -> Result<ApiResponse<LoginResponse>, AuthenticationServiceError> {
+) -> Result<ApiResponse<LoginResponse>, ServiceError> {
     let login_response = auth_service.login(&request).await?;
     Ok(ApiResponseBuilder::new()
         .status_code(StatusCode::OK)
@@ -43,7 +44,7 @@ pub async fn verify_account(
     State(auth_service): State<AuthenticationService>,
     claims: Claims,
     ValidatedRequest(request): ValidatedRequest<VerifyAccountRequest>,
-) -> Result<ApiResponse<VerifyAccountResponse>, AuthenticationServiceError> {
+) -> Result<ApiResponse<VerifyAccountResponse>, ServiceError> {
     let verify_account_response = auth_service.verify_account(&claims, &request).await?;
     Ok(ApiResponseBuilder::new()
         .status_code(StatusCode::OK)
@@ -53,7 +54,7 @@ pub async fn verify_account(
 pub async fn forgotten_password(
     State(auth_service): State<AuthenticationService>,
     ValidatedRequest(request): ValidatedRequest<ForgottenPasswordRequest>,
-) -> Result<ApiResponse<ForgottenPasswordResponse>, AuthenticationServiceError> {
+) -> Result<ApiResponse<ForgottenPasswordResponse>, ServiceError> {
     let forgotten_password_response = auth_service.forgotten_password(&request).await?;
 
     Ok(ApiResponseBuilder::new()
@@ -64,10 +65,9 @@ pub async fn forgotten_password(
 
 pub async fn set_new_password(
     State(auth_service): State<AuthenticationService>,
-    claims: Claims,
-    ValidatedRequest(request): ValidatedRequest<SetNewPasswordRequest>,
-) -> Result<ApiResponse<()>, AuthenticationServiceError> {
-    let _ = auth_service.set_new_password(&request, &claims).await?;
+    AuthenticatedRequest { data, claims }: AuthenticatedRequest<SetNewPasswordRequest>, // claims: Claims,
+) -> Result<ApiResponse<()>, ServiceError> {
+    let _ = auth_service.set_new_password(&data, &claims).await?;
 
     Ok(ApiResponseBuilder::new()
         .data(())
@@ -78,7 +78,7 @@ pub async fn set_new_password(
 pub async fn request_refresh_token(
     State(auth_service): State<AuthenticationService>,
     claims: Claims,
-) -> Result<ApiResponse<RefreshTokenResponse>, AuthenticationServiceError> {
+) -> Result<ApiResponse<RefreshTokenResponse>, ServiceError> {
     let refresh_token_response = auth_service.request_refresh_token(&claims).await?;
 
     Ok(ApiResponseBuilder::new()

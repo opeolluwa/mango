@@ -2,15 +2,16 @@ use sqlx::{Pool, Postgres};
 
 use crate::adapters::jwt::{Claims, JwtCredentials, TEN_MINUTES, TWENTY_FIVE_MINUTES};
 use crate::entities::user::UserEntity;
+use crate::errors;
+use crate::errors::repository_error::RepositoryError;
+use crate::errors::service_error::ServiceError;
 use crate::{
     adapters::authentication::{
         CreateUserRequest, ForgottenPasswordRequest, ForgottenPasswordResponse, LoginRequest,
         LoginResponse, RefreshTokenRequest, RefreshTokenResponse, SetNewPasswordRequest,
         SetNewPasswordResponse, VerifyAccountRequest, VerifyAccountResponse,
     },
-    errors::{
-        auth_service_error::AuthenticationServiceError, user_service_error::UserServiceError,
-    },
+    errors::auth_error::AuthenticationError,
     repositories::user_repository::{UserRepository, UserRepositoryTrait},
     services::helper_service::{ServiceHelpers, ServiceHelpersTrait},
 };
@@ -33,56 +34,46 @@ pub trait AuthenticationServiceTrait {
     fn create_account(
         &self,
         request: &CreateUserRequest,
-    ) -> impl std::future::Future<Output = Result<(), AuthenticationServiceError>> + Send;
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 
     fn login(
         &self,
         request: &LoginRequest,
-    ) -> impl std::future::Future<Output = Result<LoginResponse, AuthenticationServiceError>> + Send;
+    ) -> impl std::future::Future<Output = Result<LoginResponse, ServiceError>> + Send;
 
     fn forgotten_password(
         &self,
 
         request: &ForgottenPasswordRequest,
-    ) -> impl std::future::Future<
-        Output = Result<ForgottenPasswordResponse, AuthenticationServiceError>,
-    > + Send;
+    ) -> impl std::future::Future<Output = Result<ForgottenPasswordResponse, ServiceError>> + Send;
 
     fn set_new_password(
         &self,
         request: &SetNewPasswordRequest,
         claims: &Claims,
-    ) -> impl std::future::Future<
-        Output = Result<SetNewPasswordResponse, AuthenticationServiceError>,
-    > + Send;
+    ) -> impl std::future::Future<Output = Result<SetNewPasswordResponse, ServiceError>> + Send;
 
     fn verify_account(
         &self,
         claims: &Claims,
         request: &VerifyAccountRequest,
-    ) -> impl std::future::Future<Output = Result<VerifyAccountResponse, AuthenticationServiceError>>
-    + Send;
+    ) -> impl std::future::Future<Output = Result<VerifyAccountResponse, ServiceError>> + Send;
 
     fn request_refresh_token(
         &self,
         request: &RefreshTokenRequest,
-    ) -> impl std::future::Future<Output = Result<RefreshTokenResponse, AuthenticationServiceError>> + Send;
+    ) -> impl std::future::Future<Output = Result<RefreshTokenResponse, ServiceError>> + Send;
 }
 
 impl AuthenticationServiceTrait for AuthenticationService {
-    async fn create_account(
-        &self,
-        request: &CreateUserRequest,
-    ) -> Result<(), AuthenticationServiceError> {
+    async fn create_account(&self, request: &CreateUserRequest) -> Result<(), ServiceError> {
         if self
             .user_repository
             .find_by_email(&request.email)
             .await
             .is_some()
         {
-            return Err(AuthenticationServiceError::from(
-                UserServiceError::ConflictError("User with the email already exists".to_string()),
-            ));
+            return Err(RepositoryError::DuplicateREcord.into());
         }
 
         let password_hash = self.user_helper_service.hash_password(&request.password)?;
@@ -93,25 +84,22 @@ impl AuthenticationServiceTrait for AuthenticationService {
             last_name: request.last_name.to_owned(),
         };
 
-        self.user_repository.create_user(user).await.map_err(|err| {
-            log::error!("{}", err);
-            AuthenticationServiceError::from(err)
-        })
+        self.user_repository
+            .create_user(user)
+            .await
+            .map_err(ServiceError::from)
     }
 
-    async fn login(
-        &self,
-        request: &LoginRequest,
-    ) -> Result<LoginResponse, AuthenticationServiceError> {
+    async fn login(&self, request: &LoginRequest) -> Result<LoginResponse, ServiceError> {
         let Some(user) = self.user_repository.find_by_email(&request.email).await else {
-            return Err(AuthenticationServiceError::WrongCredentials);
+            return Err(AuthenticationError::WrongCredentials.into());
         };
 
         let valid_password = self
             .user_helper_service
             .validate_password(&request.password, &user.password)?;
         if !valid_password {
-            return Err(AuthenticationServiceError::WrongCredentials);
+            return Err(AuthenticationError::WrongCredentials.into());
         }
 
         let token =
@@ -123,10 +111,10 @@ impl AuthenticationServiceTrait for AuthenticationService {
     async fn forgotten_password(
         &self,
         request: &ForgottenPasswordRequest,
-    ) -> Result<ForgottenPasswordResponse, AuthenticationServiceError> {
+    ) -> Result<ForgottenPasswordResponse, ServiceError> {
         let user = self.user_repository.find_by_email(&request.email).await;
         if user.is_none() {
-            return Err(AuthenticationServiceError::WrongCredentials);
+            return Err(AuthenticationError::WrongCredentials.into());
         };
 
         tokio::task::spawn(async move { todo!("send account retrival email") });
@@ -143,7 +131,7 @@ impl AuthenticationServiceTrait for AuthenticationService {
         &self,
         request: &SetNewPasswordRequest,
         claims: &Claims,
-    ) -> Result<SetNewPasswordResponse, AuthenticationServiceError> {
+    ) -> Result<SetNewPasswordResponse, ServiceError> {
         let new_password = self.user_helper_service.hash_password(&request.password)?;
 
         if self
@@ -152,7 +140,7 @@ impl AuthenticationServiceTrait for AuthenticationService {
             .await
             .is_none()
         {
-            return Err(AuthenticationServiceError::InvalidToken);
+            return Err(AuthenticationError::InvalidToken.into());
         };
 
         self.user_repository
@@ -166,14 +154,16 @@ impl AuthenticationServiceTrait for AuthenticationService {
         &self,
         claims: &Claims,
         _request: &VerifyAccountRequest,
-    ) -> Result<VerifyAccountResponse, AuthenticationServiceError> {
+    ) -> Result<VerifyAccountResponse, ServiceError> {
         if self
             .user_repository
             .find_by_identifier(&claims.user_identifier)
             .await
             .is_none()
         {
-            return Err(AuthenticationServiceError::InvalidToken);
+            return Err(errors::service_error::ServiceError::AuthenticationError(
+                AuthenticationError::InvalidToken,
+            ));
         };
 
         //todo: validate account credentials
@@ -186,7 +176,7 @@ impl AuthenticationServiceTrait for AuthenticationService {
     async fn request_refresh_token(
         &self,
         request: &RefreshTokenRequest,
-    ) -> Result<RefreshTokenResponse, AuthenticationServiceError> {
+    ) -> Result<RefreshTokenResponse, ServiceError> {
         let refresh_token = JwtCredentials::new(&request.email, &request.user_identifier)
             .generate_token(TWENTY_FIVE_MINUTES)?;
 

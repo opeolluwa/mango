@@ -6,7 +6,7 @@ use axum::response::{IntoResponse, Response};
 use serde::Serialize;
 use serde_json::json;
 
-use crate::errors::common_service_error::ServiceError;
+use crate::errors::service_error::ServiceError;
 
 #[derive(Debug)]
 pub struct ApiResponse<T: Serialize> {

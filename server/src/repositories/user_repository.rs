@@ -7,7 +7,7 @@ use crate::{
     adapters::authentication::CreateUserRequest,
     adapters::users::UserDto,
     entities::user::UserEntity,
-    errors::{common_service_error::ServiceError, user_service_error::UserServiceError},
+    errors::{service_error::ServiceError, user_service_error::UserServiceError},
 };
 
 #[derive(Clone)]

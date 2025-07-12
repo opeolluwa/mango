@@ -9,12 +9,15 @@ use crate::adapters::api_response::ApiResponseBuilder;
 pub enum RepositoryError {
     #[error("Record not found")]
     RecordNotFound,
+    #[error("Duplicate Record")]
+    DuplicateREcord,
 }
 
 impl RepositoryError {
     pub fn status_code(&self) -> StatusCode {
         match self {
             RepositoryError::RecordNotFound => StatusCode::NOT_FOUND,
+            RepositoryError::DuplicateREcord => StatusCode::CONFLICT,
         }
     }
 }

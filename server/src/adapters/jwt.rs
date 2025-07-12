@@ -1,10 +1,11 @@
+use std::fmt::Display;
 use std::time::Duration;
 
 use jsonwebtoken::{DecodingKey, EncodingKey, Header, encode};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::errors::auth_service_error::AuthenticationServiceError;
+use crate::errors::auth_error::AuthenticationError;
 use crate::shared::extract_env::extract_env;
 
 pub const _FIVE_MINUTES: Duration = Duration::from_secs(5 * 60 * 60);
@@ -19,6 +20,15 @@ pub struct JwtCredentials {
 
 pub type Claims = JwtCredentials;
 
+impl Display for JwtCredentials {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "user_identifier:{}\n email: {}",
+            self.user_identifier, self.email
+        )
+    }
+}
 pub struct Keys {
     encoding: EncodingKey,
     pub(crate) decoding: DecodingKey,
@@ -49,7 +59,7 @@ impl JwtCredentials {
         }
     }
 
-    pub fn generate_token(&self, validity: Duration) -> Result<String, AuthenticationServiceError> {
+    pub fn generate_token(&self, validity: Duration) -> Result<String, AuthenticationError> {
         let now = chrono::Utc::now().timestamp();
         let claim = Claim {
             email: self.email.to_string(),
@@ -58,12 +68,11 @@ impl JwtCredentials {
             exp: now + validity.as_secs() as i64,
         };
 
-        let secret =
-            extract_env::<String>("JWT_SIGNING_KEY").map_err(AuthenticationServiceError::from)?;
+        let secret = extract_env::<String>("JWT_SIGNING_KEY").map_err(AuthenticationError::from)?;
 
         let encoding_key = Keys::new(secret.as_bytes()).encoding;
-        let token = encode(&Header::default(), &claim, &encoding_key)
-            .map_err(AuthenticationServiceError::from)?;
+        let token =
+            encode(&Header::default(), &claim, &encoding_key).map_err(AuthenticationError::from)?;
 
         Ok(token)
     }
