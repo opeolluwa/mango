@@ -18,8 +18,7 @@ where
     type Rejection = AuthenticationError;
 
     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-        let secret =
-            extract_env::<String>("JWT_SIGNING_KEY").map_err(AuthenticationError::from)?;
+        let secret = extract_env::<String>("JWT_SIGNING_KEY").map_err(AuthenticationError::from)?;
 
         let decoding_key = Keys::new(secret.as_bytes()).decoding;
         // Extract the token from the authorization header

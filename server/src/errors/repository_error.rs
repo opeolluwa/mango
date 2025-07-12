@@ -17,7 +17,7 @@ impl RepositoryError {
     pub fn status_code(&self) -> StatusCode {
         match self {
             RepositoryError::RecordNotFound => StatusCode::NOT_FOUND,
-            RepositoryError::DuplicateREcord => StatusCode::CONFLICT
+            RepositoryError::DuplicateREcord => StatusCode::CONFLICT,
         }
     }
 }

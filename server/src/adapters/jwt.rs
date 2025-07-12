@@ -68,12 +68,11 @@ impl JwtCredentials {
             exp: now + validity.as_secs() as i64,
         };
 
-        let secret =
-            extract_env::<String>("JWT_SIGNING_KEY").map_err(AuthenticationError::from)?;
+        let secret = extract_env::<String>("JWT_SIGNING_KEY").map_err(AuthenticationError::from)?;
 
         let encoding_key = Keys::new(secret.as_bytes()).encoding;
-        let token = encode(&Header::default(), &claim, &encoding_key)
-            .map_err(AuthenticationError::from)?;
+        let token =
+            encode(&Header::default(), &claim, &encoding_key).map_err(AuthenticationError::from)?;
 
         Ok(token)
     }
