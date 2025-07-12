@@ -1,0 +1,8 @@
+[package]
+name = "aers_utils"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+fake = "4.3.0"
+random_word = { version = "0.5.0", features = ["en"] }

@@ -1,2 +1,5 @@
-pub(crate) mod core;
-pub(crate) mod error;
+mod core;
+mod error;
+
+pub use core::*;
+pub use error::*;

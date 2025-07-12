@@ -42,7 +42,7 @@ async fn main() -> Result<(), AppError> {
             25 * 1024 * 1024, //25mb
         ))
         .layer(tower_http::trace::TraceLayer::new_for_http());
-    
+
     let port = extract_env::<u16>("PORT")?;
     let ip_address = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, port));
     log::info!("Application listening on http://{}", ip_address);

@@ -14,7 +14,7 @@ pub const TEN_MINUTES: Duration = Duration::from_secs(10 * 60 * 60);
 #[derive(Debug, Serialize, Deserialize)]
 pub struct JwtCredentials {
     pub email: String,
-    pub identifier: Uuid,
+    pub user_identifier: Uuid,
 }
 
 pub type Claims = JwtCredentials;
@@ -36,16 +36,16 @@ impl Keys {
 #[derive(Serialize, Deserialize)]
 struct Claim {
     pub email: String,
-    pub identifier: String,
+    pub user_identifier: String,
     pub iat: i64,
     pub exp: i64,
 }
 
 impl JwtCredentials {
-    pub fn new(email: &str, identifier: &Uuid) -> Self {
+    pub fn new(email: &str, user_identifier: &Uuid) -> Self {
         Self {
             email: email.to_string(),
-            identifier: identifier.to_owned(),
+            user_identifier: user_identifier.to_owned(),
         }
     }
 
@@ -53,7 +53,7 @@ impl JwtCredentials {
         let now = chrono::Utc::now().timestamp();
         let claim = Claim {
             email: self.email.to_string(),
-            identifier: self.identifier.to_string(),
+            user_identifier: self.user_identifier.to_string(),
             iat: now,
             exp: now + validity.as_secs() as i64,
         };

@@ -1,7 +1,17 @@
+use axum_typed_multipart::{FieldData, TryFromMultipart};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use tempfile::NamedTempFile;
 use uuid::Uuid;
 use validator::Validate;
+
+#[derive(TryFromMultipart)]
+#[try_from_multipart(rename_all = "camelCase")]
+pub struct UploadAssetRequest {
+    #[form_data(limit = "5MiB")]
+    pub document: FieldData<NamedTempFile>,
+    pub playlist_identifier: Option<Uuid>,
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -37,8 +47,9 @@ pub struct UpdateAudioBook {
 
 #[derive(Debug, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
+
 pub struct CreateAudioBookRequest {
-    pub name: String,
+    pub file_name: String,
     pub src: String,
     pub playlist_identifier: Option<Uuid>,
 }
@@ -49,7 +60,10 @@ pub struct CreateAudioBookResponse {}
 
 #[derive(Debug, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
-pub struct AddBookToPlaylistRequest {}
+pub struct AddBookToPlaylistRequest {
+    pub book_identifier: Uuid,
+    pub playlist_identifier: Uuid,
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

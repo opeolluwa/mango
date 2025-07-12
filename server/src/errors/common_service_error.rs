@@ -3,6 +3,7 @@ use axum::response::Response;
 use axum::{http::StatusCode, response::IntoResponse};
 
 use crate::adapters::api_response::ApiResponseBuilder;
+use crate::errors::repository_error::RepositoryError;
 
 #[derive(thiserror::Error, Debug)]
 pub enum ServiceError {
@@ -14,6 +15,10 @@ pub enum ServiceError {
     AxumFormRejection(#[from] FormRejection),
     #[error(transparent)]
     AxumJsonRejection(#[from] JsonRejection),
+    #[error("an internal error occurred")]
+    OperationFailed,
+    #[error(transparent)]
+    RepositoryError(#[from] RepositoryError),
 }
 
 impl ServiceError {
@@ -23,6 +28,8 @@ impl ServiceError {
             ServiceError::AxumFormRejection(_) => StatusCode::BAD_REQUEST,
             ServiceError::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             ServiceError::AxumJsonRejection(_) => StatusCode::BAD_REQUEST,
+            ServiceError::OperationFailed => StatusCode::INTERNAL_SERVER_ERROR,
+            ServiceError::RepositoryError(err) => err.status_code(),
         }
     }
 }
