@@ -120,7 +120,7 @@ impl AudioBooksServiceExt for AudioBooksService {
             .upload(&file_path, &file_name)
             .await
             .map_err(|err| {
-            log::error!("Faoled to uplaod the file due to {}", err);
+            log::error!("Failed to uplaod the file due to {}", err);
             ServiceError::OperationFailed
         })?;
 
