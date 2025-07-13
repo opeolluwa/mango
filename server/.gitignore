@@ -28,3 +28,5 @@ Cargo.lock
 zzzsandbox
 .env
 tmp
+uploads
+temps

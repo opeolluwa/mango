@@ -61,7 +61,10 @@ impl ImagekitClient {
             .multipart(form)
             .send()
             .await
-            .map_err(|e| ImagekitError::UploadError(e.to_string()))?;
+            .map_err(|err| {
+                log::error!("Upload failed with err {}", err);
+                ImagekitError::UploadError(err.to_string())
+            })?;
 
         if !response.status().is_success() {
             return Err(ImagekitError::UploadError(format!(

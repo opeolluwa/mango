@@ -1,5 +1,5 @@
 pub const AERS_FILE_UPLOAD_PATH: &str = "./uploads/temp";
-
+pub const AERS_EXPORT_PATH: &str = "./uploads/exports";
 
 pub mod adapters;
 pub mod config;
@@ -12,4 +12,3 @@ pub mod routes;
 pub mod services;
 pub mod shared;
 pub mod states;
-

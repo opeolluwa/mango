@@ -6,11 +6,12 @@ use uuid::Uuid;
 use crate::adapters::api_request::AuthenticatedRequest;
 use crate::adapters::api_response::{ApiResponse, ApiResponseBuilder};
 use crate::adapters::audio_books::{
-    AddBookToPlaylistRequest, DeleteBookRequest, DeleteBookResponse, MarkFavouriteRequest,
-    MarkFavouriteResponse, UpdateBookRequest, UpdateBookResponse, UploadAssetRequest,
+    AddBookToPlaylistRequest, MarkFavouriteRequest, MarkFavouriteResponse, UpdateBookRequest,
+    UploadAssetRequest,
 };
 use crate::adapters::jwt::Claims;
 use crate::entities::audio_book::AudioBookEntity;
+use crate::errors::repository_error::RepositoryError;
 use crate::errors::service_error::ServiceError;
 use crate::middlewares::validator::ValidatedRequest;
 use crate::services::audio_book_service::{AudioBooksService, AudioBooksServiceExt};
@@ -82,17 +83,25 @@ pub async fn remove_from_playlist(
 
 pub async fn update_book(
     State(audio_book_service): State<AudioBooksService>,
-
+    Path(book_identifier): Path<Uuid>,
     AuthenticatedRequest { data, claims }: AuthenticatedRequest<UpdateBookRequest>,
-) -> Result<ApiResponse<UpdateBookResponse>, ServiceError> {
-    todo!()
+) -> Result<ApiResponse<AudioBookEntity>, ServiceError> {
+    let book = audio_book_service
+        .update_book(data, &book_identifier, &claims.user_identifier)
+        .await?
+        .ok_or(RepositoryError::RecordNotFound)?;
+
+    Ok(ApiResponseBuilder::new()
+        .message("book updated successfully")
+        .data(book)
+        .build())
 }
 
 pub async fn delete_book(
     State(audio_book_service): State<AudioBooksService>,
     claim: Claims,
-    ValidatedRequest(request): ValidatedRequest<DeleteBookRequest>,
-) -> Result<ApiResponse<DeleteBookResponse>, ServiceError> {
+    Path(book_identifier): Path<Uuid>,
+) -> Result<ApiResponse<()>, ServiceError> {
     todo!()
 }
 

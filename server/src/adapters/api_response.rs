@@ -5,7 +5,6 @@ use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use serde::{Deserialize, Serialize};
 
-
 use crate::errors::service_error::ServiceError;
 
 #[derive(Debug, Serialize, Deserialize)]
