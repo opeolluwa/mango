@@ -87,19 +87,26 @@ impl AudioBooksServiceExt for AudioBooksService {
             .file_name
             .clone()
             .unwrap_or(generate_file_name());
-        let file_path = Path::new("/tmp")
-            .join(chrono::Local::now().timestamp().to_string())
-            .join(&file_name);
 
+        let temp_dir = Path::new("/tmp");
+        let _ = std::fs::create_dir(temp_dir);
+        let file_path = temp_dir.join(&format!(
+            "{time_stamp}_{file_name}.pdf",
+            time_stamp = chrono::Local::now().timestamp().to_string()
+        ));
+
+        // create file object
         if let Err(err) = document.contents.persist(&file_path) {
             log::error!("error processing file due to {}", err.to_string());
             return Err(ServiceError::OperationFailed);
         }
 
-        let Ok(ImagekitUploadResponse { url }) = ImagekitClient::new().upload(&file_path);
+        // let imagekit_upload_response = ImagekitClient::new()
+        //     .upload(&file_path, &file_name)
+        //     .unwrap();
         let request = CreateAudioBookRequest {
             file_name: file_name.to_owned(),
-            src: url,
+            src: "imagekit_upload_response.url".to_string(),
             playlist_identifier,
         };
 

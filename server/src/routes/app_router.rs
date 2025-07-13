@@ -27,7 +27,7 @@ pub fn load_routes(pool: Pool<Postgres>) -> Router {
         .merge(public_routes(state.clone()))
         .merge(authentication_routes(state.clone()))
         .nest("/users", user_routes(state.clone()))
-        .nest("/book", audio_book_routes(state))
+        .nest("/books", audio_book_routes(state))
         .fallback(async || {
             ApiResponseBuilder::<()>::new()
                 .message(

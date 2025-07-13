@@ -9,10 +9,6 @@ services:
         - CARGO_TARGET_DIR=/cargo-target
     ports:
       - ${PORT}:${PORT}
-    # develop:
-    #   watch:
-    #     - action: rebuild 
-    #       path: .
     environment:
       PORT: 5006
       ENVIRONMENT: dev
@@ -23,11 +19,11 @@ services:
       DATABASE_HOST: postgres
       DATABASE_URL: postgres://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
       JWT_SIGNING_KEY: fXUuojVKfWgVi3qLgQl8GjPWHsihf33aExhi
-    # env_file:
-    #   - .env
+    env_file:
+      - .env
     depends_on:
       database: 
-        condition: service_started
+        condition: service_healthy
     networks:
       - internal
     volumes:
@@ -54,7 +50,24 @@ services:
       - POSTGRES_DB=${DATABASE_NAME}
     networks:
       - internal
-
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  # pgadmin:
+  #   image: dpage/pgadmin4
+    # restart: always
+    # ports:
+    #   - "8888:80"
+    # environment:
+    #   PGADMIN_DEFAULT_EMAIL: admin@aers.com
+    #   PGADMIN_DEFAULT_PASSWORD: aers
+    # volumes:
+    #   - pgadmin-data:/var/lib/pgadmin
+    # depends_on:
+    #   database:
+    #     condition: service_healthy
 networks:
   internal:
     name: aers-network
@@ -62,3 +75,4 @@ networks:
 volumes:
   cargo-target:
   rust-cache:
+  pgadmin-data:

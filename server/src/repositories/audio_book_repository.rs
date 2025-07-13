@@ -97,7 +97,10 @@ impl AudioBookRepositoryExt for AudioBookRepository {
             .bind(&payload.playlist_identifier)
             .execute(self.pool.as_ref())
             .await
-            .map_err(ServiceError::from)?;
+            .map_err(|err| {
+                log::error!("Operatation failed due to {}", err);
+                ServiceError::from(err)
+            })?;
 
         Ok(identifier)
     }
@@ -108,7 +111,7 @@ impl AudioBookRepositoryExt for AudioBookRepository {
         user_identifier: &Uuid,
     ) -> Result<Option<AudioBookEntity>, ServiceError> {
         let audio_book = sqlx::query_as::<_, AudioBookEntity>(
-            r#"SELECT * audio_books WHERE identifier = $1 AND user_identifier =$2"#,
+            r#"SELECT * FROM audio_books WHERE identifier = $1 AND user_identifier =$2"#,
         )
         .bind(book_identifier)
         .bind(user_identifier)

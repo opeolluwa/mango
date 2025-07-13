@@ -3,6 +3,7 @@ use axum::http::StatusCode;
 use axum_typed_multipart::TypedMultipart;
 use uuid::Uuid;
 
+use crate::adapters::api_request::AuthenticatedRequest;
 use crate::adapters::api_response::{ApiResponse, ApiResponseBuilder};
 use crate::adapters::audio_books::{
     AddBookToPlaylistRequest, DeleteBookRequest, DeleteBookResponse, MarkFavouriteRequest,
@@ -20,6 +21,7 @@ pub async fn create_new_book(
     request: TypedMultipart<UploadAssetRequest>,
 ) -> Result<ApiResponse<AudioBookEntity>, ApiResponse<()>> {
     let book_identifier = audio_book_service.create_new(request, &claims).await?;
+
     let book = audio_book_service
         .fetch_one(&book_identifier, &claims.user_identifier)
         .await?;
@@ -43,17 +45,16 @@ pub async fn fetch_book(
     Ok(ApiResponseBuilder::new()
         .data(book)
         .status_code(StatusCode::OK)
-        .message("Book created succesfully")
+        .message("Book retrieved succesfully")
         .build())
 }
 
 pub async fn add_to_playlist(
     State(audio_book_service): State<AudioBooksService>,
-    claims: Claims,
-    ValidatedRequest(request): ValidatedRequest<AddBookToPlaylistRequest>,
+    AuthenticatedRequest { data, claims }: AuthenticatedRequest<AddBookToPlaylistRequest>,
 ) -> Result<ApiResponse<()>, ServiceError> {
     audio_book_service
-        .add_to_playlist(&request, &claims.user_identifier)
+        .add_to_playlist(&data, &claims.user_identifier)
         .await?;
 
     Ok(ApiResponseBuilder::new()
@@ -81,8 +82,8 @@ pub async fn remove_from_playlist(
 
 pub async fn update_book(
     State(audio_book_service): State<AudioBooksService>,
-    claim: Claims,
-    ValidatedRequest(request): ValidatedRequest<UpdateBookRequest>,
+
+    AuthenticatedRequest { data, claims }: AuthenticatedRequest<UpdateBookRequest>,
 ) -> Result<ApiResponse<UpdateBookResponse>, ServiceError> {
     todo!()
 }

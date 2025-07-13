@@ -1,11 +1,11 @@
-use crate::adapters::api_response::{ApiResponse, ApiResponseBuilder};
+use crate::adapters::api_response::{ApiResponse, ApiResponseBuilder, EmptyResponseBody};
 use crate::services::root_serice::RootServiceTrait;
 use crate::{errors::app_error::AppError, services::root_serice::RootService};
 use axum::extract::State;
 
 pub async fn health_check(
     State(root_service): State<RootService>,
-) -> Result<ApiResponse<()>, AppError> {
+) -> Result<ApiResponse<EmptyResponseBody>, AppError> {
     root_service.health_check()?;
     Ok(ApiResponseBuilder::new()
         .message("service is healthy")

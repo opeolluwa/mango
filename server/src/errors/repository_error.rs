@@ -10,14 +10,14 @@ pub enum RepositoryError {
     #[error("Record not found")]
     RecordNotFound,
     #[error("Duplicate Record")]
-    DuplicateREcord,
+    DuplicateRecord,
 }
 
 impl RepositoryError {
     pub fn status_code(&self) -> StatusCode {
         match self {
             RepositoryError::RecordNotFound => StatusCode::NOT_FOUND,
-            RepositoryError::DuplicateREcord => StatusCode::CONFLICT,
+            RepositoryError::DuplicateRecord => StatusCode::CONFLICT,
         }
     }
 }

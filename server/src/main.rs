@@ -1,6 +1,6 @@
 #![warn(unused_extern_crates)]
 
-use aers_lib::{errors, routes, shared};
+use aers_lib::{errors, routes, shared, AERS_FILE_UPLOAD_PATH};
 
 use axum::extract::DefaultBodyLimit;
 use errors::app_error::AppError;
@@ -14,8 +14,11 @@ use std::{
 };
 use tower_http::limit::RequestBodyLimitLayer;
 
+
 #[tokio::main]
 async fn main() -> Result<(), AppError> {
+    std::fs::create_dir_all(AERS_FILE_UPLOAD_PATH).unwrap();
+
     tracing_subscriber::fmt()
         .with_max_level(tracing::Level::DEBUG)
         .init();

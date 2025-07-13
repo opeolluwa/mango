@@ -73,7 +73,7 @@ impl AuthenticationServiceTrait for AuthenticationService {
             .await
             .is_some()
         {
-            return Err(RepositoryError::DuplicateREcord.into());
+            return Err(RepositoryError::DuplicateRecord.into());
         }
 
         let password_hash = self.user_helper_service.hash_password(&request.password)?;
