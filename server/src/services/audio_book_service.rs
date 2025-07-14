@@ -116,17 +116,17 @@ impl AudioBooksServiceExt for AudioBooksService {
             .map_err(ServiceError::from)?;
 
         let _ = audify_client.synthesize_pdf(pdf_path, AERS_EXPORT_PATH);
-        let imagekit_upload_response = ImagekitClient::new()
-            .upload(&file_path, &file_name)
-            .await
-            .map_err(|err| {
-            log::error!("Failed to uplaod the file due to {}", err);
-            ServiceError::OperationFailed
-        })?;
+        // let imagekit_upload_response = ImagekitClient::new()
+        //     .upload(&file_path, &file_name)
+        //     .await
+        //     .map_err(|err| {
+        //     log::error!("Failed to uplaod the file due to {}", err);
+        //     ServiceError::OperationFailed
+        // })?;
 
         let request = CreateAudioBookRequest {
             file_name: file_name.to_owned(),
-            src: imagekit_upload_response.url,
+            src: "imagekit_upload_response.url".to_string(),
             playlist_identifier,
         };
 

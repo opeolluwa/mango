@@ -11,6 +11,8 @@ resolver = "2"
 log = "0.4.27"
 serde = { version = "1.0.219", features = ["derive"] }
 thiserror = "2.0.12"
+redis = "0.32.4"
+
 
 [lib]
 name = "aers_lib"
