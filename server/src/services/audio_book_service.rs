@@ -103,11 +103,12 @@ impl AudioBooksServiceExt for AudioBooksService {
             return Err(ServiceError::OperationFailed);
         }
 
-        let config_path = std::path::Path::new("$CARGO_MANIFEST_DIR")
-            .join("resources")
-            .join("models")
-            .join("default_model.onnx.json");
-        let config_path = config_path.to_str().ok_or(ServiceError::OperationFailed)?;
+        // let config_path = std::path::Path::new("./resources")
+        //     // .join("resources")
+        //     .join("models")
+        //     .join("default_model.onnx.json");
+        // let config_path = config_path.to_str().ok_or(ServiceError::OperationFailed)?;
+        let config_path = "resources/models/en_US-libritts_r-medium.onnx.json";
         let audify_client = Audify::new(config_path);
 
         let pdf_path = file_path
@@ -115,7 +116,10 @@ impl AudioBooksServiceExt for AudioBooksService {
             .ok_or(ServiceError::OperationFailed)
             .map_err(ServiceError::from)?;
 
-        let _ = audify_client.synthesize_pdf(pdf_path, AERS_EXPORT_PATH);
+        let audio_output = format!("{}/{}.wav", AERS_EXPORT_PATH, file_name);
+        let resp = audify_client.synthesize_pdf(pdf_path, &audio_output);
+
+        println!("{:#?}", resp);
         // let imagekit_upload_response = ImagekitClient::new()
         //     .upload(&file_path, &file_name)
         //     .await
