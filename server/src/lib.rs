@@ -1,3 +1,6 @@
+pub const AERS_FILE_UPLOAD_PATH: &str = "/tmp";
+pub const AERS_EXPORT_PATH: &str = "/tmp";
+
 pub mod adapters;
 pub mod config;
 pub mod entities;

@@ -5,4 +5,6 @@ edition = "2024"
 
 [dependencies]
 fake = "4.3.0"
+log.workspace = true
 random_word = { version = "0.5.0", features = ["en"] }
+thiserror.workspace = true

@@ -1,7 +1,7 @@
 -- Add migration script here
 CREATE TABLE
     IF NOT EXISTS audio_books (
-        identifer UUID PRIMARY KEY,
+        identifier UUID PRIMARY KEY,
         user_identifier UUID NOT NULL REFERENCES users (identifier),
         src VARCHAR NOT NULL,
         name VARCHAR NOT NULL,

@@ -5,7 +5,7 @@ use uuid::Uuid;
 
 use crate::{
     adapters::{
-        audio_books::{AudioBook, CreateAudioBookRequest, UpdateAudioBook},
+        audio_books::{CreateAudioBookRequest, UpdateBookRequest},
         pagination::PaginationParams,
     },
     entities::audio_book::AudioBookEntity,
@@ -46,8 +46,10 @@ pub trait AudioBookRepositoryExt {
 
     fn update(
         &self,
-        payload: &UpdateAudioBook,
-    ) -> impl std::future::Future<Output = Result<Option<AudioBook>, ServiceError>> + Send;
+        payload: &UpdateBookRequest,
+        book_identifier: &Uuid,
+        user_identifier: &Uuid,
+    ) -> impl std::future::Future<Output = Result<Option<AudioBookEntity>, ServiceError>> + Send;
 
     fn delete(
         &self,
@@ -97,7 +99,10 @@ impl AudioBookRepositoryExt for AudioBookRepository {
             .bind(&payload.playlist_identifier)
             .execute(self.pool.as_ref())
             .await
-            .map_err(ServiceError::from)?;
+            .map_err(|err| {
+                log::error!("Operatation failed due to {}", err);
+                ServiceError::from(err)
+            })?;
 
         Ok(identifier)
     }
@@ -108,7 +113,7 @@ impl AudioBookRepositoryExt for AudioBookRepository {
         user_identifier: &Uuid,
     ) -> Result<Option<AudioBookEntity>, ServiceError> {
         let audio_book = sqlx::query_as::<_, AudioBookEntity>(
-            r#"SELECT * audio_books WHERE identifier = $1 AND user_identifier =$2"#,
+            r#"SELECT * FROM audio_books WHERE identifier = $1 AND user_identifier =$2"#,
         )
         .bind(book_identifier)
         .bind(user_identifier)
@@ -134,8 +139,23 @@ impl AudioBookRepositoryExt for AudioBookRepository {
         .await.map_err(ServiceError::from)
     }
 
-    async fn update(&self, _payload: &UpdateAudioBook) -> Result<Option<AudioBook>, ServiceError> {
-        todo!()
+    async fn update(
+        &self,
+        payload: &UpdateBookRequest,
+        book_identifier: &Uuid,
+        user_identifier: &Uuid,
+    ) -> Result<Option<AudioBookEntity>, ServiceError> {
+        sqlx::query(
+            r#"UPDATE audio_books SET name = $1  WHERE identifier =$2 AND user_identifier =$2"#,
+        )
+        .bind(&payload.name)
+        .bind(book_identifier)
+        .bind(user_identifier)
+        .execute(self.pool.as_ref())
+        .await
+        .map_err(ServiceError::from)?;
+
+        self.find_one(book_identifier, user_identifier).await
     }
 
     async fn delete(&self, identifier: &Uuid, user_identifier: &Uuid) -> Result<(), ServiceError> {

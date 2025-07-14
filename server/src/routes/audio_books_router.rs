@@ -11,7 +11,7 @@ use crate::{
 pub(super) fn audio_book_routes(state: ServicesState) -> Router {
     Router::new()
         .route("/", post(create_new_book))
-        .route("/", put(update_book))
-        .route("/", get(fetch_book))
+        .route("/{book_identifier}", put(update_book))
+        .route("/{book_identifier}", get(fetch_book))
         .with_state(state)
 }

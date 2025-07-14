@@ -22,7 +22,7 @@ where
 
 impl<S, T> FromRequest<S> for AuthenticatedRequest<T>
 where
-    T:  Send + Serialize + DeserializeOwned + Debug + Validate,
+    T: Send + Serialize + DeserializeOwned + Debug + Validate,
     Claims: FromRequestParts<S> + Send,
     S: Send + Sync,
 {

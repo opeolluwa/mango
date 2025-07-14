@@ -8,7 +8,7 @@ use validator::Validate;
 #[derive(TryFromMultipart)]
 #[try_from_multipart(rename_all = "camelCase")]
 pub struct UploadAssetRequest {
-    #[form_data(limit = "5MiB")]
+    // #[form_data(limit = "5MiB")]
     pub document: FieldData<NamedTempFile>,
     pub playlist_identifier: Option<Uuid>,
 }
@@ -37,14 +37,6 @@ pub struct AudioBook {
     pub starred: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-
-pub struct UpdateAudioBook {
-    pub name: Option<String>,
-    pub playlist_identifier: Option<Uuid>,
-}
-
 #[derive(Debug, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 
@@ -54,10 +46,6 @@ pub struct CreateAudioBookRequest {
     pub playlist_identifier: Option<Uuid>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct CreateAudioBookResponse {}
-
 #[derive(Debug, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct AddBookToPlaylistRequest {
@@ -65,33 +53,11 @@ pub struct AddBookToPlaylistRequest {
     pub playlist_identifier: Uuid,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct AddBookToPlaylistResponse {}
-
 #[derive(Debug, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
-pub struct RemoveBookFromPlaylistRequest {}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct RemoveBookFromPlaylistResponse {}
-
-#[derive(Debug, Serialize, Deserialize, Validate)]
-#[serde(rename_all = "camelCase")]
-pub struct UpdateBookRequest {}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct UpdateBookResponse {}
-
-#[derive(Debug, Serialize, Deserialize, Validate)]
-#[serde(rename_all = "camelCase")]
-pub struct DeleteBookRequest {}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct DeleteBookResponse {}
+pub struct UpdateBookRequest {
+    pub name: String,
+}
 
 #[derive(Debug, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]

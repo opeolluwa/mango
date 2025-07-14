@@ -1,6 +1,6 @@
 #![warn(unused_extern_crates)]
 
-use aers_lib::{errors, routes, shared};
+use aers_lib::{AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH, errors, routes, shared};
 
 use axum::extract::DefaultBodyLimit;
 use errors::app_error::AppError;
@@ -16,6 +16,15 @@ use tower_http::limit::RequestBodyLimitLayer;
 
 #[tokio::main]
 async fn main() -> Result<(), AppError> {
+    std::fs::create_dir_all(AERS_FILE_UPLOAD_PATH).map_err(|err| {
+        log::error!("failed to create AERS_FILE_UPLOAD_PATH due to {}", err);
+        AppError::OperationFailed("failed to create AERS_FILE_UPLOAD_PATH".to_string())
+    })?;
+    std::fs::create_dir_all(AERS_EXPORT_PATH).map_err(|err| {
+        log::error!("failed to create AERS_EXPORT_PATH due to {}", err);
+        AppError::OperationFailed("failed to create AERS_EXPORT_PATH".to_string())
+    })?;
+
     tracing_subscriber::fmt()
         .with_max_level(tracing::Level::DEBUG)
         .init();
