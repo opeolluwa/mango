@@ -1,5 +1,4 @@
-mod core;
+mod client;
 mod error;
-
-pub use core::*;
+pub use client::*;
 pub use error::*;
