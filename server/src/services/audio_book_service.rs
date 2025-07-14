@@ -1,4 +1,5 @@
 use std::path::Path;
+use std::{fs, io};
 
 use crate::adapters::audio_books::{
     AddBookToPlaylistRequest, CreateAudioBookRequest, UpdateBookRequest, UploadAssetRequest,
@@ -11,11 +12,16 @@ use crate::repositories::audio_book_repository::{AudioBookRepository, AudioBookR
 use crate::{AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH};
 use aers_audify::Audify;
 use aers_imagekit_client::ImagekitClient;
-use aers_utils::generate_file_name;
+use aers_utils::{extract_env, generate_file_name};
 use axum_typed_multipart::TypedMultipart;
 use sqlx::Postgres;
 use sqlx::pool::Pool;
 use uuid::Uuid;
+
+use imagekit::ImageKit;
+use imagekit::delete::Delete;
+use imagekit::upload::types::FileType;
+use imagekit::upload::{Options, Upload, UploadFile};
 
 #[derive(Clone)]
 pub struct AudioBooksService {
@@ -84,6 +90,7 @@ impl AudioBooksServiceExt for AudioBooksService {
         }): TypedMultipart<UploadAssetRequest>,
         claim: &Claims,
     ) -> Result<Uuid, ServiceError> {
+        // tokio::task::spawn(async move {
         let file_name = document
             .metadata
             .file_name
@@ -103,11 +110,7 @@ impl AudioBooksServiceExt for AudioBooksService {
             return Err(ServiceError::OperationFailed);
         }
 
-        let config_path = std::path::Path::new("$CARGO_MANIFEST_DIR")
-            .join("resources")
-            .join("models")
-            .join("default_model.onnx.json");
-        let config_path = config_path.to_str().ok_or(ServiceError::OperationFailed)?;
+        let config_path = "resources/models/en_US-libritts_r-medium.onnx.json";
         let audify_client = Audify::new(config_path);
 
         let pdf_path = file_path
@@ -115,18 +118,29 @@ impl AudioBooksServiceExt for AudioBooksService {
             .ok_or(ServiceError::OperationFailed)
             .map_err(ServiceError::from)?;
 
-        let _ = audify_client.synthesize_pdf(pdf_path, AERS_EXPORT_PATH);
-        // let imagekit_upload_response = ImagekitClient::new()
-        //     .upload(&file_path, &file_name)
-        //     .await
-        //     .map_err(|err| {
-        //     log::error!("Failed to uplaod the file due to {}", err);
-        //     ServiceError::OperationFailed
-        // })?;
+        let audio_output = format!("{}/{}.wav", AERS_EXPORT_PATH, file_name);
+        audify_client
+            .synthesize_pdf(pdf_path, &audio_output)
+            .map_err(|err| {
+                log::error!("failed to process document due to {} ", err);
+                ServiceError::OperationFailed
+            })?;
 
+        let private_key = extract_env::<String>("IMAGEKIT_PRIVATE_KEY").unwrap();
+        let public_key = extract_env::<String>("IMAGEKIT_PUBLIC_KEY").unwrap();
+
+        let imagekit_upload_response = ImagekitClient::new(&public_key, &private_key).unwrap()
+            .upload_file(&file_path, &file_name)
+            .await
+            .map_err(|err| {
+                log::error!("Failed to uplaod the file due to {}", err);
+                ServiceError::OperationFailed
+            })?;
+
+        println!("{:#?}", imagekit_upload_response);
         let request = CreateAudioBookRequest {
             file_name: file_name.to_owned(),
-            src: "imagekit_upload_response.url".to_string(),
+            src: imagekit_upload_response.url,
             playlist_identifier,
         };
 
@@ -136,6 +150,8 @@ impl AudioBooksServiceExt for AudioBooksService {
             .await?;
 
         Ok(book_identifier)
+        // });
+        // todo!()
     }
 
     async fn fetch_one(
@@ -212,4 +228,12 @@ impl AudioBooksServiceExt for AudioBooksService {
 
         Ok(())
     }
+}
+
+fn delete_file_if_exists(path: &str) -> io::Result<()> {
+    let file_path = Path::new(path);
+    if file_path.exists() {
+        fs::remove_file(file_path)?;
+    }
+    Ok(())
 }

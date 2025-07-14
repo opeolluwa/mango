@@ -23,7 +23,7 @@ impl Default for Audify {
             config_path: "".to_string(),
             export_path: ".".to_string(),
             source: Default::default(),
-            sid: 50i64,
+            sid: 80i64,
         }
     }
 }

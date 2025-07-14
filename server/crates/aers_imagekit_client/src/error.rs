@@ -13,4 +13,7 @@ pub enum ImagekitError {
 
     #[error("Unexpected response from server: {0}")]
     UnexpectedResponse(String),
+
+    #[error("Unexpected error happened")]
+    OperationFailed(String),
 }
