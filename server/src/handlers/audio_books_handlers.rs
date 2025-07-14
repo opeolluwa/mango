@@ -20,7 +20,7 @@ pub async fn create_new_book(
     State(audio_book_service): State<AudioBooksService>,
     claims: Claims,
     request: TypedMultipart<UploadAssetRequest>,
-) -> Result<ApiResponse<AudioBookEntity>, ApiResponse<()>> {
+) -> Result<ApiResponse<AudioBookEntity>, ServiceError> {
     let book_identifier = audio_book_service.create_new(request, &claims).await?;
 
     let book = audio_book_service

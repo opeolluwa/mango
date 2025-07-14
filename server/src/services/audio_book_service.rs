@@ -118,26 +118,46 @@ impl AudioBooksServiceExt for AudioBooksService {
             .ok_or(ServiceError::OperationFailed)
             .map_err(ServiceError::from)?;
 
-        let audio_output = format!("{}/{}.wav", AERS_EXPORT_PATH, file_name);
-        audify_client
-            .synthesize_pdf(pdf_path, &audio_output)
-            .map_err(|err| {
-                log::error!("failed to process document due to {} ", err);
-                ServiceError::OperationFailed
-            })?;
+        // let audio_output = format!("{}/{}.wav", AERS_EXPORT_PATH, file_name);
+        // audify_client
+        //     .synthesize_pdf(pdf_path, &audio_output)
+        //     .map_err(|err| {
+        //         log::error!("failed to process document due to {} ", err);
+        //         ServiceError::OperationFailed
+        //     })?;
 
         let private_key = extract_env::<String>("IMAGEKIT_PRIVATE_KEY").unwrap();
         let public_key = extract_env::<String>("IMAGEKIT_PUBLIC_KEY").unwrap();
 
-        let imagekit_upload_response = ImagekitClient::new(&public_key, &private_key).unwrap()
-            .upload_file(&file_path, &file_name)
-            .await
-            .map_err(|err| {
-                log::error!("Failed to uplaod the file due to {}", err);
-                ServiceError::OperationFailed
-            })?;
+        // let imagekit_upload_response = ImagekitClient::new(&public_key, &private_key)
+        // .map_err(|err| {
+        //     log::error!("error creating client due to {}", err);
+        //     ServiceError::OperationFailed
+        // })?
+        //     .upload_file("/tmp/1752520362.pdf", "oyegoke-test")
+        //     .await
+        //     .map_err(|err| {
+        //         log::error!("error uploading file due to {}", err);
+        //         ServiceError::OperationFailed
+        //     })?;
+
+        // println!("{:#?}", imagekit_upload_response);
+
+        let imagekit_upload_response =
+            aers_imagekit_client::ImagekitClient::new(&public_key, &private_key)
+                .map_err(|err| {
+                    log::error!("error creating client due to {}", err);
+                    ServiceError::OperationFailed
+                })?
+                .upload_file(&file_path, &file_name)
+                .await
+                .map_err(|err| {
+                    log::error!("error creating client due to {}", err);
+                    ServiceError::OperationFailed
+                })?;
 
         println!("{:#?}", imagekit_upload_response);
+
         let request = CreateAudioBookRequest {
             file_name: file_name.to_owned(),
             src: imagekit_upload_response.url,
