@@ -12,7 +12,7 @@ services:
     env_file:
       - .env
     depends_on:
-      database: 
+      postgres: 
         condition: service_healthy
     networks:
       - internal
@@ -30,10 +30,10 @@ services:
       retries: 10
       start_period: 30s  # Wait 30 seconds before starting health checks
 
-  database:
+  postgres:
     image: postgres:15-alpine 
     restart: always
-    container_name: postgres
+    # container_name: postgres
     environment:
       - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
@@ -60,7 +60,7 @@ services:
     volumes:
       - pgadmin-data:/var/lib/pgadmin
     depends_on:
-      database:
+      postgres:
         condition: service_healthy
     networks:
       - internal
