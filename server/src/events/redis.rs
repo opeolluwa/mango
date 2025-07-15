@@ -1,7 +1,9 @@
 use std::fmt::Debug;
 
 use redis::aio::{ConnectionManager, ConnectionManagerConfig};
+use redis::AsyncCommands;
 use serde::{Serialize, de::DeserializeOwned};
+use uuid::Uuid;
 
 use crate::{
     errors::service_error::ServiceError,
@@ -31,30 +33,57 @@ impl RedisClient {
         Ok(Self { connection_manager })
     }
 
-    pub fn publish_message<T>(
-        &self,
+    pub async fn publish_message<T>(
+        &mut self,
         channel: &RedisMessageChannel,
         message: &RedisMessage<T>,
     ) -> Result<(), ServiceError>
     where
         T: Serialize + DeserializeOwned + Debug,
     {
-        // let connection = self
-        //     .connection_manager
-        //     .publish(channel.to_string(), );
-        // let _ = message;
-        todo!()
+        let payload = serde_json::to_string(&message).map_err(ServiceError::SerdeJsonError)?;
+        // self.connection_manager.publish() (channel.to_string(), payload)
+        //     .await
+        //     .map_err(ServiceError::RedisError)?;
+
+        Ok(())
     }
 
-    pub fn consume_message() {}
+    pub async fn consume_message<T, F>(
+        &mut self,
+        channel: &RedisMessageChannel,
+        mut handler: F,
+    ) -> Result<(), ServiceError>
+    where
+        T: Serialize + DeserializeOwned + Debug + Send + 'static,
+        F: FnMut(RedisMessage<T>) -> Result<(), ServiceError> + Send + 'static,
+    {
+        use redis::AsyncCommands;
+        use redis::aio::PubSub;
+
+        let mut pubsub = self.connection_manager.subscribe(channel.to_string()).await.map_err(ServiceError::RedisError)?;
+
+        // tokio::spawn(async move {
+        //     loop {
+        //         let msg = match pubsub.on_message().next().await {
+        //             Some(msg) => msg,
+        //             None => continue,
+        //         };
+
+        //         if let Ok(payload): Result<String, _> = msg.get_payload() {
+        //             match serde_json::from_str::<RedisMessage<T>>(&payload) {
+        //                 Ok(message) => {
+        //                     if let Err(err) = handler(message) {
+        //                         tracing::error!("Redis message handler error: {:?}", err);
+        //                     }
+        //                 }
+        //                 Err(e) => tracing::error!("Failed to deserialize message: {:?}", e),
+        //             }
+        //         }
+        //     }
+        // });
+
+        Ok(())
+    }
 }
 
-// pub trait RedisClientExt {
-//     fn extract_conn(&self) -> redis::Connection;
-// }
-
-// impl RedisClientExt for RedisClient {
-//     fn extract_conn(&self) -> redis::Connection {
-//         self.redis_connection
-//     }
-// }

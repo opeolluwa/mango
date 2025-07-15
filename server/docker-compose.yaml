@@ -4,7 +4,7 @@ services:
     container_name: aers
     build:
       context: .
-      dockerfile: docker/${ENVIRONMENT}/Dockerfile
+      dockerfile: docker/prod/Dockerfile
       args:
         - CARGO_TARGET_DIR=/cargo-target
     ports:

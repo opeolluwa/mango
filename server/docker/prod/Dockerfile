@@ -1,21 +1,54 @@
-ARG RUST_VERSION=1.82.0
-ARG APP_NAME=uranium
+FROM rust:1.86.0-slim AS build
 
-FROM rust:${RUST_VERSION} AS build
-ARG APP_NAME
+RUN set -e && \
+    apt-get update -q && \
+    apt-get install -yq \
+        libgcc-s1 \
+        libssl-dev \
+        pkg-config \
+        clang \
+        libclang-dev \
+        llvm-dev \
+        cmake \
+        git \
+        zlib1g-dev \
+        build-essential && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN rustup component add rustfmt
+
 WORKDIR /app
 
-# Install host build dependencies.
-RUN apt-get update && apt-get install -y protobuf-compiler musl-dev
 COPY . .
-
 
 RUN cargo build --release
 
-FROM ubuntu AS final
+RUN ls 
 
-COPY --from=build /app/target/release/bookmark ./uranium
+# RUN ls -lh target/release && file target/release/aers
 
-EXPOSE 50051
+FROM debian:bullseye-slim AS final
 
-CMD ["./uranium"]
+RUN set -e && \
+    apt-get update -q && \
+    apt-get install -yq \
+        libgcc-s1 \
+        libssl-dev \
+        pkg-config \
+        clang \
+        libclang-dev \
+        llvm-dev \
+        cmake \
+        git \
+        zlib1g-dev \
+        build-essential && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=build /app/target/release/aers ./aers
+COPY --from=build /app/resources /resources
+COPY --from=build /app/migrations /migrations
+
+
+EXPOSE 8080
+
+CMD ["aers"]
