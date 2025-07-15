@@ -4,7 +4,7 @@ alias sb:= server-build
 alias sl:= server-logs
 alias sr:= server-restart
 alias srb:= server-restart
-
+alias sprod := server-build-prod
 
 
 set dotenv-required
@@ -45,3 +45,6 @@ DOCKER_CMD := "docker compose -f server/docker-compose.yaml"
 
 @server-rebuild:
     docker compose -f server/docker-compose.yaml up --build 
+
+@server-build-prod:
+    docker build . -t aers-0.1.0 --file docker/prod/Dockerfile
