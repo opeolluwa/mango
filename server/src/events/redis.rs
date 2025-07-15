@@ -4,9 +4,13 @@ use redis::{
     AsyncCommands,
     aio::{ConnectionManager, ConnectionManagerConfig},
 };
-use serde::{de::DeserializeOwned, Serialize};
+use serde::{Serialize, de::DeserializeOwned};
 
-use crate::{errors::service_error::ServiceError, events::{channels::RedisMessageChannel, producers::RedisMessage}, shared::extract_env::extract_env};
+use crate::{
+    errors::service_error::ServiceError,
+    events::{channels::RedisMessageChannel, producers::RedisMessage},
+    shared::extract_env::extract_env,
+};
 
 pub struct RedisClient {
     connection_manager: ConnectionManager,
@@ -36,7 +40,7 @@ impl RedisClient {
         message: &RedisMessage<T>,
     ) -> Result<(), ServiceError>
     where
-        T: Serialize + DeserializeOwned+ Debug,
+        T: Serialize + DeserializeOwned + Debug,
     {
         // let connection = self
         //     .connection_manager
@@ -45,9 +49,7 @@ impl RedisClient {
         todo!()
     }
 
-    pub fn consume_message(){
-        
-    }
+    pub fn consume_message() {}
 }
 
 // pub trait RedisClientExt {

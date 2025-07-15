@@ -1,10 +1,10 @@
 use std::path::Path;
-use std::{fs, io};
 
 use crate::adapters::audio_books::{
     AddBookToPlaylistRequest, CreateAudioBookRequest, UpdateBookRequest, UploadAssetRequest,
 };
 use crate::adapters::jwt::Claims;
+use crate::adapters::pagination::{PaginatedResponse, PaginationParams};
 use crate::entities::audio_book::AudioBookEntity;
 use crate::errors::repository_error::RepositoryError;
 use crate::errors::service_error::ServiceError;
@@ -66,6 +66,20 @@ pub trait AudioBooksServiceExt {
         book_identifier: &Uuid,
         user_identifier: &Uuid,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
+
+    fn unmark_favourite(
+        &self,
+        book_identifier: &Uuid,
+        user_identifier: &Uuid,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
+
+    fn fetch_favourites(
+        &self,
+        user_identifier: &Uuid,
+        pagination_params: &PaginationParams,
+    ) -> impl std::future::Future<
+        Output = Result<PaginatedResponse<Vec<AudioBookEntity>>, ServiceError>,
+    > + Send;
 }
 
 impl AudioBooksService {
@@ -226,12 +240,37 @@ impl AudioBooksServiceExt for AudioBooksService {
 
         Ok(())
     }
-}
 
-fn delete_file_if_exists(path: &str) -> io::Result<()> {
-    let file_path = Path::new(path);
-    if file_path.exists() {
-        fs::remove_file(file_path)?;
+    async fn unmark_favourite(
+        &self,
+        book_identifier: &Uuid,
+        user_identifier: &Uuid,
+    ) -> Result<(), ServiceError> {
+        self.audio_book_repository
+            .unmark_favourite(book_identifier, user_identifier)
+            .await?;
+
+        Ok(())
     }
-    Ok(())
+
+    async fn fetch_favourites(
+        &self,
+        user_identifier: &Uuid,
+        pagination_params: &PaginationParams,
+    ) -> Result<PaginatedResponse<Vec<AudioBookEntity>>, ServiceError> {
+        let data = self
+            .audio_book_repository
+            .fetch_favourites(user_identifier, pagination_params)
+            .await?;
+
+        let response = PaginatedResponse {
+            data,
+            page: pagination_params.page.unwrap_or_default(),
+            per_page: pagination_params.per_page.unwrap_or_default(),
+            total_count: 5,
+            total_pages: 5, //TODO: use complex query to read all at onece
+        };
+
+        Ok(response)
+    }
 }

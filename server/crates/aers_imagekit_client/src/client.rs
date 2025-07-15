@@ -31,7 +31,6 @@ pub struct VersionInfo {
     pub name: String,
 }
 
-
 pub struct ImagekitClient {
     client: Client,
     upload_url: String,

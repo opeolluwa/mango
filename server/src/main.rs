@@ -1,8 +1,6 @@
 #![warn(unused_extern_crates)]
 
-use aers_lib::{
-    AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH, errors, events::redis::RedisClient, routes, shared,
-};
+use aers_lib::{AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH, errors, routes, shared};
 
 use axum::extract::DefaultBodyLimit;
 use errors::app_error::AppError;

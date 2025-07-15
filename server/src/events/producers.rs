@@ -21,7 +21,6 @@ where
     where
         W: ?Sized + redis::RedisWrite,
     {
-        
         todo!()
     }
 

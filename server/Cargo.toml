@@ -9,10 +9,9 @@ resolver = "2"
 
 [workspace.dependencies]
 log = "0.4.27"
+redis = "0.32.4"
 serde = { version = "1.0.219", features = ["derive"] }
 thiserror = "2.0.12"
-redis = "0.32.4"
-
 
 [lib]
 name = "aers_lib"
