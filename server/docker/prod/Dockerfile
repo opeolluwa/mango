@@ -18,37 +18,23 @@ RUN set -e && \
 RUN rustup component add rustfmt
 
 WORKDIR /app
-
 COPY . .
 
 RUN cargo build --release
 
-RUN ls 
-
-# RUN ls -lh target/release && file target/release/aers
-
+# Final stage
 FROM debian:bullseye-slim AS final
 
-RUN set -e && \
-    apt-get update -q && \
-    apt-get install -yq \
-        libgcc-s1 \
-        libssl-dev \
-        pkg-config \
-        clang \
-        libclang-dev \
-        llvm-dev \
-        cmake \
-        git \
-        zlib1g-dev \
-        build-essential && \
+RUN apt-get update && \
+    apt-get install -y libssl-dev && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=build /app/target/release/aers ./aers
-COPY --from=build /app/resources /resources
-COPY --from=build /app/migrations /migrations
+WORKDIR /app
 
+COPY --from=build /app/target/release/aers ./aers
+COPY --from=build /app/resources ./resources
+COPY --from=build /app/migrations ./migrations
 
 EXPOSE 8080
 
-CMD ["aers"]
+CMD ["./aers"]
