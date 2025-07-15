@@ -1,10 +1,10 @@
 use std::path::Path;
-use std::{fs, io};
 
 use crate::adapters::audio_books::{
     AddBookToPlaylistRequest, CreateAudioBookRequest, UpdateBookRequest, UploadAssetRequest,
 };
 use crate::adapters::jwt::Claims;
+use crate::adapters::pagination::{PaginatedResponse, PaginationParams};
 use crate::entities::audio_book::AudioBookEntity;
 use crate::errors::repository_error::RepositoryError;
 use crate::errors::service_error::ServiceError;
@@ -17,11 +17,6 @@ use axum_typed_multipart::TypedMultipart;
 use sqlx::Postgres;
 use sqlx::pool::Pool;
 use uuid::Uuid;
-
-use imagekit::ImageKit;
-use imagekit::delete::Delete;
-use imagekit::upload::types::FileType;
-use imagekit::upload::{Options, Upload, UploadFile};
 
 #[derive(Clone)]
 pub struct AudioBooksService {
@@ -71,6 +66,20 @@ pub trait AudioBooksServiceExt {
         book_identifier: &Uuid,
         user_identifier: &Uuid,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
+
+    fn unmark_favourite(
+        &self,
+        book_identifier: &Uuid,
+        user_identifier: &Uuid,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
+
+    fn fetch_favourites(
+        &self,
+        user_identifier: &Uuid,
+        pagination_params: &PaginationParams,
+    ) -> impl std::future::Future<
+        Output = Result<PaginatedResponse<Vec<AudioBookEntity>>, ServiceError>,
+    > + Send;
 }
 
 impl AudioBooksService {
@@ -98,15 +107,14 @@ impl AudioBooksServiceExt for AudioBooksService {
             .unwrap_or(generate_file_name());
 
         let temp_dir = Path::new(AERS_FILE_UPLOAD_PATH);
-        let _ = std::fs::create_dir(temp_dir);
-        let file_path = temp_dir.join(&format!(
+        let file_path = temp_dir.join(format!(
             "{time_stamp}_{file_name}.pdf",
-            time_stamp = chrono::Local::now().timestamp().to_string()
+            time_stamp = chrono::Local::now().timestamp()
         ));
 
         // create file object
         if let Err(err) = document.contents.persist(&file_path) {
-            log::error!("error processing file due to {}", err.to_string());
+            log::error!("error processing file due to {}", err);
             return Err(ServiceError::OperationFailed);
         }
 
@@ -115,8 +123,7 @@ impl AudioBooksServiceExt for AudioBooksService {
 
         let pdf_path = file_path
             .to_str()
-            .ok_or(ServiceError::OperationFailed)
-            .map_err(ServiceError::from)?;
+            .ok_or(ServiceError::OperationFailed)?;
 
         let audio_output = format!("{}/{}.wav", AERS_EXPORT_PATH, file_name);
         audify_client
@@ -129,15 +136,18 @@ impl AudioBooksServiceExt for AudioBooksService {
         let private_key = extract_env::<String>("IMAGEKIT_PRIVATE_KEY").unwrap();
         let public_key = extract_env::<String>("IMAGEKIT_PUBLIC_KEY").unwrap();
 
-        let imagekit_upload_response = ImagekitClient::new(&public_key, &private_key).unwrap()
+        let imagekit_upload_response = ImagekitClient::new(&public_key, &private_key)
+            .map_err(|err| {
+                log::error!("error creating client due to {}", err);
+                ServiceError::OperationFailed
+            })?
             .upload_file(&file_path, &file_name)
             .await
             .map_err(|err| {
-                log::error!("Failed to uplaod the file due to {}", err);
+                log::error!("error creating client due to {}", err);
                 ServiceError::OperationFailed
             })?;
 
-        println!("{:#?}", imagekit_upload_response);
         let request = CreateAudioBookRequest {
             file_name: file_name.to_owned(),
             src: imagekit_upload_response.url,
@@ -228,12 +238,37 @@ impl AudioBooksServiceExt for AudioBooksService {
 
         Ok(())
     }
-}
 
-fn delete_file_if_exists(path: &str) -> io::Result<()> {
-    let file_path = Path::new(path);
-    if file_path.exists() {
-        fs::remove_file(file_path)?;
+    async fn unmark_favourite(
+        &self,
+        book_identifier: &Uuid,
+        user_identifier: &Uuid,
+    ) -> Result<(), ServiceError> {
+        self.audio_book_repository
+            .unmark_favourite(book_identifier, user_identifier)
+            .await?;
+
+        Ok(())
     }
-    Ok(())
+
+    async fn fetch_favourites(
+        &self,
+        user_identifier: &Uuid,
+        pagination_params: &PaginationParams,
+    ) -> Result<PaginatedResponse<Vec<AudioBookEntity>>, ServiceError> {
+        let data = self
+            .audio_book_repository
+            .fetch_favourites(user_identifier, pagination_params)
+            .await?;
+
+        let response = PaginatedResponse {
+            data,
+            page: pagination_params.page.unwrap_or_default(),
+            per_page: pagination_params.per_page.unwrap_or_default(),
+            total_count: 5,
+            total_pages: 5, //TODO: use complex query to read all at onece
+        };
+
+        Ok(response)
+    }
 }

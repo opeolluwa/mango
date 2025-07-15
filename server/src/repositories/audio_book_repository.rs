@@ -81,6 +81,12 @@ pub trait AudioBookRepositoryExt {
         identifier: &Uuid,
         user_identifier: &Uuid,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
+
+    fn fetch_favourites(
+        &self,
+        user_identifier: &Uuid,
+        pagination_params: &PaginationParams,
+    ) -> impl std::future::Future<Output = Result<Vec<AudioBookEntity>, ServiceError>> + Send;
 }
 
 impl AudioBookRepositoryExt for AudioBookRepository {
@@ -92,11 +98,11 @@ impl AudioBookRepositoryExt for AudioBookRepository {
         let identifier = Uuid::new_v4();
 
         sqlx::query(r#"INSERT INTO audio_books(identifier, name, src, user_identifier, playlist_identifier) VALUES($1, $2, $3, $4, $5) "#)
-            .bind(&identifier)
+            .bind(identifier)
             .bind(&payload.file_name)
             .bind(&payload.src)
-            .bind(&user_identifier)
-            .bind(&payload.playlist_identifier)
+            .bind(user_identifier)
+            .bind(payload.playlist_identifier)
             .execute(self.pool.as_ref())
             .await
             .map_err(|err| {
@@ -129,12 +135,15 @@ impl AudioBookRepositoryExt for AudioBookRepository {
         user_identifier: &Uuid,
         pagination: &PaginationParams,
     ) -> Result<Vec<AudioBookEntity>, ServiceError> {
+        let limit = pagination.page.unwrap_or_default() - 1;
+        let offset = pagination.per_page.unwrap_or_default();
+
         sqlx::query_as::<_, AudioBookEntity>(
             r#"SELECT * audio_books WHERE user_identifier = $1 LIMIT $2 OFFSET $3 SORT BY created_at"#,
         )
         .bind(user_identifier)
-        .bind(pagination.per_page.unwrap_or_default().to_string())
-        .bind(pagination.page.unwrap_or_default().to_string())
+        .bind(limit.to_string())
+        .bind(offset.to_string())
         .fetch_all(self.pool.as_ref())
         .await.map_err(ServiceError::from)
     }
@@ -229,5 +238,28 @@ impl AudioBookRepositoryExt for AudioBookRepository {
             .map_err(ServiceError::from)?;
 
         Ok(())
+    }
+
+    async fn fetch_favourites(
+        &self,
+        user_identifier: &Uuid,
+        pagination: &PaginationParams,
+    ) -> Result<Vec<AudioBookEntity>, ServiceError> {
+        let limit = pagination.page.unwrap_or_default() - 1;
+        let offset = pagination.per_page.unwrap_or_default();
+
+        let results = sqlx::query_as::<_, AudioBookEntity>(
+            r#"
+        SELECT * FROM audio_books WHERE user_identifier = $1 LIMIT $2  OFFSET $3 SORT BY created_at
+        "#,
+        )
+        .bind(user_identifier)
+        .bind(limit.to_string())
+        .bind(offset.to_string())
+        .fetch_all(self.pool.as_ref())
+        .await
+        .map_err(ServiceError::from)?;
+
+        Ok(results)
     }
 }

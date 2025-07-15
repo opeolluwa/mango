@@ -1,3 +1,5 @@
+use std::{fs, io, path::Path};
+
 use crate::errors::service_error::ServiceError;
 use bcrypt::{DEFAULT_COST, hash, verify};
 
@@ -13,6 +15,7 @@ impl ServiceHelpers {
 pub trait ServiceHelpersTrait {
     fn hash_password(&self, raw_password: &str) -> Result<String, ServiceError>;
     fn validate_password(&self, raw_password: &str, hash: &str) -> Result<bool, ServiceError>;
+    fn delete_file_if_exists(path: &str) -> io::Result<()>;
 }
 
 impl ServiceHelpersTrait for ServiceHelpers {
@@ -27,5 +30,13 @@ impl ServiceHelpersTrait for ServiceHelpers {
             log::error!("operation failed due to {}", err);
             ServiceError::OperationFailed
         })
+    }
+
+    fn delete_file_if_exists(path: &str) -> io::Result<()> {
+        let file_path = Path::new(path);
+        if file_path.exists() {
+            fs::remove_file(file_path)?;
+        }
+        Ok(())
     }
 }

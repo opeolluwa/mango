@@ -1,4 +1,4 @@
-use axum::extract::{Path, State};
+use axum::extract::{Path, Query, State};
 use axum::http::StatusCode;
 use axum_typed_multipart::TypedMultipart;
 use uuid::Uuid;
@@ -6,21 +6,20 @@ use uuid::Uuid;
 use crate::adapters::api_request::AuthenticatedRequest;
 use crate::adapters::api_response::{ApiResponse, ApiResponseBuilder};
 use crate::adapters::audio_books::{
-    AddBookToPlaylistRequest, MarkFavouriteRequest, MarkFavouriteResponse, UpdateBookRequest,
-    UploadAssetRequest,
+    AddBookToPlaylistRequest, MarkFavouriteResponse, UpdateBookRequest, UploadAssetRequest,
 };
 use crate::adapters::jwt::Claims;
+use crate::adapters::pagination::{PaginatedResponse, PaginationParams};
 use crate::entities::audio_book::AudioBookEntity;
 use crate::errors::repository_error::RepositoryError;
 use crate::errors::service_error::ServiceError;
-use crate::middlewares::validator::ValidatedRequest;
 use crate::services::audio_book_service::{AudioBooksService, AudioBooksServiceExt};
 
 pub async fn create_new_book(
     State(audio_book_service): State<AudioBooksService>,
     claims: Claims,
     request: TypedMultipart<UploadAssetRequest>,
-) -> Result<ApiResponse<AudioBookEntity>, ApiResponse<()>> {
+) -> Result<ApiResponse<AudioBookEntity>, ServiceError> {
     let book_identifier = audio_book_service.create_new(request, &claims).await?;
 
     let book = audio_book_service
@@ -99,16 +98,57 @@ pub async fn update_book(
 
 pub async fn delete_book(
     State(audio_book_service): State<AudioBooksService>,
-    claim: Claims,
+    claims: Claims,
     Path(book_identifier): Path<Uuid>,
 ) -> Result<ApiResponse<()>, ServiceError> {
-    todo!()
+    audio_book_service
+        .delete_book(&book_identifier, &claims.user_identifier)
+        .await?;
+
+    Ok(ApiResponseBuilder::new()
+        .message("Book deleted successfully")
+        .build())
 }
 
 pub async fn mark_favourite(
     State(audio_book_service): State<AudioBooksService>,
-    claim: Claims,
-    ValidatedRequest(request): ValidatedRequest<MarkFavouriteRequest>,
+    claims: Claims,
+    Path(book_identifier): Path<Uuid>,
 ) -> Result<ApiResponse<MarkFavouriteResponse>, ServiceError> {
-    todo!()
+    audio_book_service
+        .mark_favourite(&book_identifier, &claims.user_identifier)
+        .await?;
+
+    Ok(ApiResponseBuilder::new()
+        .message("Book Starred successfully")
+        .build())
+}
+
+pub async fn unmark_favourite(
+    State(audio_book_service): State<AudioBooksService>,
+    claims: Claims,
+    Path(book_identifier): Path<Uuid>,
+) -> Result<ApiResponse<MarkFavouriteResponse>, ServiceError> {
+    audio_book_service
+        .unmark_favourite(&book_identifier, &claims.user_identifier)
+        .await?;
+
+    Ok(ApiResponseBuilder::new()
+        .message("Book remove from starred successfully")
+        .build())
+}
+
+pub async fn fetch_favourites(
+    State(audio_book_service): State<AudioBooksService>,
+    claims: Claims,
+    Query(pagination_params): Query<PaginationParams>,
+) -> Result<ApiResponse<PaginatedResponse<Vec<AudioBookEntity>>>, ServiceError> {
+    let data = audio_book_service
+        .fetch_favourites(&claims.user_identifier, &pagination_params)
+        .await?;
+
+    Ok(ApiResponseBuilder::new()
+        .message("Book remove from starred successfully")
+        .data(data)
+        .build())
 }

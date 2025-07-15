@@ -3,10 +3,10 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PaginatedResponse<T> {
-    pub(crate) data: Vec<T>,
-    pub(crate) page: u32,
-    pub(crate) per_page: u32,
-    pub(crate) total_count: u64,
+    pub data: T,
+    pub page: u32,
+    pub per_page: u32,
+    pub total_count: u64,
     pub(crate) total_pages: u32,
 }
 

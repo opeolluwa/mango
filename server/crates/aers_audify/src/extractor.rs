@@ -1,5 +1,6 @@
-use crate::error::AudifyError;
 use extractous::Extractor;
+
+use crate::error::AudifyError;
 
 pub(super) fn extract_pdf_source(pdf_path: &str) -> Result<String, AudifyError> {
     let extractor = Extractor::new();

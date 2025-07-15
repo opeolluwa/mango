@@ -4,10 +4,15 @@ use sqlx::{Pool, Postgres};
 use uuid::Uuid;
 
 use crate::{
-    adapters::authentication::CreateUserRequest,
-    adapters::users::UserDto,
+    adapters::{
+        authentication::CreateUserRequest,
+        users::{PartialUserProfile, UserDto},
+    },
     entities::user::UserEntity,
-    errors::{service_error::ServiceError, user_service_error::UserServiceError},
+    errors::{
+        repository_error::RepositoryError, service_error::ServiceError,
+        user_service_error::UserServiceError,
+    },
 };
 
 #[derive(Clone)]
@@ -54,6 +59,18 @@ pub trait UserRepositoryTrait {
         &self,
         identifier: &Uuid,
     ) -> impl std::future::Future<Output = Result<UserDto, UserServiceError>> + Send;
+
+    fn set_avatar_url(
+        &self,
+        user_identifier: &Uuid,
+        avatar_url: &str,
+    ) -> impl std::future::Future<Output = Result<(), UserServiceError>>;
+
+    fn update_profile(
+        &self,
+        request: &PartialUserProfile,
+        user_identifier: &Uuid,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>>;
 }
 
 impl UserRepositoryTrait for UserRepository {
@@ -123,5 +140,40 @@ impl UserRepositoryTrait for UserRepository {
             .fetch_one(self.pool.as_ref())
             .await
             .map_err(UserServiceError::from)
+    }
+
+    async fn set_avatar_url(
+        &self,
+        user_identifier: &Uuid,
+        avatar_url: &str,
+    ) -> Result<(), UserServiceError> {
+        sqlx::query(r#"UPDATE users SET avatar = $2 WHERE identifier = $1"#)
+            .bind(user_identifier)
+            .bind(avatar_url)
+            .execute(self.pool.as_ref())
+            .await
+            .map_err(UserServiceError::from)?;
+
+        Ok(())
+    }
+
+    async fn update_profile(
+        &self,
+        PartialUserProfile {
+            email,
+            first_name,
+            last_name,
+        }: &PartialUserProfile,
+        user_identifier: &Uuid,
+    ) -> Result<(), ServiceError> {
+        let user = self
+            .find_by_identifier(user_identifier)
+            .await
+            .ok_or(RepositoryError::RecordNotFound)
+            .map_err(ServiceError::from)?;
+
+        sqlx::query(r#"UPDATE users SET email =$1, first_name = $2, last_name =$3 WHERE user_identifier =$4"#).bind(email.clone().unwrap_or(user.email)).bind(first_name.clone(). unwrap_or(user.first_name)).bind(last_name.clone().unwrap_or(user.last_name)).bind(user_identifier).execute(self.pool.as_ref()).await.map_err(UserServiceError::from)?;
+
+        Ok(())
     }
 }

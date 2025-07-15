@@ -1,7 +1,9 @@
-use crate::{error::AudifyError, extractor::extract_pdf_source, languages::Languages};
+use std::path::Path;
+
 use piper_rs::synth::PiperSpeechSynthesizer;
 use serde::{Deserialize, Serialize};
-use std::path::Path;
+
+use crate::{error::AudifyError, extractor::extract_pdf_source, languages::Languages};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Audify {

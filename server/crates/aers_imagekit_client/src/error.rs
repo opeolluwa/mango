@@ -1,19 +1,49 @@
-use thiserror::Error;
+use std::fmt;
 
-#[derive(Debug, Error)]
+#[derive(Debug)]
 pub enum ImagekitError {
-    #[error("Failed to read file: {0}")]
-    FileReadError(String),
+    Reqwest(reqwest::Error),
+    Io(std::io::Error),
+    InvalidHeader(reqwest::header::InvalidHeaderValue),
+    UploadFailed(String),
+}
 
-    #[error("Upload request failed: {0}")]
-    UploadError(String),
+impl fmt::Display for ImagekitError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ImagekitError::Reqwest(err) => write!(f, "Request error: {}", err),
+            ImagekitError::Io(err) => write!(f, "I/O error: {}", err),
+            ImagekitError::InvalidHeader(err) => write!(f, "Invalid header: {}", err),
+            ImagekitError::UploadFailed(msg) => write!(f, "Upload failed: {}", msg),
+        }
+    }
+}
 
-    #[error("Invalid API key or unauthorized")]
-    Unauthorized,
+impl std::error::Error for ImagekitError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            ImagekitError::Reqwest(err) => Some(err),
+            ImagekitError::Io(err) => Some(err),
+            ImagekitError::InvalidHeader(err) => Some(err),
+            ImagekitError::UploadFailed(_) => None,
+        }
+    }
+}
 
-    #[error("Unexpected response from server: {0}")]
-    UnexpectedResponse(String),
+impl From<reqwest::Error> for ImagekitError {
+    fn from(err: reqwest::Error) -> Self {
+        ImagekitError::Reqwest(err)
+    }
+}
 
-    #[error("Unexpected error happened")]
-    OperationFailed(String),
+impl From<std::io::Error> for ImagekitError {
+    fn from(err: std::io::Error) -> Self {
+        ImagekitError::Io(err)
+    }
+}
+
+impl From<reqwest::header::InvalidHeaderValue> for ImagekitError {
+    fn from(err: reqwest::header::InvalidHeaderValue) -> Self {
+        ImagekitError::InvalidHeader(err)
+    }
 }

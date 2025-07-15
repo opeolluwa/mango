@@ -16,14 +16,7 @@ use tower_http::limit::RequestBodyLimitLayer;
 
 #[tokio::main]
 async fn main() -> Result<(), AppError> {
-    std::fs::create_dir_all(AERS_FILE_UPLOAD_PATH).map_err(|err| {
-        log::error!("failed to create AERS_FILE_UPLOAD_PATH due to {}", err);
-        AppError::OperationFailed("failed to create AERS_FILE_UPLOAD_PATH".to_string())
-    })?;
-    std::fs::create_dir_all(AERS_EXPORT_PATH).map_err(|err| {
-        log::error!("failed to create AERS_EXPORT_PATH due to {}", err);
-        AppError::OperationFailed("failed to create AERS_EXPORT_PATH".to_string())
-    })?;
+    initialize_file_systems()?;
 
     tracing_subscriber::fmt()
         .with_max_level(tracing::Level::DEBUG)
@@ -62,6 +55,31 @@ async fn main() -> Result<(), AppError> {
     axum::serve(listener, app)
         .await
         .map_err(|err| AppError::OperationFailed(err.to_string()))?;
+
+    //         let rr = loop {
+    //     let msg = redis_pubsub.get_message().map_err(|err| {
+    //         log::error!("failed to process message due to {}", err.to_string());
+    //         AppError::OperationFailed("failed to prcess message due to".into())
+    //     })?;
+    //     let payload: String = msg.get_payload().map_err(|err| {
+    //         log::error!("failed to process message due to {}", err.to_string());
+    //         AppError::OperationFailed("failed to prcess message due to".into())
+    //     })?;
+    //     println!("channel '{}': {}", msg.get_channel_name(), payload);
+    // };
+
+    Ok(())
+}
+
+fn initialize_file_systems() -> Result<(), AppError> {
+    std::fs::create_dir_all(AERS_FILE_UPLOAD_PATH).map_err(|err| {
+        log::error!("failed to create AERS_FILE_UPLOAD_PATH due to {}", err);
+        AppError::OperationFailed("failed to create AERS_FILE_UPLOAD_PATH".to_string())
+    })?;
+    std::fs::create_dir_all(AERS_EXPORT_PATH).map_err(|err| {
+        log::error!("failed to create AERS_EXPORT_PATH due to {}", err);
+        AppError::OperationFailed("failed to create AERS_EXPORT_PATH".to_string())
+    })?;
 
     Ok(())
 }
