@@ -45,7 +45,6 @@ pub struct AudioBook {
 
 #[derive(Debug, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
-
 pub struct CreateAudioBookRequest {
     pub file_name: String,
     pub src: String,
@@ -73,15 +72,6 @@ pub struct MarkFavouriteRequest {}
 #[serde(rename_all = "camelCase")]
 pub struct MarkFavouriteResponse {}
 
-#[derive(Debug, Serialize, Deserialize, Validate)]
-#[serde(rename_all = "camelCase")]
-
-pub struct FetchBookRequest {}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-
-pub struct FetchBookResponse {}
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

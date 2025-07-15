@@ -107,14 +107,14 @@ impl AudioBooksServiceExt for AudioBooksService {
             .unwrap_or(generate_file_name());
 
         let temp_dir = Path::new(AERS_FILE_UPLOAD_PATH);
-        let file_path = temp_dir.join(&format!(
+        let file_path = temp_dir.join(format!(
             "{time_stamp}_{file_name}.pdf",
-            time_stamp = chrono::Local::now().timestamp().to_string()
+            time_stamp = chrono::Local::now().timestamp()
         ));
 
         // create file object
         if let Err(err) = document.contents.persist(&file_path) {
-            log::error!("error processing file due to {}", err.to_string());
+            log::error!("error processing file due to {}", err);
             return Err(ServiceError::OperationFailed);
         }
 
@@ -123,8 +123,7 @@ impl AudioBooksServiceExt for AudioBooksService {
 
         let pdf_path = file_path
             .to_str()
-            .ok_or(ServiceError::OperationFailed)
-            .map_err(ServiceError::from)?;
+            .ok_or(ServiceError::OperationFailed)?;
 
         let audio_output = format!("{}/{}.wav", AERS_EXPORT_PATH, file_name);
         audify_client

@@ -1,9 +1,6 @@
 use std::fmt::Debug;
 
-use redis::{
-    AsyncCommands,
-    aio::{ConnectionManager, ConnectionManagerConfig},
-};
+use redis::aio::{ConnectionManager, ConnectionManagerConfig};
 use serde::{Serialize, de::DeserializeOwned};
 
 use crate::{

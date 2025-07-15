@@ -16,6 +16,6 @@ impl Display for RedisMessageChannel {
             RedisMessageChannel::Mp3Converted => "aers-mp3-converted",
         };
 
-        write!(f, "{}", channel.to_string())
+        write!(f, "{}", channel)
     }
 }

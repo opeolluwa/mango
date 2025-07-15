@@ -98,11 +98,11 @@ impl AudioBookRepositoryExt for AudioBookRepository {
         let identifier = Uuid::new_v4();
 
         sqlx::query(r#"INSERT INTO audio_books(identifier, name, src, user_identifier, playlist_identifier) VALUES($1, $2, $3, $4, $5) "#)
-            .bind(&identifier)
+            .bind(identifier)
             .bind(&payload.file_name)
             .bind(&payload.src)
-            .bind(&user_identifier)
-            .bind(&payload.playlist_identifier)
+            .bind(user_identifier)
+            .bind(payload.playlist_identifier)
             .execute(self.pool.as_ref())
             .await
             .map_err(|err| {
