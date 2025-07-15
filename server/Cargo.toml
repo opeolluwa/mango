@@ -3,6 +3,10 @@ name = "aers"
 version = "0.1.0"
 edition = "2024"
 
+[[bin]]
+name="aers"
+path="src/main.rs"
+
 [workspace]
 members = ["crates/*"]
 resolver = "2"

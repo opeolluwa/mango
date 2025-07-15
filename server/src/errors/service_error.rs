@@ -33,6 +33,8 @@ pub enum ServiceError {
     AppError(#[from] AppError),
     #[error("an internal error occured due to redis client")]
     RedisError(#[from] RedisError),
+    #[error("an internal error occured while parsing message")]
+    SerdeJsonError(#[from] serde_json::Error),
 }
 
 impl ServiceError {
@@ -49,6 +51,7 @@ impl ServiceError {
             ServiceError::BadRequest => StatusCode::BAD_REQUEST,
             ServiceError::AppError(err) => err.status_code(),
             ServiceError::RedisError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            ServiceError::SerdeJsonError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }
