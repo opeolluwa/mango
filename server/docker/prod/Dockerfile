@@ -26,7 +26,6 @@ RUN cargo build --release
 FROM debian:bullseye-slim AS final
 
 RUN apt-get update && \
-    apt-get upgrade && \
     apt-get install -y libssl-dev && \
     rm -rf /var/lib/apt/lists/*
 
