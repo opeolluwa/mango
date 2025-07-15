@@ -107,7 +107,6 @@ impl AudioBooksServiceExt for AudioBooksService {
             .unwrap_or(generate_file_name());
 
         let temp_dir = Path::new(AERS_FILE_UPLOAD_PATH);
-        let _ = std::fs::create_dir(temp_dir);
         let file_path = temp_dir.join(&format!(
             "{time_stamp}_{file_name}.pdf",
             time_stamp = chrono::Local::now().timestamp().to_string()

@@ -8,14 +8,20 @@ use validator::Validate;
 #[derive(TryFromMultipart)]
 #[try_from_multipart(rename_all = "camelCase")]
 pub struct UploadAssetRequest {
-    // #[form_data(limit = "5MiB")]
+    #[form_data(limit = "5MiB")]
     pub document: FieldData<NamedTempFile>,
     pub playlist_identifier: Option<Uuid>,
 }
 
+#[derive(TryFromMultipart)]
+#[try_from_multipart(rename_all = "camelCase")]
+pub struct UpdateProfilePicture {
+    #[form_data(limit = "5MiB")]
+    pub image: FieldData<NamedTempFile>,
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-
 pub struct CreateAudioBook {
     pub name: String,
     pub src: String,
