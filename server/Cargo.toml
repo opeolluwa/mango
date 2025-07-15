@@ -30,8 +30,10 @@ axum_typed_multipart = { version = "0.16.3", features = ["tempfile_3"] }
 bcrypt = "0.17.0"
 chrono = { version = "0.4.41", features = ["serde"] }
 imagekit = "0.1.0-beta"
+itoa = "1.0.15"
 jsonwebtoken = "9.3.1"
 log = { workspace = true }
+redis = { workspace = true, features = ["aio", "connection-manager", "tokio-comp", "uuid"] }
 serde = { workspace = true, features = ["derive"] }
 serde_json = "1.0.140"
 sqlx = { version = "0.8", features = [

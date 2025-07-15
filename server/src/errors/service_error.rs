@@ -1,8 +1,10 @@
 use axum::extract::rejection::{FormRejection, JsonRejection};
 use axum::response::Response;
 use axum::{http::StatusCode, response::IntoResponse};
+use redis::RedisError;
 
 use crate::adapters::api_response::ApiResponseBuilder;
+use crate::errors::app_error::AppError;
 use crate::errors::auth_error::AuthenticationError;
 use crate::errors::repository_error::RepositoryError;
 use crate::errors::user_service_error::UserServiceError;
@@ -27,6 +29,10 @@ pub enum ServiceError {
     UserServiceError(#[from] UserServiceError),
     #[error("badly formatted request")]
     BadRequest,
+    #[error("an internal error occured")]
+    AppError(#[from] AppError),
+    #[error("an internal error occured due to redis client")]
+    RedisError(#[from] RedisError),
 }
 
 impl ServiceError {
@@ -41,6 +47,8 @@ impl ServiceError {
             ServiceError::AuthenticationError(err) => err.status_code(),
             ServiceError::UserServiceError(err) => err.status_code(),
             ServiceError::BadRequest => StatusCode::BAD_REQUEST,
+            ServiceError::AppError(err) => err.status_code(),
+            ServiceError::RedisError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }

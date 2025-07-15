@@ -5,6 +5,7 @@ pub mod adapters;
 pub mod config;
 pub mod entities;
 pub mod errors;
+pub mod events;
 pub mod handlers;
 pub mod middlewares;
 pub mod repositories;
