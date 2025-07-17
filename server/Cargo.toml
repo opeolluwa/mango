@@ -35,6 +35,7 @@ chrono = { version = "0.4.41", features = ["serde"] }
 jsonwebtoken = "9.3.1"
 log = { workspace = true }
 openssl = { version = "0.10.73", features = ["vendored"] }
+rabbitmq-stream-client = "0.9.0"
 redis = { workspace = true, features = ["aio", "connection-manager", "tokio-comp", "uuid"] }
 serde = { workspace = true, features = ["derive"] }
 serde_json = "1.0.140"

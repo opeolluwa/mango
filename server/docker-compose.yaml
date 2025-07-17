@@ -64,7 +64,10 @@ services:
         condition: service_healthy
     networks:
       - internal
-
+  rabbitmq:
+    image: bitnami/rabbitmq:latest
+    networks:
+      - internal
   redis:
     image: redis:latest
     container_name: redis

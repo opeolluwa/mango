@@ -86,3 +86,7 @@ pub async fn request_refresh_token(
         .message("token updated successfully")
         .build())
 }
+
+pub async fn logout() -> Result<ApiResponse<()>, ServiceError> {
+    todo!()
+}
