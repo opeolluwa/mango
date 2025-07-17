@@ -25,8 +25,28 @@ RUN cargo build --release
 
 RUN find target/release/build -name "libtika_native.so" -exec cp {} /usr/local/lib/ \;
 
-# Final stage
-FROM debian:bullseye-slim AS final
+# # Final stage
+# FROM debian:bullseye-slim AS final
+
+# RUN apt-get update && \
+#     apt-get install -y libssl-dev && \
+#     rm -rf /var/lib/apt/lists/*
+
+# WORKDIR /app
+
+# COPY --from=build /app/target/release/aers ./aers
+# COPY --from=build /app/resources ./resources
+# COPY --from=build /app/migrations ./migrations
+# COPY --from=build /usr/local/lib/libtika_native.so /usr/local/lib
+# COPY --from=build /usr/local/lib/libtika_native.so /
+
+# RUN ls /usr/local/lib
+# EXPOSE 8080
+
+# CMD ["./aers"]
+
+
+FROM debian:bookworm-slim AS final
 
 RUN apt-get update && \
     apt-get install -y libssl-dev && \
@@ -38,6 +58,12 @@ COPY --from=build /app/target/release/aers ./aers
 COPY --from=build /app/resources ./resources
 COPY --from=build /app/migrations ./migrations
 COPY --from=build /usr/local/lib/libtika_native.so /usr/local/lib
+
+# Register /usr/local/lib for runtime
+RUN echo "/usr/local/lib" >> /etc/ld.so.conf.d/tika.conf && ldconfig
+
+# Or, if you prefer env var approach:
+# ENV LD_LIBRARY_PATH=/usr/local/lib
 
 EXPOSE 8080
 
