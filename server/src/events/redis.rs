@@ -1,9 +1,7 @@
 use std::fmt::Debug;
 
 use redis::aio::{ConnectionManager, ConnectionManagerConfig};
-use redis::AsyncCommands;
 use serde::{Serialize, de::DeserializeOwned};
-use uuid::Uuid;
 
 use crate::{
     errors::service_error::ServiceError,
@@ -61,7 +59,11 @@ impl RedisClient {
         use redis::AsyncCommands;
         use redis::aio::PubSub;
 
-        let mut pubsub = self.connection_manager.subscribe(channel.to_string()).await.map_err(ServiceError::RedisError)?;
+        let mut pubsub = self
+            .connection_manager
+            .subscribe(channel.to_string())
+            .await
+            .map_err(ServiceError::RedisError)?;
 
         // tokio::spawn(async move {
         //     loop {
@@ -86,4 +88,3 @@ impl RedisClient {
         Ok(())
     }
 }
-

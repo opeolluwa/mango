@@ -1,6 +1,8 @@
+use std::time::Duration;
+
 use sqlx::{Pool, Postgres};
 
-use crate::adapters::jwt::{Claims, JwtCredentials, TEN_MINUTES, TWENTY_FIVE_MINUTES};
+use crate::adapters::jwt::Claims;
 use crate::entities::user::UserEntity;
 use crate::errors;
 use crate::errors::repository_error::RepositoryError;
@@ -102,10 +104,28 @@ impl AuthenticationServiceTrait for AuthenticationService {
             return Err(AuthenticationError::WrongCredentials.into());
         }
 
-        let token =
-            JwtCredentials::new(&user.email, &user.identifier).generate_token(TEN_MINUTES)?;
+        let access_token = Claims::builder()
+            .subject("access_token")
+            .email(&user.email)
+            .user_identifier(user.identifier)
+            .validity(Duration::from_secs(15 * 60 /*15 minutes */))
+            .build()?;
 
-        Ok(LoginResponse { token })
+        let refresh_token = Claims::builder()
+            .subject("refresh_token")
+            .email(&user.email)
+            .user_identifier(user.identifier)
+            .validity(Duration::from_secs(7 * 60 * 60 /*7 hours */))
+            .build()?;
+
+        Ok(LoginResponse {
+            access_token: access_token.generate_token()?,
+            refresh_token: refresh_token.generate_token()?,
+            refresh_token_exp: refresh_token.exp,
+            iat: access_token.iat,
+            exp: access_token.exp,
+            refresh_token_iat: refresh_token.iat,
+        })
     }
 
     async fn forgotten_password(
@@ -123,7 +143,13 @@ impl AuthenticationServiceTrait for AuthenticationService {
             email, identifier, ..
         } = user.unwrap();
 
-        let token = JwtCredentials::new(&email, &identifier).generate_token(TEN_MINUTES)?;
+        let token = Claims::builder()
+            .subject("forgotten_password")
+            .email(&email)
+            .user_identifier(identifier)
+            .validity(Duration::from_secs(15 * 60 /*15 minutes */))
+            .build_and_sign()?;
+
         Ok(ForgottenPasswordResponse { token })
     }
 
@@ -177,11 +203,27 @@ impl AuthenticationServiceTrait for AuthenticationService {
         &self,
         request: &RefreshTokenRequest,
     ) -> Result<RefreshTokenResponse, ServiceError> {
-        let refresh_token = JwtCredentials::new(&request.email, &request.user_identifier)
-            .generate_token(TWENTY_FIVE_MINUTES)?;
+        let access_token = Claims::builder()
+            .subject("access_token")
+            .email(&request.email)
+            .user_identifier(request.user_identifier)
+            .validity(Duration::from_secs(15 * 60 /*15 minutes */))
+            .build()?;
 
-        Ok(RefreshTokenResponse {
-            token: refresh_token,
+        let refresh_token = Claims::builder()
+            .subject("refresh_token")
+            .email(&request.email)
+            .user_identifier(request.user_identifier)
+            .validity(Duration::from_secs(7 * 60 * 60 /*7 hours */))
+            .build()?;
+
+        Ok(LoginResponse {
+            access_token: access_token.generate_token()?,
+            refresh_token: refresh_token.generate_token()?,
+            refresh_token_exp: refresh_token.exp,
+            refresh_token_iat: refresh_token.iat,
+            iat: access_token.iat,
+            exp: access_token.exp,
         })
     }
 }

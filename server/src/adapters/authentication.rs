@@ -61,7 +61,12 @@ pub struct CreateUserResponse {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LoginResponse {
-    pub token: String,
+    pub access_token: String,
+    pub refresh_token: String,
+    pub iat: i64,
+    pub exp: i64,
+    pub refresh_token_exp: i64,
+    pub refresh_token_iat: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -77,8 +82,4 @@ pub struct SetNewPasswordResponse {}
 #[serde(rename_all = "camelCase")]
 pub struct VerifyAccountResponse {}
 
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct RefreshTokenResponse {
-    pub token: String,
-}
+pub type RefreshTokenResponse = LoginResponse;
