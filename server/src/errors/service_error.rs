@@ -44,7 +44,7 @@ impl ServiceError {
             ServiceError::AxumFormRejection(_) => StatusCode::BAD_REQUEST,
             ServiceError::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             ServiceError::AxumJsonRejection(_) => StatusCode::BAD_REQUEST,
-            ServiceError::OperationFailed => StatusCode::INTERNAL_SERVER_ERROR,
+            ServiceError::OperationFailed => StatusCode::UNPROCESSABLE_ENTITY,
             ServiceError::RepositoryError(err) => err.status_code(),
             ServiceError::AuthenticationError(err) => err.status_code(),
             ServiceError::UserServiceError(err) => err.status_code(),

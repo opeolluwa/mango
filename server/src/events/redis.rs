@@ -1,13 +1,9 @@
-use std::fmt::Debug;
-
-use redis::aio::{ConnectionManager, ConnectionManagerConfig};
-use serde::{Serialize, de::DeserializeOwned};
-
-use crate::{
-    errors::service_error::ServiceError,
-    events::{channels::RedisMessageChannel, producers::RedisMessage},
-    shared::extract_env::extract_env,
+use redis::{
+    AsyncCommands,
+    aio::{ConnectionManager, ConnectionManagerConfig},
 };
+
+use crate::{errors::service_error::ServiceError, shared::extract_env::extract_env};
 
 pub struct RedisClient {
     connection_manager: ConnectionManager,
@@ -30,61 +26,87 @@ impl RedisClient {
 
         Ok(Self { connection_manager })
     }
+}
 
-    pub async fn publish_message<T>(
+pub trait RedisClientExt {
+    fn blacklist_refresh_token(
         &mut self,
-        channel: &RedisMessageChannel,
-        message: &RedisMessage<T>,
-    ) -> Result<(), ServiceError>
-    where
-        T: Serialize + DeserializeOwned + Debug,
-    {
-        let payload = serde_json::to_string(&message).map_err(ServiceError::SerdeJsonError)?;
-        // self.connection_manager.publish() (channel.to_string(), payload)
-        //     .await
-        //     .map_err(ServiceError::RedisError)?;
+        token: &str,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
+    fn save_refresh_token(
+        &mut self,
+        token: &str,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
+    fn fetch_refresh_token(
+        &mut self,
+        token: &str,
+    ) -> impl std::future::Future<Output = Result<Option<String>, ServiceError>> + Send;
+
+    fn get_token_ttl(
+        &mut self,
+        key: &str,
+    ) -> impl std::future::Future<Output = Result<u64, ServiceError>>;
+}
+
+impl RedisClientExt for RedisClient {
+    async fn blacklist_refresh_token(&mut self, token: &str) -> Result<(), ServiceError> {
+        let key = &format!("blacklist_token:{}", token);
+        let stored_token = self.fetch_refresh_token(token).await?;
+        if stored_token.is_some() {
+            let key = format!("refresh_token:{}", stored_token.unwrap());
+            let ttl = self.get_token_ttl(&key).await?;
+            let () = self
+                .connection_manager
+                .set_ex(key, token, ttl)
+                .await
+                .map_err(ServiceError::from)?;
+        }
+        let refresh_token_validity_in_minutes: u64 =
+            extract_env("REFRESH_TOKEN_TTL_IN_MINUTES").unwrap_or(420);
+        let validity_secs = refresh_token_validity_in_minutes * 60;
+
+        let _: () = self
+            .connection_manager
+            .set_ex(key, token, validity_secs)
+            .await
+            .map_err(ServiceError::from)?;
 
         Ok(())
     }
 
-    pub async fn consume_message<T, F>(
-        &mut self,
-        channel: &RedisMessageChannel,
-        mut handler: F,
-    ) -> Result<(), ServiceError>
-    where
-        T: Serialize + DeserializeOwned + Debug + Send + 'static,
-        F: FnMut(RedisMessage<T>) -> Result<(), ServiceError> + Send + 'static,
-    {
-        use redis::AsyncCommands;
-        use redis::aio::PubSub;
+    async fn save_refresh_token(&mut self, token: &str) -> Result<(), ServiceError> {
+        let key = format!("refresh_token:{}", token);
+        let refresh_token_validity_in_minutes: u64 =
+            extract_env("REFRESH_TOKEN_TTL_IN_MINUTES").unwrap_or(420);
+        let validity_secs = refresh_token_validity_in_minutes * 60;
 
-        let mut pubsub = self
+        let _: () = self
             .connection_manager
-            .subscribe(channel.to_string())
+            .set_ex(key, token, validity_secs)
             .await
-            .map_err(ServiceError::RedisError)?;
-
-        // tokio::spawn(async move {
-        //     loop {
-        //         let msg = match pubsub.on_message().next().await {
-        //             Some(msg) => msg,
-        //             None => continue,
-        //         };
-
-        //         if let Ok(payload): Result<String, _> = msg.get_payload() {
-        //             match serde_json::from_str::<RedisMessage<T>>(&payload) {
-        //                 Ok(message) => {
-        //                     if let Err(err) = handler(message) {
-        //                         tracing::error!("Redis message handler error: {:?}", err);
-        //                     }
-        //                 }
-        //                 Err(e) => tracing::error!("Failed to deserialize message: {:?}", e),
-        //             }
-        //         }
-        //     }
-        // });
+            .map_err(ServiceError::from)?;
 
         Ok(())
+    }
+
+    async fn fetch_refresh_token(&mut self, token: &str) -> Result<Option<String>, ServiceError> {
+        let key = &format!("refresh_token:{}", token);
+        let result: Option<String> = self
+            .connection_manager
+            .get(key)
+            .await
+            .map_err(ServiceError::from)?;
+
+        Ok(result)
+    }
+
+    async fn get_token_ttl(&mut self, key: &str) -> Result<u64, ServiceError> {
+        let result: u64 = self
+            .connection_manager
+            .ttl(key)
+            .await
+            .map_err(ServiceError::from)?;
+
+        Ok(result)
     }
 }

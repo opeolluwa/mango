@@ -7,6 +7,9 @@ use crate::entities::user::UserEntity;
 use crate::errors;
 use crate::errors::repository_error::RepositoryError;
 use crate::errors::service_error::ServiceError;
+use crate::events::redis::RedisClient;
+use crate::events::redis::RedisClientExt;
+
 use crate::{
     adapters::authentication::{
         CreateUserRequest, ForgottenPasswordRequest, ForgottenPasswordResponse, LoginRequest,
@@ -118,9 +121,13 @@ impl AuthenticationServiceTrait for AuthenticationService {
             .validity(Duration::from_secs(7 * 60 * 60 /*7 hours */))
             .build()?;
 
+        let refresh_token_out = refresh_token.generate_token()?;
+        let mut redis_client = RedisClient::new().await?;
+        redis_client.save_refresh_token(&refresh_token_out).await?;
+
         Ok(LoginResponse {
             access_token: access_token.generate_token()?,
-            refresh_token: refresh_token.generate_token()?,
+            refresh_token: refresh_token_out,
             refresh_token_exp: refresh_token.exp,
             iat: access_token.iat,
             exp: access_token.exp,
@@ -217,9 +224,13 @@ impl AuthenticationServiceTrait for AuthenticationService {
             .validity(Duration::from_secs(7 * 60 * 60 /*7 hours */))
             .build()?;
 
+        let refresh_token_out = refresh_token.generate_token()?;
+        let mut redis_client = RedisClient::new().await?;
+        redis_client.save_refresh_token(&refresh_token_out).await?;
+
         Ok(LoginResponse {
             access_token: access_token.generate_token()?,
-            refresh_token: refresh_token.generate_token()?,
+            refresh_token: refresh_token_out,
             refresh_token_exp: refresh_token.exp,
             refresh_token_iat: refresh_token.iat,
             iat: access_token.iat,
