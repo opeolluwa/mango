@@ -14,6 +14,8 @@ pub enum AuthenticationError {
     AppError(#[from] AppError),
     #[error("error processing authorization token")]
     JwtError(#[from] jsonwebtoken::errors::Error),
+    #[error("{0}")]
+    ValidationError(String),
 }
 
 impl AuthenticationError {
@@ -21,7 +23,7 @@ impl AuthenticationError {
         match self {
             AuthenticationError::WrongCredentials => StatusCode::UNAUTHORIZED,
             AuthenticationError::MissingCredentials => StatusCode::BAD_REQUEST,
-
+            AuthenticationError::ValidationError(_) => StatusCode::UNAUTHORIZED,
             AuthenticationError::InvalidToken => StatusCode::UNAUTHORIZED,
             AuthenticationError::AppError(err) => err.status_code(),
             AuthenticationError::JwtError(_) => StatusCode::INTERNAL_SERVER_ERROR,

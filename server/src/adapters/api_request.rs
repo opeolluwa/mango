@@ -31,7 +31,7 @@ where
     async fn from_request(req: Request, state: &S) -> Result<Self, Self::Rejection> {
         let (parts, body) = req.into_parts();
 
-        let claims: crate::adapters::jwt::JwtCredentials =
+        let claims: crate::adapters::jwt::Claims =
             Claims::from_request_parts(&mut parts.clone(), state)
                 .await
                 .map_err(|_| AuthenticationError::MissingCredentials)?;
