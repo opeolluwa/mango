@@ -18,9 +18,12 @@ RUN set -e && \
 RUN rustup component add rustfmt
 
 WORKDIR /app
+
 COPY . .
 
 RUN cargo build --release
+
+RUN find target/release/build -name "libtika_native.so" -exec cp {} /usr/local/lib/ \;
 
 # Final stage
 FROM debian:bullseye-slim AS final
@@ -34,6 +37,7 @@ WORKDIR /app
 COPY --from=build /app/target/release/aers ./aers
 COPY --from=build /app/resources ./resources
 COPY --from=build /app/migrations ./migrations
+COPY --from=build /usr/local/lib/libtika_native.so /usr/local/lib
 
 EXPOSE 8080
 
