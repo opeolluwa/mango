@@ -5,7 +5,7 @@
       @click="router.back"
     />
 
-    <h1 class="text-5xl">Welcome back, Emmanuel!</h1>
+    <h1 class="text-5xl">Welcome back, Olatunde!</h1>
     <p class="small text-gray-400">Login with your password to continue</p>
 
     <form
@@ -24,7 +24,7 @@
       </div>
       <SubmitButton type="submit" :loading="processingRequest" />
       <RouterLink to="/login" class="text-stone-500 flex justify-end -mt-4"
-        >Not emmanuel?</RouterLink
+        >Not Olatunde?</RouterLink
       >
     </form>
   </div>

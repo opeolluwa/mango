@@ -7,7 +7,7 @@ import Home from "@views/app/HomePage.vue";
 import AppLayout from "@views/app/layout.vue";
 import Library from "@views/app/LibraryPage.vue";
 import Notification from "@views/app/NotificationPage.vue";
-import Scheduled from "@views/app/ScheduledPage.vue";
+import Settings from "@views/app/SettingsPage.vue";
 import Voices from "@views/app/VoicesPage.vue";
 
 import ConfirmOtpPage from "./views/authentication/ConfirmOtpPage.vue";
@@ -23,13 +23,13 @@ const routes = [
   {
     path: "/app",
     children: [
-      { path: "", component: Home },
+      { path: "", component: Home, name: "home" },
       { path: "favourites", component: Favourites },
       { path: "library", component: Library },
-      { path: "recent", component: History },
+      { path: "recent", name: "recent", component: History },
       { path: "voices", component: Voices },
-      { path: "scheduled", component: Scheduled },
-      { path: "notification", component: Notification },
+      { path: "settings", name: "settings", component: Settings },
+      { path: "notification", name: "notification", component: Notification },
       { path: "player", component: AudioPlayer },
     ],
     component: AppLayout,

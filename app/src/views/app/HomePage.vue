@@ -22,8 +22,11 @@
     <div class="flex flex-col">
       <div class="flex justify-between">
         <div>
-          <h1 class="text-4xl text-gray-400 dark:text-gray-400/60">Hello, </h1>
-          <h2 class="text-4xl text-app-dark/90 dark:text-gray-400">Emmanuel!</h2>
+          <h1 class="text-4xl text-gray-400 dark:text-gray-400/60">Hello,</h1>
+          <h2 class="text-4xl text-app-dark/90 dark:text-gray-400">
+            Olatunde!
+          </h2>
+          <VueGreetings class="text-sm text-app-dark/95 dark:text-gray-400/95 mt-[3px]" />
         </div>
 
         <AvatarRoot
@@ -45,7 +48,9 @@
 
       <div class="mt-12 mb-10 hidden">
         <small class="text-gray-400">continue listening</small>
-        <div class="card flex rounded-xl gap-3 mt-4 bg-gray-200 dark:bg-app-gray/70 py-4 px-2">
+        <div
+          class="card flex rounded-xl gap-3 mt-4 bg-gray-200 dark:bg-app-gray/70 py-4 px-2"
+        >
           <img
             src="@/assets/test.jpg"
             class="contain w-[120px] h-[150px]"
@@ -83,7 +88,7 @@ import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
 import { computed } from "vue";
 import { createNewBook } from "../../composibles/book.ts";
 import { useAudioBookLibrary } from "../../stores/library.ts";
-import AppDock from "../../components/uiBlocks/AppDock.vue";
+import VueGreetings from "../../components/uiBlocks/VueGreetings.vue";
 
 const library = useAudioBookLibrary();
 
