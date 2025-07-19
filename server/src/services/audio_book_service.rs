@@ -121,9 +121,7 @@ impl AudioBooksServiceExt for AudioBooksService {
         let config_path = "resources/models/en_US-libritts_r-medium.onnx.json";
         let audify_client = Audify::new(config_path);
 
-        let pdf_path = file_path
-            .to_str()
-            .ok_or(ServiceError::OperationFailed)?;
+        let pdf_path = file_path.to_str().ok_or(ServiceError::OperationFailed)?;
 
         let audio_output = format!("{}/{}.wav", AERS_EXPORT_PATH, file_name);
         audify_client
