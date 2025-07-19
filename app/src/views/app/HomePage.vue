@@ -22,8 +22,8 @@
     <div class="flex flex-col">
       <div class="flex justify-between">
         <div>
-          <h1 class="text-4xl text-gray-400/60">Hello,</h1>
-          <h2 class="text-4xl text-gray-400">Emmanuel!</h2>
+          <h1 class="text-4xl text-gray-400 dark:text-gray-400/60">Hello, </h1>
+          <h2 class="text-4xl text-app-dark/90 dark:text-gray-400">Emmanuel!</h2>
         </div>
 
         <AvatarRoot
@@ -43,7 +43,7 @@
         </AvatarRoot>
       </div>
 
-      <div class="mt-12 mb-10">
+      <div class="mt-12 mb-10 hidden">
         <small class="text-gray-400">continue listening</small>
         <div class="card flex rounded-xl gap-3 mt-4 bg-gray-200 dark:bg-app-gray/70 py-4 px-2">
           <img
@@ -60,7 +60,7 @@
         </div>
       </div>
 
-      <div class="mb-10">
+      <div class="mb-10 hidden">
         <small class="text-gray-400">Recent books</small>
         <div class="flex flex-col gap-y-4 mt-4">
           <!-- <AudioBook
@@ -74,7 +74,6 @@
         </div>
       </div>
     </div>
-    <AppDock class="left-0"/>
   </template>
 </template>
 

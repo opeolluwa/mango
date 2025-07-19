@@ -26,7 +26,7 @@ const routes = [
       { path: "", component: Home },
       { path: "favourites", component: Favourites },
       { path: "library", component: Library },
-      { path: "history", component: History },
+      { path: "recent", component: History },
       { path: "voices", component: Voices },
       { path: "scheduled", component: Scheduled },
       { path: "notification", component: Notification },

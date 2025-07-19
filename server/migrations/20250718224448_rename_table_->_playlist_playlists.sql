@@ -1,2 +1,2 @@
 -- Add migration script here
-ALTER TABLE playlists RENAME TO playlists;
+ALTER TABLE playlist RENAME TO playlists;

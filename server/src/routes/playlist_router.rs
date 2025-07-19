@@ -1,6 +1,6 @@
 use axum::{
     Router,
-    routing::{get, post},
+    routing::{delete, get, post, put},
 };
 
 use crate::{
@@ -14,7 +14,7 @@ pub(super) fn playlist_routes(state: ServicesState) -> Router {
     Router::new()
         .route("/", post(create_playlist))
         .route("/{playlist_identifier}", get(retrieve_playlist))
-        .route("/{playlist_identifier}", post(update_playlist))
-        .route("/{playlist_identifier}", post(delete_playlist))
+        .route("/{playlist_identifier}", put(update_playlist))
+        .route("/{playlist_identifier}", delete(delete_playlist))
         .with_state(state)
 }

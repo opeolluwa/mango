@@ -25,7 +25,7 @@
         />
       </div>
 
-      <SubmitButton :loading="processingRequest" />
+      <SubmitButton :loading="processingRequest"  />
       <RouterLink to="/login" class="text-stone-500 flex justify-end -mt-4"
         >Return to login</RouterLink
       >

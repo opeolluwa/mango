@@ -17,7 +17,7 @@ defineProps({
   </div>
   <AppButton
     type="submit"
-    class="text-app-dark rounded-lg font-medium bg-app-orange/90"
+    class="text-app-dark rounded-lg font-medium bg-app-orange/90 dark:text-white"
   >
     Continue
   </AppButton>

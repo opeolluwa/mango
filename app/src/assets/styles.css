@@ -27,15 +27,19 @@
 }
 
 
-html,
-body {
-    @apply text-app-dark bg-white/90;
-    overscroll-behavior: none;
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    user-select: none;
+@media (prefers-color-scheme: light) {
+
+    html,
+    body {
+        @apply text-app-dark bg-white;
+        overscroll-behavior: none;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        user-select: none;
+    }
 }
+
 
 @media (prefers-color-scheme: dark) {
 

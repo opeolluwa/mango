@@ -1,19 +1,20 @@
 <template>
   <footer
-    class="fixed border-gray-100/10 w-full py-3  items-center gap-y-1 justify-between gap-x-2 z-5000 flex bg-app-dark/70 shadow-app-orange/60  border shadow min-h-12 tems-center px-4 bottom-0"
+    class="fixed border-gray-100/10 w-full py-3 items-center gap-y-1 justify-between gap-x-2 z-5000 flex shadow-app-orange/60 border shadow min-h-12 tems-center px-4 bottom-0"
   >
     <RouterLink
-      :to="'/app/player'"
+      :to="'/app/' + item.route"
       v-for="(item, index) in routes"
-      class="flex gap-y-1 flex-col items-center justify-center capitalize text-stone-500 text-sm"
+      class="flex gap-y-1 flex-col items-center justify-center capitalize text-gray-500 text-sm"
+      @clicl="updateTab(index)"
     >
-      <template v-if="index == 2">
-        <div class="bg-app-orange rounded-full shadow shadow-app-dark text-white/50">
-          <Icon :icon="item.active" :key="index" class="size-10" />
-        </div>
+      <template v-if="index == currentTab">
+        <Icon :icon="item.active" :key="index" class="size-5 text-app-orange" />
+        <Label class="text-app-orange"> {{ item.route }}</Label>
       </template>
       <template v-else>
         <Icon :icon="item.default" :key="index" class="size-5 icon" />
+        <Label> {{ item.route }}</Label>
       </template>
     </RouterLink>
   </footer>
@@ -21,6 +22,11 @@
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
+import { ref } from "vue";
+
+const currentTab = ref(0);
+const updateTab = (index: number) => (currentTab.value = index);
+
 const routes: Array<{ default: string; active: string; route: string }> = [
   {
     default: "mage:home",
@@ -33,20 +39,20 @@ const routes: Array<{ default: string; active: string; route: string }> = [
     route: "recent",
   },
 
-  {
-    default: "ic:baseline-plus",
-    active: "ic:baseline-plus",
-    route: "favorites",
-  },
+  // {
+  //   default: "ic:baseline-plus",
+  //   active: "ic:baseline-plus",
+  //   route: "favorites",
+  // },
   {
     default: "mdi:bell-outline",
     active: "mdi:bell",
-    route: "favorites",
+    route: "notification",
   },
   {
     active: "fluent:settings-20-filled",
     default: "fluent:settings-20-regular",
-    route: "settings",
+    route: "player",
   },
 ];
 </script>
