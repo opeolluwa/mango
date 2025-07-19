@@ -2,8 +2,12 @@ use redis::{
     AsyncCommands,
     aio::{ConnectionManager, ConnectionManagerConfig},
 };
+use serde::{Serialize, de::DeserializeOwned};
 
-use crate::{errors::service_error::ServiceError, shared::extract_env::extract_env};
+use crate::{
+    errors::service_error::ServiceError, events::channels::RedisMessageChannel,
+    shared::extract_env::extract_env,
+};
 
 pub struct RedisClient {
     connection_manager: ConnectionManager,
@@ -46,6 +50,18 @@ pub trait RedisClientExt {
         &mut self,
         key: &str,
     ) -> impl std::future::Future<Output = Result<u64, ServiceError>>;
+
+    fn publish_message<T: Serialize + DeserializeOwned + std::fmt::Debug>(
+        &self,
+        channel: &RedisMessageChannel,
+        message: &T,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>>;
+
+    fn consume_message(
+        &self,
+        channel: &RedisMessageChannel,
+        message: impl ToString,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>>;
 }
 
 impl RedisClientExt for RedisClient {
@@ -108,5 +124,37 @@ impl RedisClientExt for RedisClient {
             .map_err(ServiceError::from)?;
 
         Ok(result)
+    }
+
+    async fn publish_message<T>(
+        &self,
+        channel: &RedisMessageChannel,
+        message: &T,
+    ) -> Result<(), ServiceError>
+    where
+        T: Serialize + DeserializeOwned + std::fmt::Debug,
+    {
+        let message_as_str = serde_json::to_string(message).map_err(|err| {
+            log::error!(
+                "failed to serialize {:#?} as string due to {}",
+                message,
+                err
+            );
+            ServiceError::SerdeJsonError(err)
+        })?;
+
+        // let rr = self
+        //     .connection_manager
+        //     .publish(channel.to_string(), message_as_str)
+        //     .await;
+        todo!()
+    }
+
+    async fn consume_message(
+        &self,
+        channel: &RedisMessageChannel,
+        message: impl ToString,
+    ) -> Result<(), ServiceError> {
+        todo!()
     }
 }
