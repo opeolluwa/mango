@@ -57,10 +57,10 @@ impl PlaylistRepositoryExt for PlaylistRepository {
         let playlist_identifier = Uuid::new_v4();
 
         sqlx::query(r#"INSERT INTO playlists (identifier, name, description, user_identifier) VALUES ($1, $2, $3, $4)"#).bind(Uuid::new_v4()) 
-        .bind(&playlist_identifier)
+        .bind(playlist_identifier)
         .bind(&request.name)
         .bind(&request.description)
-        .bind(&user_identifier).execute(self.pool.as_ref()).await.map_err(|err|RepositoryError::SqlxError(err))?;
+        .bind(user_identifier).execute(self.pool.as_ref()).await.map_err(RepositoryError::SqlxError)?;
         Ok(playlist_identifier)
     }
 
@@ -75,7 +75,7 @@ impl PlaylistRepositoryExt for PlaylistRepository {
             return Err(RepositoryError::RecordNotFound);
         };
 
-        sqlx::query(r#"UPDATE playlists SET name = $1, description = $2 WHERE identifier = $3 AND user_identifier = $4"#).bind(&request.name.clone().unwrap_or(playlist.name)).bind(request.description.clone().unwrap_or(playlist.description)).bind(user_identifier).execute(self.pool.as_ref()).await.map_err(|err|RepositoryError::SqlxError(err))?;
+        sqlx::query(r#"UPDATE playlists SET name = $1, description = $2 WHERE identifier = $3 AND user_identifier = $4"#).bind(request.name.clone().unwrap_or(playlist.name)).bind(request.description.clone().unwrap_or(playlist.description)).bind(user_identifier).execute(self.pool.as_ref()).await.map_err(RepositoryError::SqlxError)?;
         Ok(())
     }
 
@@ -96,7 +96,7 @@ impl PlaylistRepositoryExt for PlaylistRepository {
             .bind(user_identifier)
             .execute(self.pool.as_ref())
             .await
-            .map_err(|err| RepositoryError::SqlxError(err))?;
+            .map_err(RepositoryError::SqlxError)?;
         Ok(())
     }
 
@@ -112,7 +112,7 @@ impl PlaylistRepositoryExt for PlaylistRepository {
         .bind(user_identifier)
         .fetch_one(self.pool.as_ref())
         .await
-        .map_err(|err| RepositoryError::SqlxError(err))
+        .map_err(RepositoryError::SqlxError)
         .ok();
 
         Ok(playlist)
@@ -134,7 +134,7 @@ impl PlaylistRepositoryExt for PlaylistRepository {
         .bind(offset.to_string())
         .fetch_all(self.pool.as_ref())
         .await
-        .map_err(|err| RepositoryError::SqlxError(err))?;
+        .map_err(RepositoryError::SqlxError)?;
 
         Ok(playlists)
     }
