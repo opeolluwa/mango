@@ -23,3 +23,10 @@ https://dribbble.com/shots/15147120-Audiobook-Mobile-Application-Homescreen-Audi
 website 
 https://dribbble.com/shots/24180693-DOTHING-Mobile-App-Landing-Page
 https://dribbble.com/shots/26007116-MediBook-App-Landing-Page-UI
+
+homepage
+https://dribbble.com/shots/23486723-Wellness-Healthy-Website-Download-App
+https://dribbble.com/shots/17081657-Sewo-Real-Estate-App-Landing-Page
+
+walkthrough 
+https://dribbble.com/shots/24055579-Smart-Home-Welcome-Screen
