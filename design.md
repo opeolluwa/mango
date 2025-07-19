@@ -19,3 +19,7 @@ https://dribbble.com/shots/24978659-Luister-Music-Player-Mobile-App-UI-Design-Te
 
 
 https://dribbble.com/shots/15147120-Audiobook-Mobile-Application-Homescreen-Audio-Player
+
+website 
+https://dribbble.com/shots/24180693-DOTHING-Mobile-App-Landing-Page
+https://dribbble.com/shots/26007116-MediBook-App-Landing-Page-UI
