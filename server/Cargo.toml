@@ -3,10 +3,6 @@ name = "aers"
 version = "0.1.0"
 edition = "2024"
 
-[[bin]]
-name="aers"
-path="src/main.rs"
-
 [workspace]
 members = ["crates/*"]
 resolver = "2"
@@ -20,6 +16,10 @@ thiserror = "2.0.12"
 [lib]
 name = "aers_lib"
 path = "src/lib.rs"
+
+[[bin]]
+name = "aers"
+path = "src/main.rs"
 
 [dependencies]
 aers_audify = { version = "0.1.0", path = "crates/aers_audify" }

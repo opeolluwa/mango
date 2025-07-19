@@ -4,7 +4,7 @@ use aers_lib::{AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH, errors, routes, shared};
 
 use axum::extract::DefaultBodyLimit;
 use errors::app_error::AppError;
-use routes::app_router::load_routes;
+use routes::router::load_routes;
 use shared::extract_env::extract_env;
 use sqlx::migrate::Migrator;
 use sqlx::postgres::PgPoolOptions;

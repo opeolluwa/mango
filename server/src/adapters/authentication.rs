@@ -83,4 +83,3 @@ pub struct SetNewPasswordResponse {}
 pub struct VerifyAccountResponse {}
 
 pub type RefreshTokenResponse = LoginResponse;
-

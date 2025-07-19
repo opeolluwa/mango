@@ -11,6 +11,8 @@ pub enum RepositoryError {
     RecordNotFound,
     #[error("Duplicate Record")]
     DuplicateRecord,
+    #[error(transparent)]
+    SqlxError(#[from] sqlx::Error),
 }
 
 impl RepositoryError {
@@ -18,6 +20,7 @@ impl RepositoryError {
         match self {
             RepositoryError::RecordNotFound => StatusCode::NOT_FOUND,
             RepositoryError::DuplicateRecord => StatusCode::CONFLICT,
+            RepositoryError::SqlxError(_) => StatusCode::UNPROCESSABLE_ENTITY,
         }
     }
 }
