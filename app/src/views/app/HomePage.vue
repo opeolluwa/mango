@@ -45,18 +45,23 @@
         </AvatarRoot>
       </div>
 
-      <div class="mt-12 mb-10 flex gap-4 w-screen overflow-x-scroll">
-        <!-- <small class="text-gray-600">Continue listening</small> -->
-        <img
-          v-for="(image, index) in images"
-          :key="index"
-          :src="image.src"
-          :alt="image.alt"
-          class="contain w-2/5 h-[150px] rounded"
-        />
-      </div>
+      <section>
+        <h3 class=" mb-2 font-bold text-app-dark/90 dark:text-gray-400">Continue listening</h3>
+        <div
+          class="mb-10 flex gap-4 w-screen overflow-x-scroll pr-24"
+          style="scroll-behavior: smooth"
+        >
+          <img
+            v-for="(image, index) in images"
+            :key="index"
+            :src="image.src"
+            :alt="image.alt"
+            class="contain h-[250px] rounded hover:resize"
+          />
+        </div>
+      </section>
 
-      <div class="mb-10 hidden">
+      <section class="mb-10 hidden">
         <small class="text-gray-400">Recent books</small>
         <div class="flex flex-col gap-y-4 mt-4">
           <AudioBook
@@ -68,7 +73,7 @@
             :date-last-played="new Date().toLocaleDateString()"
           />
         </div>
-      </div>
+      </section>
     </div>
   </template>
 </template>
@@ -111,12 +116,22 @@ const musicPlaylist = ref([
 ]);
 
 const images = ref([
-  { src: "/01.jpg", alt: "" },
   { src: "/02.jpg", alt: "" },
   { src: "/03.jpg", alt: "" },
   { src: "/04.jpg", alt: "" },
+  { src: "/05.jpg", alt: "" },
+  { src: "/06.jpg", alt: "" },
+  { src: "/07.jpg", alt: "" },
+
 ]);
 const library = useAudioBookLibrary();
 
 const emptyLibrary = computed(() => library.audioBooks.length == 0);
 </script>
+
+<style scoped>
+section {
+  margin-top: 3rem;
+  margin-bottom: 2.25rem;
+}
+</style>
