@@ -1,20 +1,20 @@
 <template>
   <div class="flex gap-y-4 items-center justify-between w-full">
     <div class="flex items-center gap-x-4">
-      <img src="../assets/book.png" class="size-8 rounded" alt="" />
+      <!-- <img src="../assets/book.png" class="size-8 rounded" alt="" /> -->
       <!-- <Gravatar email="somebody@somewhere.com" /> -->
-      <h2 class="text-white/80">
+      <h2 class="">
         {{ fileName }}
       </h2>
     </div>
 
-    <!-- <div class="text-[12px] text-gray-400 ">
+    <div class="text-[12px] text-gray-400 ">
       {{ duration }}
     </div>
 
     <div class="text-[12px] text-gray-400 ">
       {{ dateLastPlayed }}
-    </div> -->
+    </div>
 
     <div class="flex gap-x-3 justify-end text-white/70">
       <Icon

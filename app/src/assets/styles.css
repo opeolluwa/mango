@@ -59,13 +59,13 @@
 }
 
 
-.parent-element {
+/* .parent-element {
     @apply px-4;
-}
+} */
 
 
 .layout {
-    @apply pt-8 px-5 h-screen overflow-scroll scroll-smooth;
+    @apply pt-8 px-6 h-screen overflow-scroll scroll-smooth;
 
 }
 

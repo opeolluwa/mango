@@ -1,22 +1,25 @@
 <template>
-  <AppLayout class="overflow-x-hidden">
-    <main class="layout pt-3 parent-element">
+  <div class="overflow-x-hidden">
+    <main class="layout pt-3 parent-element w-screen">
       <RouterView v-slot="{ Component }">
-        <Transition>
+        <Transition name="fade">
           <Component :is="Component" />
         </Transition>
       </RouterView>
     </main>
-  </AppLayout>
+    <AppDock />
+    <AppDockPlayer />
+  </div>
 </template>
 
 <script lang="ts" setup>
-import AppLayout from "@/components/layouts/AppLayout.vue";
 import { listen } from "@tauri-apps/api/event";
+import AppDockPlayer from "../../components/uiBlocks/AppDockPlayer.vue";
 import { onMounted } from "vue";
 import { type AudioSynthesisEvent } from "../../../src-tauri/bindings/AudioSynthesisEvent.ts";
 import { type CurrentAudioMetadata } from "../../../src-tauri/bindings/CurrentAudioMetadata.ts";
 import { type Events } from "../../../src-tauri/bindings/Events.ts";
+import AppDock from "../../components/uiBlocks/AppDock.vue";
 import { useAudioBookLibrary } from "../../stores/library.ts";
 
 const store = useAudioBookLibrary();
