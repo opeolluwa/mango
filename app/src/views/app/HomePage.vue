@@ -22,17 +22,15 @@
     <div class="flex flex-col overflow-hidden">
       <div class="flex justify-between">
         <div>
-          <h2 class="text-3xl font-black text-app-dark/90 dark:text-gray-400">
-           Hi, Olatunde! 👋
+          <h2 class="text-2xl font-black text-app-dark/90 dark:text-gray-400">
+            Hey, Olatunde! 👋
           </h2>
-          <VueGreetings class="text-[1.2rem] text-gray-600 dark:text-gray-400/60" />
+          <VueGreetings class="leading-5 text-gray-600 dark:text-gray-400/60" />
         </div>
       </div>
 
-      <section class="hidden">
-        <h3
-          class="mb-2 font-medium text-xl text-gray-400 font-mediumtext-gray-400 dark:text-gray-400/60"
-        >
+      <dic class="mt-12">
+        <h3 class="text-stone-400 text-xl mb-2 dark:text-gray-400/60">
           Continue listening
         </h3>
         <div
@@ -44,15 +42,13 @@
             :key="index"
             :src="image.src"
             :alt="image.alt"
-            class="contain h-[200px] rounded hover:resize"
+            class="contain h-[150px] rounded hover:resize"
           />
         </div>
-      </section>
+      </dic>
 
       <section class="hidden">
-        <h3
-          class="mb-2 font-bold text-2xl text-gray-500 font-mediumtext-gray-400 dark:text-gray-400/60"
-        >
+        <h3 class="mb-2 font-mediumtext-gray-400 dark:text-gray-400/60">
           Recently added
         </h3>
 
@@ -66,18 +62,6 @@
             class="hover:shadow-md transition-shadow cursor-pointer"
           />
         </div>
-
-        <!-- <small class="text-gray-400">Recent books</small>
-        <div class="flex flex-col gap-y-4 mt-4">
-          <AudioBook
-            class=""
-            v-for="(book, index) in musicPlaylist"
-            :key="index"
-            :file-name="String(book.duration)"
-            duration="0"
-            :date-last-played="new Date().toLocaleDateString()"
-          />
-        </div> -->
       </section>
     </div>
   </template>
@@ -85,7 +69,6 @@
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
-import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
 import { computed, ref } from "vue";
 import AudioBook from "../../components/AudioBook.vue";
 import VueGreetings from "../../components/uiBlocks/VueGreetings.vue";
@@ -106,27 +89,14 @@ const audiobooks = ref([
     cover:
       "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=64&h=64&fit=crop&crop=center",
   },
+
   {
-    id: 3,
-    title: "1984",
-    author: "George Orwell",
+    id: 5,
+    title: "The Hobbit",
+    author: "J.R.R. Tolkien",
     cover:
-      "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=64&h=64&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=center",
   },
-  // {
-  //   id: 4,
-  //   title: "Pride and Prejudice",
-  //   author: "Jane Austen",
-  //   cover:
-  //     "https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=64&h=64&fit=crop&crop=center",
-  // },
-  // {
-  //   id: 5,
-  //   title: "The Hobbit",
-  //   author: "J.R.R. Tolkien",
-  //   cover:
-  //     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=center",
-  // },
 ]);
 
 const images = ref([
@@ -143,7 +113,4 @@ const emptyLibrary = computed(() => library.audioBooks.length == 0);
 </script>
 
 <style scoped>
-section {
-  margin-top: 3.5rem;
-}
 </style>

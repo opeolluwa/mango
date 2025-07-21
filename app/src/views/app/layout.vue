@@ -1,7 +1,7 @@
 <template>
   <div class="overflow-x-hidden ">
     <AppHeader class="dark:bg-app-orange-100/10 px-36"/>
-    <main class="layout pt-3 parent-element w-screen bg-gray-100 dark:bg-app-dark">
+    <main class="layout pt-3 parent-element w-screen  dark:bg-app-dark ">
       <RouterView v-slot="{ Component }">
         <Transition name="fade">
           <Component :is="Component" />
