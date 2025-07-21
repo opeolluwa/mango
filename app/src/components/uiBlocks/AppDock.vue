@@ -1,6 +1,6 @@
 <template>
   <footer
-    class="fixed border-gray-100/50 dark:border-none w-full py-3 items-center gap-y-1 justify-between gap-x-2 z-5000 flex  border shadow min-h-12 tems-center px-4 bottom-0"
+    class="fixed border-gray-100/50 dark:border-none w-full py-3 items-center gap-y-1 justify-between gap-x-2 z-5000 flex border min-h-12 tems-center px-4 bottom-0 bg-white shadow-2xl dark:border-gray-100  dark:border-t-8 "
   >
     <RouterLink
       :to="{ name: item.route }"

@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.eckko" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
-                  <item name="android:statusBarColor">#09090f</item>
-  <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">#ffffff</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>
