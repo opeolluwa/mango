@@ -46,7 +46,9 @@
       </div>
 
       <section>
-        <h3 class=" mb-2 font-bold text-app-dark/90 dark:text-gray-400">Continue listening</h3>
+        <h3 class="mb-2 font-mediumtext-gray-400 dark:text-gray-400/60">
+          Continue listening
+        </h3>
         <div
           class="mb-10 flex gap-4 w-screen overflow-x-scroll pr-24"
           style="scroll-behavior: smooth"
@@ -56,13 +58,28 @@
             :key="index"
             :src="image.src"
             :alt="image.alt"
-            class="contain h-[250px] rounded hover:resize"
+            class="contain h-[180px] rounded hover:resize"
           />
         </div>
       </section>
 
-      <section class="mb-10 hidden">
-        <small class="text-gray-400">Recent books</small>
+      <section>
+        <h3 class="mb-2 font-mediumtext-gray-400 dark:text-gray-400/60">
+          Recently added
+        </h3>
+
+        <div class="space-y-4">
+          <AudioBook
+            v-for="book in audiobooks"
+            :key="book.id"
+            :title="book.title"
+            :author="book.author"
+            :cover="book.cover"
+            class="bg-white hover:shadow-md transition-shadow cursor-pointer"
+          />
+        </div>
+
+        <!-- <small class="text-gray-400">Recent books</small>
         <div class="flex flex-col gap-y-4 mt-4">
           <AudioBook
             class=""
@@ -72,7 +89,7 @@
             duration="0"
             :date-last-played="new Date().toLocaleDateString()"
           />
-        </div>
+        </div> -->
       </section>
     </div>
   </template>
@@ -86,33 +103,42 @@ import AudioBook from "../../components/AudioBook.vue";
 import VueGreetings from "../../components/uiBlocks/VueGreetings.vue";
 import { createNewBook } from "../../composibles/book.ts";
 import { useAudioBookLibrary } from "../../stores/library.ts";
-
-const musicPlaylist = ref([
+const audiobooks = ref([
   {
-    fileName: "Bohemian_Rhapsody_Queen.mp3",
-    duration: "5:55",
-    dateLastPlayed: "2025-07-19T14:32:15.000Z",
+    id: 1,
+    title: "The Great Gatsby",
+    author: "F. Scott Fitzgerald",
+    cover:
+      "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=64&h=64&fit=crop&crop=center",
   },
   {
-    fileName: "Shape_of_You_Ed_Sheeran.mp3",
-    duration: "3:53",
-    dateLastPlayed: "2025-07-18T09:45:22.000Z",
+    id: 2,
+    title: "To Kill a Mockingbird",
+    author: "Harper Lee",
+    cover:
+      "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=64&h=64&fit=crop&crop=center",
   },
   {
-    fileName: "Blinding_Lights_The_Weeknd.mp3",
-    duration: "3:20",
-    dateLastPlayed: "2025-07-20T16:18:44.000Z",
+    id: 3,
+    title: "1984",
+    author: "George Orwell",
+    cover:
+      "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=64&h=64&fit=crop&crop=center",
   },
-  {
-    fileName: "Watermelon_Sugar_Harry_Styles.mp3",
-    duration: "2:54",
-    dateLastPlayed: "2025-07-17T20:12:08.000Z",
-  },
-  {
-    fileName: "Good_4_U_Olivia_Rodrigo.mp3",
-    duration: "2:58",
-    dateLastPlayed: "2025-07-20T11:27:33.000Z",
-  },
+  // {
+  //   id: 4,
+  //   title: "Pride and Prejudice",
+  //   author: "Jane Austen",
+  //   cover:
+  //     "https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=64&h=64&fit=crop&crop=center",
+  // },
+  // {
+  //   id: 5,
+  //   title: "The Hobbit",
+  //   author: "J.R.R. Tolkien",
+  //   cover:
+  //     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=center",
+  // },
 ]);
 
 const images = ref([
@@ -122,7 +148,6 @@ const images = ref([
   { src: "/05.jpg", alt: "" },
   { src: "/06.jpg", alt: "" },
   { src: "/07.jpg", alt: "" },
-
 ]);
 const library = useAudioBookLibrary();
 
@@ -131,7 +156,6 @@ const emptyLibrary = computed(() => library.audioBooks.length == 0);
 
 <style scoped>
 section {
-  margin-top: 3rem;
-  margin-bottom: 2.25rem;
+  margin-top: 3.5rem;
 }
 </style>

@@ -8,13 +8,13 @@
       </RouterView>
     </main>
     <AppDock />
-    <AppDockPlayer />
+    <!-- <AppDockPlayer /> -->
   </div>
 </template>
 
 <script lang="ts" setup>
 import { listen } from "@tauri-apps/api/event";
-import AppDockPlayer from "../../components/uiBlocks/AppDockPlayer.vue";
+// import AppDockPlayer from "../../components/uiBlocks/AppDockPlayer.vue";
 import { onMounted } from "vue";
 import { type AudioSynthesisEvent } from "../../../src-tauri/bindings/AudioSynthesisEvent.ts";
 import { type CurrentAudioMetadata } from "../../../src-tauri/bindings/CurrentAudioMetadata.ts";
