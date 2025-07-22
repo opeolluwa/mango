@@ -1,11 +1,20 @@
 <template>
+  <div
+    class="w-screen  absolute top-2 left-0 h-[100vh] bg-app-dark/10 backdrop-blur-sm"
+    @click="toggleSideNav"
+    v-show="showSideNav"
+  >
+    <Transition name="slide-fade">
+      <AppNavigation v-if="showSideNav" class="w-[70vw] absolute dark:bg-app-dark z-[5000] bg-white" />
+    </Transition>
+  </div>
   <header
     class="flex gap-x-4 items-center justify-between dark:border-none border-b min-h-12 py-2 px-4 border-gray-100/40 bg-linear-to-b from-white to-app-orange-50/40"
   >
     <Icon
       icon="mage:dash-menu"
       class="text-gray-400 size-6 flex items-center h-full cursor-pointer"
-      @click="$emit('toggle-nav', true)"
+      @click="toggleSideNav"
     />
 
     <div class="col-span-4 flex gap-x-3 items-center">

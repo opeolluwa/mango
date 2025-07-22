@@ -1,7 +1,9 @@
 <template>
   <nav
-    class="border-r z-5000 border-r-gray-500/10 layout flex flex-col gap-y-16 h-screen text-app-white/60"
+    class="border-r border-r-gray-500/10 layout flex flex-col gap-y-16 h-screen text-app-white/60"
   >
+    <!-- <AppLogo class="parent px-8" /> -->
+
     <div class="nav-section">
       <AppLabeledIcon icon="mynaui:signal" label="Feed" to="/" />
       <AppLabeledIcon
@@ -64,6 +66,7 @@ import PlayListTag from "../PlayListTag.vue";
 import AppLabeledIcon from "./AppLabeledIcon.vue";
 import { Icon } from "@iconify/vue";
 import { createNewPlaylist } from "../../composibles/modals.ts";
+
 
 const playlists = ref<{ name: string; color: string }[]>([]);
 </script>

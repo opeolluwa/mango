@@ -1,7 +1,7 @@
 <template>
   <div class="overflow-x-hidden">
     <AppHeader @toggle-nav="showSideNav = $event" />
-    <AppNavigation v-if="showSideNav" class="fixed left-0 bottom-16 w-[70vw] z-[5000] dark:bg-app-dark bg-white" />
+    <AppNavigation v-if="showSideNav" class="fixed left-0 bottom-16 w-[70vw] z-[6000] dark:bg-app-dark bg-white" />
     <main class="layout pt-3 parent-element w-screen dark:bg-app-dark">
       <RouterView v-slot="{ Component }">
         <Transition name="fade">
