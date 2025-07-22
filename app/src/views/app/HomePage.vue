@@ -29,12 +29,12 @@
         </div>
       </div>
 
-      <dic class="mt-12 hidden">
-        <h3 class="text-stone-400 text-xl mb-2 dark:text-gray-400/60">
+      <dic class="mt-12 hiddn">
+        <h3 class="text-stone-400 text mb-2 dark:text-gray-400/60 ">
           Continue listening
         </h3>
         <div
-          class="mb-10 flex gap-x-3 w-screen overflow-x-scroll pr-24"
+          class="mb-10 flex gap-x-4 w-screen overflow-x-scroll pr-24"
           style="scroll-behavior: smooth"
         >
           <img
@@ -42,7 +42,7 @@
             :key="index"
             :src="image.src"
             :alt="image.alt"
-            class="contain h-[150px] rounded hover:resize"
+            class="contain h-[230px] shadow-md rounded-lg hover:scale-95 transition-all duration-300"
           />
         </div>
       </dic>
