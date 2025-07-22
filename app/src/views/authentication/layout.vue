@@ -4,7 +4,7 @@
       <component :is="Component" />
     </Transition>
   </RouterView>
-  <SensationalTint class="absolute inset-x-2 bottom-1 -z-10 transform-gpu overflow-hidden blur-3xl opacity-60" />
+  <SensationalTint class="absolute inset-x-2 bottom-1 -z-10 transform-gpu overflow-hidden blur-3xl opacity-30 dark:hidden" />
 </template>
 
 <script lang="ts" setup>

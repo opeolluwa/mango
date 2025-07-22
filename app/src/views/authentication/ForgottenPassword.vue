@@ -5,7 +5,7 @@
       @click="router.back"
     />
 
-    <h1 class="text-5xl w-[70%]">Forgotten Password!</h1>
+    <AuthScreenHeaderText>Forgotten Password!</AuthScreenHeaderText>
     <p class="small text-gray-400">
       Let's get you back in. Provide email registered with your account
     </p>
@@ -19,7 +19,7 @@
         <AppFormLabel text="Email" for="email" />
         <input
           id="email"
-          class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
+          class="app-form-input"
           type="email"
           placeholder="jane@mailer.com"
         />
@@ -43,6 +43,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import SubmitButton from "../../components/form/SubmitButton.vue";
+import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 
 const router = useRouter();
 const processingRequest = ref(false);

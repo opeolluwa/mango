@@ -8,35 +8,41 @@
       />
     </Transition>
 
-    <div class="flex justify-between mb-10">
+    <div class="flex justify-between mb-10 pb-3">
       <Icon
         icon="fluent:chevron-left-32-filled"
         @click="goBack"
-        :class="['icon size-5 text-white/90']"
+        :class="['icon size-5 dark:text-white/90']"
       />
 
       <Icon
         icon="tabler:dots"
         @click="show = !show"
-        :class="['icon size-5 text-white/90']"
+        :class="['icon size-5 dark:text-white/90']"
       />
     </div>
     <img
       src="@/assets/test.jpg"
-      class="contain mb-12 h-[200px] mx-auto rounded"
+      class="contain mb-12 h-[250px] mx-auto rounded"
       alt=""
     />
 
     <div class="mb-20 text-center">
-      <h6 class="text-3xl text-center text-gray-500">Half of a yellow sun </h6>
+      <h6 class="text-3xl text-center text-gray-500">Half of a yellow sun</h6>
       <p class="small text-gray-400 mt-2">Chimamanda Nogozi</p>
     </div>
 
-    <div class="flex gap-x-4 items-center justify-center">
+    <div class="flex gap-x-6 items-center justify-center">
+      <Icon
+        icon="iconoir:rewind-solid"
+        @click="playThePreviousBook"
+        :class="['icon size-5 dark:text-white/90']"
+      />
+
       <Icon
         icon="mingcute:rewind-backward-10-line"
         @click="playThePreviousBook"
-        :class="['icon size-5 text-white/90']"
+        :class="['icon size-5 dark:text-white/90']"
       />
 
       <div
@@ -52,6 +58,11 @@
       </div>
 
       <Icon icon="mingcute:rewind-forward-10-line" class="icon" />
+      <Icon
+        icon="iconoir:forward-solid"
+        @click="playThePreviousBook"
+        :class="['icon size-5 dark:text-white/90']"
+      />
     </div>
 
     <div class="flex w-full items-center justify-between gap-x-2 mt-12">
@@ -69,7 +80,7 @@
         :max="100"
         :step="1"
       >
-        <SliderTrack class="bg-app-gray relative grow rounded-full h-1">
+        <SliderTrack class="bg-gray-500/40 relative grow rounded-full h-1">
           <SliderRange class="absolute bg-grass8 rounded-full h-full" />
         </SliderTrack>
         <SliderThumb
@@ -80,9 +91,13 @@
     </div>
   </div>
   <footer
-    class="fixed left-0 w-full py-3 text-small items-center gap-y-1 justify-between gap-x-2 z-100 flex min-h-12 tems-center bottom-0 px-5"
+    class="fixed left-0 w-full py-3 text-small items-center gap-y-1 justify-between gap-x-2 z-100 flex min-h-12 tems-center bottom-0 px-5 shadow-lg border-t-white/50"
   >
-    <RouterLink :to="{ name: 'Player' }" v-for="(item, index) in routes" class="flex gap-y-1 flex-col items-center justify-center capitalize text-stone-500">
+    <RouterLink
+      :to="{ name: 'Player' }"
+      v-for="(item, index) in routes"
+      class="flex gap-y-1 flex-col items-center justify-center capitalize text-stone-500"
+    >
       <Icon :icon="item.default" :key="index" class="size-5" />
     </RouterLink>
   </footer>
@@ -92,7 +107,6 @@
 import { Icon } from "@iconify/vue";
 import { SliderRange, SliderRoot, SliderThumb, SliderTrack } from "reka-ui";
 import { ref } from "vue";
-import AppNavigation from "../../components/uiBlocks/AppNavigation.vue";
 import { playThePreviousBook } from "../../composibles/book.ts";
 import { goBack } from "../../composibles/router.ts";
 const player = ref(new Audio());
@@ -140,8 +154,8 @@ const pause = () => {
 
 const routes: Array<{ default: string; active: string; route: string }> = [
   {
-    default: "material-symbols-light:speed-2x-sharp",
-    active: "material-symbols-light:speed-2x-sharp",
+    default: "material-symbols:speed-2x-rounded",
+    active: "material-symbols:speed-2x-rounded",
     route: "Home",
   },
   {

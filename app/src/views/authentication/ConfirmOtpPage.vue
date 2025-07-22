@@ -14,7 +14,7 @@
       @click="router.back"
     />
 
-    <h1 class="text-5xl w-[70%]">Confirm reset OTP</h1>
+    <AuthScreenHeaderText>Confirm reset OTP</AuthScreenHeaderText>
     <p class="small text-gray-400">Return the reset otp back to us</p>
 
     <form
@@ -33,20 +33,17 @@
             v-for="(id, index) in 5"
             :key="id"
             :index="index"
-            class="w-12 h-12 border-stone-600 hover:border-app-orange rounded-lg text-center shadow-sm border text-green10 placeholder:text-mauve8 focus:shadow-[0_0_0_2px] focus:shadow-stone-800 outline-none"
+            class="w-12 h-12 border-stone-600 dark:border-stone-500 hover:border-app-orange rounded-lg text-center shadow-sm border text-green10 placeholder:text-mauve8 focus:shadow-[0_0_0_2px] focus:shadow-stone-800 outline-none"
           />
         </PinInputRoot>
       </div>
-      <div
-        to="/forgotten-password"
-        class="text-stone-500 justify-end flex items-center text-[14px]"
-      >
+      <div class="text-stone-500 justify-end flex items-center text-sm">
         <span>Did&apos;t get an OTP? Request new after</span>
-        <span class="text-app-orange">86s</span>
+        <span class="text-app-orange pl-1">86s</span>
       </div>
 
       <RouterLink
-        to="/set-new-password"
+        :to="{ name: 'SetNewPassword' }"
         class="text-stone-500 flex justify-end -mt-4"
         >new pswd</RouterLink
       >
@@ -60,6 +57,7 @@ import { useRouter } from "vue-router";
 import { PinInputInput, PinInputRoot } from "reka-ui";
 import { ref } from "vue";
 import FormLoader from "../../components/form/FormLoader.vue";
+import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 
 const value = ref<string[]>([]);
 function handleComplete(otp: string[]) {

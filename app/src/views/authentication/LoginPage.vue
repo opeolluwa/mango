@@ -5,7 +5,7 @@
       @click="router.back"
     />
 
-    <h1 class="text-5xl w-[70%]">Login to continue!</h1>
+    <AuthScreenHeaderText>Login to continue!</AuthScreenHeaderText>
     <p class="small text-gray-400">
       Get crank up where you stopped your last audio book!
     </p>
@@ -19,7 +19,7 @@
         <AppFormLabel text="Email" for="email" />
         <input
           id="email"
-          class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
+          class="app-form-input"
           type="text"
           placeholder="jane@mailer.com"
         />
@@ -29,7 +29,7 @@
         <AppFormLabel text="password" for="email" />
         <input
           id="email"
-          class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
+          class="app-form-input"
           type="text"
           placeholder="********"
         />
@@ -54,6 +54,7 @@ import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
 import { useRouter } from "vue-router";
 import SubmitButton from "../../components/form/SubmitButton.vue";
 import { ref } from "vue";
+import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 
 const router = useRouter();
 

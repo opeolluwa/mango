@@ -5,7 +5,7 @@
       @click="router.back"
     />
 
-    <h1 class="text-5xl">Welcome back, Olatunde!</h1>
+    <AuthScreenHeaderText>Welcome back, Olatunde!</AuthScreenHeaderText>
     <p class="small text-gray-400">Login with your password to continue</p>
 
     <form
@@ -17,7 +17,7 @@
         <AppFormLabel text="Password" for="password" />
         <input
           id="password"
-          class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
+          class="app-form-input"
           type="password"
           placeholder="********"
         />
@@ -36,6 +36,7 @@ import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
 import { useRouter } from "vue-router";
 import SubmitButton from "../../components/form/SubmitButton.vue";
 import { ref } from "vue";
+import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 
 const router = useRouter();
 

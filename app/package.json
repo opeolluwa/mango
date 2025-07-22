@@ -10,8 +10,6 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@any-touch/core": "^2.2.0",
-    "@any-touch/pan": "^2.2.0",
     "@heroicons/vue": "^2.2.0",
     "@iconify/vue": "^5.0.0",
     "@tailwindcss/vite": "^4.1.5",
@@ -28,13 +26,7 @@
     "@tauri-apps/plugin-updater": "^2.7.1",
     "@tauri-apps/plugin-upload": "^2.3.0",
     "@vueuse/core": "^13.3.0",
-    "@vueuse/sound": "^2.1.3",
-    "any-touch": "^2.2.0",
-    "jenesius-vue-modal": "^1.11.9",
-    "lodash": "^4.17.21",
     "music-metadata": "^11.2.3",
-    "pdfobject": "^2.3.1",
-    "pdfobject-vue": "^0.0.4",
     "pinia": "^3.0.2",
     "preline": "^3.1.0",
     "reka-ui": "^2.3.2",
@@ -42,7 +34,7 @@
     "uuid": "^11.1.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.1",
-    "vue3-hotkey": "^1.0.6"
+    "vue3-touch-events": "^5.0.13"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",

@@ -1,9 +1,9 @@
 <template>
   <div class="flex gap-y-4 items-center justify-between w-full py-2">
     <div class="flex items-center gap-x-4">
-      <img :src="cover" class="size-8 rounded" alt="" />
-      <div class="flex flex-col gap-y-[2px]">
-        <h2 class="font-medium">
+      <img :src="cover" class="size-12 rounded-lg" alt="" />
+      <div class="flex flex-col -gap-y-[4px]">
+        <h2 class="">
           {{ title }}
         </h2>
         <div class="text-gray-400 text-sm">

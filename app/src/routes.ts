@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import AudioPlayer from "@views/app/AudioPlayer.vue";
+import AudioPlayer from "@views/player/AudioPlayer.vue";
 import Favourites from "@views/app/FavouritesPage.vue";
 import History from "@views/app/HistoryPage.vue";
 import Home from "@views/app/HomePage.vue";
@@ -22,6 +22,7 @@ import ScreenOne from "./views/walkthrough/ScreenOne.vue";
 import ScreenTwo from "./views/walkthrough/ScreenTwo.vue";
 import ScreenThree from "./views/walkthrough/ScreenThree.vue";
 
+import AudioPlayerLayout from "./views/player/layout.vue";
 const routes = [
   {
     path: "/",
@@ -50,8 +51,13 @@ const routes = [
       { path: "voices", component: Voices, name: "Voices" },
       { path: "settings", component: Settings, name: "Settings" },
       { path: "notification", component: Notification, name: "Notification" },
-      { path: "player", component: AudioPlayer, name: "Player" },
     ],
+  },
+  {
+    path: "/player",
+    name: "AppPlayer",
+    component: AudioPlayerLayout,
+    children: [{ path: "", component: AudioPlayer, name: "Player" }],
   },
   {
     path: "/auth",

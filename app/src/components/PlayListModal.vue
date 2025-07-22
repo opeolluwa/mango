@@ -34,7 +34,7 @@ import {ref} from "vue";
 import {Playlist} from "../composibles/database.ts";
 import {message} from '@tauri-apps/plugin-dialog';
 import _ from "lodash";
-import {closeModal} from "jenesius-vue-modal";
+// import {closeModal} from "jenesius-vue-modal";
 
 const name = ref("");
 const description = ref("");
@@ -43,7 +43,6 @@ const createNewPlaylist = async () => {
   console.log("Creating new playlist", name.value, description.value);
   const playlist = new Playlist(name.value, description.value);
   playlist.save().then(async () => {
-    closeModal();
     await message(`${_.capitalize(name.value)} playlist created successfully`, {title: 'Echo', kind: 'info'});
   }).catch(async (err: any) => {
     await message(`Error creating ${_.capitalize(name.value)} due to ${err.message}`, {title: 'Echo', kind: 'info'});

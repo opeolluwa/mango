@@ -25,7 +25,18 @@
     --color-app-orange: #FF6500;
     --color-app-gray: #282830;
 
-    --color-app-orange: oklch(69.454% 0.20503 43.183);--color-app-orange-50: oklch(89.967% 0.06119 54.842);--color-app-orange-100: oklch(87.272% 0.07975 55.357);--color-app-orange-200: oklch(81.975% 0.11633 53.914);--color-app-orange-300: oklch(77.138% 0.15082 51.598);--color-app-orange-400: oklch(73.021% 0.18086 48.694);--color-app-orange-500: oklch(69.454% 0.20503 43.183);--color-app-orange-600: oklch(57.882% 0.16854 43.947);--color-app-orange-700: oklch(45.704% 0.12997 45.315);--color-app-orange-800: oklch(32.499% 0.08923 47.471);--color-app-orange-900: oklch(18.017% 0.04269 58.969);--color-app-orange-950: oklch(7.5348% 0.01676 66.154);
+    --color-app-orange: oklch(69.454% 0.20503 43.183);
+    --color-app-orange-50: oklch(89.967% 0.06119 54.842);
+    --color-app-orange-100: oklch(87.272% 0.07975 55.357);
+    --color-app-orange-200: oklch(81.975% 0.11633 53.914);
+    --color-app-orange-300: oklch(77.138% 0.15082 51.598);
+    --color-app-orange-400: oklch(73.021% 0.18086 48.694);
+    --color-app-orange-500: oklch(69.454% 0.20503 43.183);
+    --color-app-orange-600: oklch(57.882% 0.16854 43.947);
+    --color-app-orange-700: oklch(45.704% 0.12997 45.315);
+    --color-app-orange-800: oklch(32.499% 0.08923 47.471);
+    --color-app-orange-900: oklch(18.017% 0.04269 58.969);
+    --color-app-orange-950: oklch(7.5348% 0.01676 66.154);
 }
 
 
@@ -86,8 +97,15 @@
 
 
 .app-form-input {
-    @apply py-3 px-2 outline-none rounded-lg font-medium text-[18px] placeholder:text-sm placeholder:text-base;
+    @apply py-4 pl-4 outline-none rounded-lg font-medium text-[18px] placeholder:text-sm placeholder:text-stone-500 placeholder:italic border-stone-600 dark:border-stone-500 hover:border hover:border-app-orange/60 selection:bg-app-orange transition-colors duration-200 dark:border;
 }
+
+@media (prefers-color-scheme: light) {
+    .app-form-input {
+        @apply bg-app-orange/10;
+    }
+}
+
 
 
 .input-box {
@@ -103,3 +121,32 @@
 .fade-leave-to {
     opacity: 0;
 }
+
+
+.CheckboxRoot {
+    background-color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px var(--black-a7);
+  }
+  .CheckboxRoot:hover {
+    background-color: var(--grass-3);
+  }
+  .CheckboxRoot:focus {
+    box-shadow: 0 0 0 2px black;
+  }
+  
+  .CheckboxIndicator {
+    color: var(--grass-11);
+  }
+  
+  .Label {
+    color: white;
+    padding-left: 15px;
+    font-size: 15px;
+    line-height: 1;
+  }
