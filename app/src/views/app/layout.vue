@@ -1,7 +1,10 @@
 <template>
   <div class="overflow-x-hidden">
     <AppHeader @toggle-nav="showSideNav = $event" />
-    <AppNavigation v-if="showSideNav" class="fixed left-0 bottom-16 w-[70vw] z-[6000] dark:bg-app-dark bg-white" />
+    <AppNavigation
+      v-if="showSideNav"
+      class="fixed left-0 bottom-16 w-[70vw] z-[6000] dark:bg-app-dark bg-white"
+    />
     <main class="layout pt-3 parent-element w-screen dark:bg-app-dark">
       <RouterView v-slot="{ Component }">
         <Transition name="fade">
@@ -11,7 +14,9 @@
     </main>
     <AppDock />
     <AppDockPlayer />
-    <SensationalTint class="absolute inset-x-2 top-24 -z-10 transform-gpu overflow-hidden blur-3xl opacity-70" />
+    <SensationalTint
+      class="absolute inset-x-2 top-24 -z-10 transform-gpu overflow-hidden blur-3xl opacity-70"
+    />
   </div>
 </template>
 
@@ -26,6 +31,7 @@ import AppHeader from "../../components/uiBlocks/AppHeader.vue";
 import AppNavigation from "../../components/uiBlocks/AppNavigation.vue";
 import { useAudioBookLibrary } from "../../stores/library.ts";
 import SensationalTint from "@/components/uiBlocks/SensationalTint.vue";
+import AppDockPlayer from "../../components/uiBlocks/AppDockPlayer.vue";
 const store = useAudioBookLibrary();
 const showSideNav = ref(false);
 onMounted(async () => {
