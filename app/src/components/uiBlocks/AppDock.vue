@@ -1,12 +1,12 @@
 <template>
   <footer
-    class="fixed border-gray-100/10 w-full py-3 items-center gap-y-1 justify-between gap-x-2 z-5000 flex shadow-app-orange/60 border shadow min-h-12 tems-center px-4 bottom-0"
+    class="fixed border-gray-100/50 dark:border-none w-full py-3 items-center gap-y-1 justify-between gap-x-2 z-4000 flex border min-h-12 tems-center px-4 bottom-0    shadow-inner dark:border-gray-100  dark:border-t-8 "
   >
     <RouterLink
-      :to="'/app/' + item.route"
+      :to="{ name: item.route }"
       v-for="(item, index) in routes"
       class="flex gap-y-1 flex-col items-center justify-center capitalize text-gray-500 text-sm"
-      @clicl="updateTab(index)"
+      @click="updateTab(index)"
     >
       <template v-if="index == currentTab">
         <Icon :icon="item.active" :key="index" class="size-5 text-app-orange" />
@@ -14,7 +14,7 @@
       </template>
       <template v-else>
         <Icon :icon="item.default" :key="index" class="size-5 icon" />
-        <Label> {{ item.route }}</Label>
+        <Label class="capitalize"> {{ item.route }}</Label>
       </template>
     </RouterLink>
   </footer>
@@ -36,23 +36,18 @@ const routes: Array<{ default: string; active: string; route: string }> = [
   {
     default: "fluent:clock-16-regular",
     active: "fluent:clock-16-filled",
-    route: "recent",
+    route: "Recent",
   },
 
-  // {
-  //   default: "ic:baseline-plus",
-  //   active: "ic:baseline-plus",
-  //   route: "favorites",
-  // },
   {
-    default: "mdi:bell-outline",
-    active: "mdi:bell",
-    route: "notification",
+    default: "mage:notification-bell",
+    active: "mage:notification-bell-fill",
+    route: "Notification",
   },
   {
-    active: "fluent:settings-20-filled",
-    default: "fluent:settings-20-regular",
-    route: "player",
+    active: "mage:settings-fill",
+    default: "mage:settings",
+    route: "Settings",
   },
 ];
 </script>

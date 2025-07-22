@@ -4,9 +4,12 @@
       <component :is="Component" />
     </Transition>
   </RouterView>
+  <SensationalTint class="absolute inset-x-2 bottom-1 -z-10 transform-gpu overflow-hidden blur-3xl opacity-60" />
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import SensationalTint from "@/components/uiBlocks/SensationalTint.vue";
+</script>
 
 <style>
 h1 {

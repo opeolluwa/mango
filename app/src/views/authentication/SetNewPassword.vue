@@ -41,9 +41,9 @@
         >Forgotten password?</RouterLink
       >
 
-      <RouterLink to="/app" class="text-stone-500 flex justify-end -mt-4"
-        >go to app</RouterLink
-      >
+      <RouterLink :to="{ name: 'Home' }" class="text-stone-500 flex justify-end -mt-4">
+        go to app
+      </RouterLink>
     </form>
   </div>
 </template>

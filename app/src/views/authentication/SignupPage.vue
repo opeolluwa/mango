@@ -13,26 +13,6 @@
       @submit.prevent="submitForm"
       class="mt-8 flex flex-col gap-y-8"
     >
-      <!-- <div class="flex flex-col w-full">
-        <AppFormLabel text="First name" for="firstName" />
-        <input
-          id="firstName"
-          class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
-          type="text"
-          placeholder="jane"
-        />
-      </div> 
-
-      <div class="flex flex-col w-full">
-        <AppFormLabel text="Last name" for="" />
-        <input
-          id="firstName"
-          class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
-          type="text"
-          placeholder="doe"
-        />
-      </div> -->
-
       <div class="flex flex-col w-full">
         <AppFormLabel text="Email" for="email" />
         <input
@@ -73,8 +53,11 @@
         </label>
       </div>
       <SubmitButton :loading="processingRequest" />
-      <RouterLink to="/login" class="text-stone-500 flex justify-end -mt-4"
-        >Already have an account? Login</RouterLink
+      <RouterLink
+        :to="{ name: 'Login' }"
+        class="text-stone-500  flex justify-end -mt-4"
+        >Already have an account?
+        <span class="text-app-orange pl-1">Login</span></RouterLink
       >
     </form>
   </div>

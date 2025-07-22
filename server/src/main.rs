@@ -1,6 +1,10 @@
 #![warn(unused_extern_crates)]
 
-use aers_lib::{AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH, errors, routes, shared};
+use aers_lib::{
+    AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH, errors,
+    events::redis::{RedisClient, RedisClientExt},
+    routes, shared,
+};
 
 use axum::extract::DefaultBodyLimit;
 use errors::app_error::AppError;
@@ -14,6 +18,8 @@ use std::{
 };
 use tower_http::limit::RequestBodyLimitLayer;
 
+use redis::AsyncCommands;
+use redis::aio::PubSub;
 #[tokio::main]
 async fn main() -> Result<(), AppError> {
     initialize_file_systems()?;
@@ -56,6 +62,21 @@ async fn main() -> Result<(), AppError> {
         .await
         .map_err(|err| AppError::OperationFailed(err.to_string()))?;
 
+    tokio::spawn(async move {
+        let redis_url = extract_env::<String>("REDIS_CONNECTION_URL").unwrap();
+        let client = redis::Client::open(redis_url).unwrap();
+        let mut conn = client.get_connection().unwrap();
+        let mut pubsub = conn.as_pubsub();
+
+        loop {
+            // let msg = pubsub.on_message().next().await;
+            // if let Some(msg) = msg {
+            //     let channel: String = msg.get_channel_name().to_string();
+            //     let payload: String = msg.get_payload().unwrap();
+            //     consume_message(&channel, payload).await;
+            // }
+        }
+    });
     //         let rr = loop {
     //     let msg = redis_pubsub.get_message().map_err(|err| {
     //         log::error!("failed to process message due to {}", err.to_string());

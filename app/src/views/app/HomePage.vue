@@ -19,73 +19,98 @@
     </div>
   </template>
   <template v-else>
-    <div class="flex flex-col">
+    <div class="flex flex-col overflow-hidden">
       <div class="flex justify-between">
         <div>
-          <h1 class="text-4xl text-gray-400 dark:text-gray-400/60">Hello, </h1>
-          <h2 class="text-4xl text-app-dark/90 dark:text-gray-400">Emmanuel!</h2>
+          <h2 class="text-2xl font-black text-app-dark/90 dark:text-gray-400">
+            Hey, Olatunde! 👋
+          </h2>
+          <VueGreetings class="leading-5 text-gray-600 dark:text-gray-400/60" />
         </div>
+      </div>
 
-        <AvatarRoot
-          class="bg-blackA3 inline-flex size-[35px] shadow select-none items-center justify-center overflow-hidden rounded-full align-middle border-app-orange/50 border-2"
+      <dic class="mt-12 hiddn">
+        <h3 class="text-stone-400 text mb-2 dark:text-gray-400/60 ">
+          Continue listening
+        </h3>
+        <div
+          class="mb-10 flex gap-x-4 w-screen overflow-x-scroll pr-24"
+          style="scroll-behavior: smooth"
         >
-          <AvatarImage
-            class="h-full w-full rounded-[inherit] object-cover"
-            src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
-            alt="Colm Tuite"
-          />
-          <AvatarFallback
-            class="text-grass11 dark:text-stone-300 leading-1 flex h-full w-full items-center justify-center bg-white dark:bg-stone-800 text-sm font-medium"
-            :delay-ms="600"
-          >
-            CT
-          </AvatarFallback>
-        </AvatarRoot>
-      </div>
-
-      <div class="mt-12 mb-10 hidden">
-        <small class="text-gray-400">continue listening</small>
-        <div class="card flex rounded-xl gap-3 mt-4 bg-gray-200 dark:bg-app-gray/70 py-4 px-2">
           <img
-            src="@/assets/test.jpg"
-            class="contain w-[120px] h-[150px]"
-            alt=""
+            v-for="(image, index) in images"
+            :key="index"
+            :src="image.src"
+            :alt="image.alt"
+            class="contain h-[230px] shadow-md rounded-lg hover:scale-95 transition-all duration-300"
           />
-          <div class="text-gray-400">
-            <h1 class="text-3xl">Half of a yellow sun</h1>
-            <p>Chimamanda Ngozi</p>
-
-            <small class="text-gray-700">33% complete</small>
-          </div>
         </div>
-      </div>
+      </dic>
 
-      <div class="mb-10 hidden">
-        <small class="text-gray-400">Recent books</small>
-        <div class="flex flex-col gap-y-4 mt-4">
-          <!-- <AudioBook
-          class=""
-          v-for="(book, index) in audioBooks"
-          :key="index"
-          :file-name="String(book.title)"
-          duration="0"
-          :date-last-played="new Date().toLocaleDateString()"
-        /> -->
+      <section class="hidden">
+        <h3 class="mb-2 font-mediumtext-gray-400 dark:text-gray-400/60">
+          Recently added
+        </h3>
+
+        <div class="">
+          <AudioBook
+            v-for="book in audiobooks"
+            :key="book.id"
+            :title="book.title"
+            :author="book.author"
+            :cover="book.cover"
+            class="hover:shadow-md transition-shadow cursor-pointer"
+          />
         </div>
-      </div>
+      </section>
     </div>
   </template>
 </template>
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
-import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import AudioBook from "../../components/AudioBook.vue";
+import VueGreetings from "../../components/uiBlocks/VueGreetings.vue";
 import { createNewBook } from "../../composibles/book.ts";
 import { useAudioBookLibrary } from "../../stores/library.ts";
-import AppDock from "../../components/uiBlocks/AppDock.vue";
+const audiobooks = ref([
+  {
+    id: 1,
+    title: "The Great Gatsby",
+    author: "F. Scott Fitzgerald",
+    cover:
+      "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=64&h=64&fit=crop&crop=center",
+  },
+  {
+    id: 2,
+    title: "To Kill a Mockingbird",
+    author: "Harper Lee",
+    cover:
+      "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=64&h=64&fit=crop&crop=center",
+  },
 
+  {
+    id: 5,
+    title: "The Hobbit",
+    author: "J.R.R. Tolkien",
+    cover:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=center",
+  },
+]);
+
+const images = ref([
+  { src: "/02.jpg", alt: "" },
+  { src: "/03.jpg", alt: "" },
+  { src: "/04.jpg", alt: "" },
+  { src: "/05.jpg", alt: "" },
+  { src: "/06.jpg", alt: "" },
+  { src: "/07.jpg", alt: "" },
+]);
 const library = useAudioBookLibrary();
 
 const emptyLibrary = computed(() => library.audioBooks.length == 0);
 </script>
+
+<style scoped>
+</style>

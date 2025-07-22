@@ -1,3 +1,3 @@
-<template>Scheduled</template>
+<template>Settings</template>
 
 <script lang="ts" setup></script>

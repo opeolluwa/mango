@@ -82,11 +82,7 @@
   <footer
     class="fixed left-0 w-full py-3 text-small items-center gap-y-1 justify-between gap-x-2 z-100 flex min-h-12 tems-center bottom-0 px-5"
   >
-    <RouterLink
-      :to="'/app/player'"
-      v-for="(item, index) in routes"
-      class="flex gap-y-1 flex-col items-center justify-center capitalize text-stone-500"
-    >
+    <RouterLink :to="{ name: 'Player' }" v-for="(item, index) in routes" class="flex gap-y-1 flex-col items-center justify-center capitalize text-stone-500">
       <Icon :icon="item.default" :key="index" class="size-5" />
     </RouterLink>
   </footer>

@@ -13,25 +13,24 @@
 
   <template v-else>
     <div class="flex parent-element flex-col gap-y-4 mt-12">
-      <AudioBook
+      <!-- <AudioBook
           class=""
           v-for="(book, index) in audioBooks"
           :key="index"
           :file-name="String(book.title)"
           duration="book.playBackDuration.toString()"
           :date-last-played="new Date().toLocaleDateString()"
-      />
+      /> -->
     </div>
   </template>
 </template>
 
 <script lang="ts" setup>
-import {ref} from "vue";
-import AudioBook from "../../components/AudioBook.vue";
-import {useAudioBookLibrary} from "../../stores/library";
-import {Icon} from "@iconify/vue";
+import { Icon } from "@iconify/vue";
+import { ref } from "vue";
+// import { useAudioBookLibrary } from "../../stores/library";
 
-const musicStore = useAudioBookLibrary();
-const audioBooks = musicStore.audioLibrary.audioBooks;
+// const musicStore = useAudioBookLibrary();
+// const audioBooks = musicStore.audioLibrary.audioBooks;
 const empty = ref(false);
 </script>

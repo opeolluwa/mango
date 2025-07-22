@@ -1,0 +1,171 @@
+<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients for depth -->
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:oklch(73.021% 0.18086 48.694);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:oklch(57.882% 0.16854 43.947);stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F7374F;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d42f45;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="grayGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#282830;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1f1f25;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="400" fill="#09090f"/>
+  
+  <!-- Concept 1: File Upload to Server -->
+  <g transform="translate(50, 50)">
+    <!-- Title -->
+    <text x="150" y="30" fill="oklch(89.967% 0.06119 54.842)" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">File Upload</text>
+    
+    <!-- Cloud Server -->
+    <g transform="translate(100, 60)">
+      <!-- Cloud shape -->
+      <path d="M 30 40 C 15 40, 0 25, 0 10 C 0 -5, 15 -20, 30 -20 C 35 -30, 55 -30, 60 -20 C 75 -20, 90 -5, 90 10 C 90 25, 75 40, 60 40 Z" fill="url(#grayGrad)" stroke="oklch(77.138% 0.15082 51.598)" stroke-width="2"/>
+      
+      <!-- Server lines -->
+      <rect x="35" y="0" width="20" height="3" rx="1" fill="oklch(69.454% 0.20503 43.183)"/>
+      <rect x="35" y="8" width="20" height="3" rx="1" fill="oklch(69.454% 0.20503 43.183)"/>
+      <rect x="35" y="16" width="20" height="3" rx="1" fill="oklch(69.454% 0.20503 43.183)"/>
+    </g>
+    
+    <!-- PDF Document -->
+    <g transform="translate(60, 180)">
+      <rect x="0" y="0" width="40" height="50" rx="3" fill="url(#redGrad)" stroke="oklch(87.272% 0.07975 55.357)" stroke-width="2"/>
+      <polygon points="40,0 40,12 52,12" fill="url(#redGrad)"/>
+      <text x="20" y="30" fill="white" font-family="Arial, sans-serif" font-size="8" font-weight="bold" text-anchor="middle">PDF</text>
+      
+      <!-- File lines -->
+      <rect x="8" y="35" width="24" height="1" fill="rgba(255,255,255,0.6)"/>
+      <rect x="8" y="38" width="18" height="1" fill="rgba(255,255,255,0.6)"/>
+      <rect x="8" y="41" width="20" height="1" fill="rgba(255,255,255,0.6)"/>
+    </g>
+    
+    <!-- Upload Arrow -->
+    <g transform="translate(120, 150)">
+      <path d="M 0 20 L 0 5 M -5 10 L 0 5 L 5 10" stroke="url(#orangeGrad)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="0" cy="25" r="3" fill="oklch(69.454% 0.20503 43.183)"/>
+      <circle cx="0" cy="30" r="2" fill="oklch(73.021% 0.18086 48.694)"/>
+      <circle cx="0" cy="34" r="1" fill="oklch(77.138% 0.15082 51.598)"/>
+    </g>
+  </g>
+  
+  <!-- Concept 2: File Processing & Notification -->
+  <g transform="translate(450, 50)">
+    <!-- Title -->
+    <text x="150" y="30" fill="oklch(89.967% 0.06119 54.842)" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">Processing & Notification</text>
+    
+    <!-- Processing Circle -->
+    <g transform="translate(130, 120)">
+      <circle cx="0" cy="0" r="40" fill="none" stroke="url(#grayGrad)" stroke-width="4"/>
+      <circle cx="0" cy="0" r="40" fill="none" stroke="url(#orangeGrad)" stroke-width="4" stroke-dasharray="80 20" stroke-linecap="round" transform="rotate(-90)">
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="360" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      
+      <!-- Gear icon -->
+      <path d="M -8 -12 L 8 -12 L 12 -8 L 12 8 L 8 12 L -8 12 L -12 8 L -12 -8 Z" fill="oklch(69.454% 0.20503 43.183)"/>
+      <circle cx="0" cy="0" r="6" fill="#09090f"/>
+      <circle cx="0" cy="0" r="3" fill="oklch(69.454% 0.20503 43.183)"/>
+    </g>
+    
+    <!-- PDF to Audio transformation -->
+    <g transform="translate(80, 180)">
+      <!-- PDF -->
+      <rect x="0" y="0" width="25" height="30" rx="2" fill="url(#redGrad)"/>
+      <text x="12.5" y="18" fill="white" font-family="Arial, sans-serif" font-size="6" font-weight="bold" text-anchor="middle">PDF</text>
+      
+      <!-- Arrow -->
+      <path d="M 35 15 L 55 15 M 50 10 L 55 15 L 50 20" stroke="oklch(69.454% 0.20503 43.183)" stroke-width="2" fill="none" stroke-linecap="round"/>
+      
+      <!-- Audio waves -->
+      <g transform="translate(65, 15)">
+        <rect x="0" y="8" width="3" height="4" rx="1" fill="url(#orangeGrad)"/>
+        <rect x="5" y="6" width="3" height="8" rx="1" fill="url(#orangeGrad)"/>
+        <rect x="10" y="4" width="3" height="12" rx="1" fill="url(#orangeGrad)"/>
+        <rect x="15" y="7" width="3" height="6" rx="1" fill="url(#orangeGrad)"/>
+        <rect x="20" y="5" width="3" height="10" rx="1" fill="url(#orangeGrad)"/>
+      </g>
+    </g>
+    
+    <!-- Notification Bell -->
+    <g transform="translate(200, 80)">
+      <path d="M 0 -15 C -8 -15, -15 -8, -15 5 C -15 15, -10 20, 0 22 C 10 20, 15 15, 15 5 C 15 -8, 8 -15, 0 -15 Z" fill="url(#orangeGrad)"/>
+      <ellipse cx="0" cy="22" rx="12" ry="3" fill="url(#orangeGrad)"/>
+      <circle cx="8" cy="-8" r="4" fill="#F7374F"/>
+      <path d="M -5 25 C -5 28, 5 28, 5 25" stroke="oklch(69.454% 0.20503 43.183)" stroke-width="2" fill="none"/>
+    </g>
+  </g>
+  
+  <!-- Concept 3: Audio Streaming -->
+  <g transform="translate(850, 50)">
+    <!-- Title -->
+    <text x="150" y="30" fill="oklch(89.967% 0.06119 54.842)" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">Audio Streaming</text>
+    
+    <!-- Speaker/Device -->
+    <g transform="translate(120, 90)">
+      <rect x="-20" y="-10" width="40" height="20" rx="10" fill="url(#grayGrad)" stroke="oklch(77.138% 0.15082 51.598)" stroke-width="2"/>
+      <circle cx="0" cy="0" r="6" fill="oklch(69.454% 0.20503 43.183)"/>
+      <circle cx="0" cy="0" r="3" fill="#09090f"/>
+    </g>
+    
+    <!-- Streaming waves -->
+    <g transform="translate(120, 90)">
+      <!-- Wave 1 -->
+      <circle cx="0" cy="0" r="25" fill="none" stroke="oklch(69.454% 0.20503 43.183)" stroke-width="2" opacity="0.8">
+        <animate attributeName="r" values="25;35;25" dur="1.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.8;0;0.8" dur="1.5s" repeatCount="indefinite"/>
+      </circle>
+      
+      <!-- Wave 2 -->
+      <circle cx="0" cy="0" r="35" fill="none" stroke="oklch(73.021% 0.18086 48.694)" stroke-width="2" opacity="0.6">
+        <animate attributeName="r" values="35;45;35" dur="1.5s" repeatCount="indefinite" begin="0.3s"/>
+        <animate attributeName="opacity" values="0.6;0;0.6" dur="1.5s" repeatCount="indefinite" begin="0.3s"/>
+      </circle>
+      
+      <!-- Wave 3 -->
+      <circle cx="0" cy="0" r="45" fill="none" stroke="oklch(77.138% 0.15082 51.598)" stroke-width="2" opacity="0.4">
+        <animate attributeName="r" values="45;55;45" dur="1.5s" repeatCount="indefinite" begin="0.6s"/>
+        <animate attributeName="opacity" values="0.4;0;0.4" dur="1.5s" repeatCount="indefinite" begin="0.6s"/>
+      </circle>
+    </g>
+    
+    <!-- Audio Control Bar -->
+    <g transform="translate(70, 180)">
+      <rect x="0" y="0" width="140" height="40" rx="20" fill="url(#grayGrad)" stroke="oklch(77.138% 0.15082 51.598)" stroke-width="2"/>
+      
+      <!-- Play button -->
+      <circle cx="25" cy="20" r="8" fill="url(#orangeGrad)"/>
+      <polygon points="22,16 22,24 28,20" fill="white"/>
+      
+      <!-- Progress bar -->
+      <rect x="45" y="17" width="80" height="6" rx="3" fill="#09090f"/>
+      <rect x="45" y="17" width="35" height="6" rx="3" fill="url(#orangeGrad)"/>
+      <circle cx="80" cy="20" r="4" fill="oklch(73.021% 0.18086 48.694)"/>
+      
+      <!-- Time -->
+      <text x="50" y="35" fill="oklch(81.975% 0.11633 53.914)" font-family="Arial, sans-serif" font-size="8">1:23</text>
+      <text x="110" y="35" fill="oklch(81.975% 0.11633 53.914)" font-family="Arial, sans-serif" font-size="8">4:56</text>
+    </g>
+    
+    <!-- Headphones -->
+    <g transform="translate(200, 140)">
+      <path d="M -15 -10 C -15 -25, 15 -25, 15 -10 L 15 5 C 15 10, 20 10, 20 5 L 20 -5 C 18 -8, 12 -8, 10 -5 L 10 5 C 10 10, 15 15, 15 5 L 15 -10" fill="none" stroke="url(#orangeGrad)" stroke-width="3" stroke-linecap="round"/>
+      <path d="M -15 -10 L -15 5 C -15 10, -20 10, -20 5 L -20 -5 C -18 -8, -12 -8, -10 -5 L -10 5 C -10 10, -15 15, -15 5" fill="none" stroke="url(#orangeGrad)" stroke-width="3" stroke-linecap="round"/>
+      
+      <!-- Ear cups -->
+      <ellipse cx="-15" cy="0" rx="5" ry="8" fill="url(#grayGrad)"/>
+      <ellipse cx="15" cy="0" rx="5" ry="8" fill="url(#grayGrad)"/>
+    </g>
+  </g>
+  
+  <!-- Divider lines -->
+  <line x1="400" y1="0" x2="400" y2="400" stroke="oklch(32.499% 0.08923 47.471)" stroke-width="1" opacity="0.3"/>
+  <line x1="800" y1="0" x2="800" y2="400" stroke="oklch(32.499% 0.08923 47.471)" stroke-width="1" opacity="0.3"/>
+</svg>
