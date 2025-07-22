@@ -43,9 +43,8 @@
 
       <button
         class="outline-none border-none text-app-orange flex items-center gap-x-2 px-6 cursor-pointer text-sm"
-
       >
-        Import new book
+        Create playlist
         <Icon icon="stash:plus" class="icon" />
       </button>
     </div>
@@ -59,7 +58,28 @@ import { createNewBook } from "../../composibles/book.ts";
 import PlayListTag from "../PlayListTag.vue";
 import AppLabeledIcon from "./AppLabeledIcon.vue";
 
-const playlists = ref<{ name: string; color: string }[]>([]);
+const playlists = ref<{ name: string; color: string }[]>([
+  {
+    name: "Engineering",
+    color: "orange",
+  },
+  {
+    name: "Self help",
+    color: "green",
+  },
+  {
+    name: "Business",
+    color: "blue",
+  },
+  {
+    name: "History",
+    color: "red",
+  },
+  {
+    name: "Science",
+    color: "purple",
+  },
+]);
 </script>
 
 <style scoped>

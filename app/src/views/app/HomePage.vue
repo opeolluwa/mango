@@ -19,7 +19,7 @@
     </div>
   </template>
   <template v-else>
-    <div class="flex flex-col overflow-hidden">
+    <div class="flex flex-col overflow-scroll pb-48">
       <div class="flex justify-between">
         <div>
           <h2 class="text-2xl font-black text-app-dark/90 dark:text-gray-400">
@@ -30,7 +30,7 @@
       </div>
 
       <dic class="mt-12 hidden">
-        <h3 class="text-stone-400 text mb-2 dark:text-gray-400/60 ">
+        <h3 class="text-stone-400 text mb-2 dark:text-gray-400/60">
           Continue listening
         </h3>
         <div
@@ -42,17 +42,17 @@
             :key="index"
             :src="image.src"
             :alt="image.alt"
-            class="contain h-[230px] shadow-md rounded-lg hover:scale-95 transition-all duration-300"
+            class="contain h-[200px] shadow-md rounded-lg hover:scale-95 transition-all duration-300"
           />
         </div>
       </dic>
 
-      <section class="hidden">
-        <h3 class="mb-2 font-mediumtext-gray-400 dark:text-gray-400/60">
-          Recently added
+      <section class="hidde\n mt-12">
+        <h3 class="text-stone-400 text mb-2 dark:text-gray-400/60">
+          Your books
         </h3>
 
-        <div class="">
+        <div class="hiden">
           <AudioBook
             v-for="book in audiobooks"
             :key="book.id"
@@ -79,23 +79,34 @@ const audiobooks = ref([
     id: 1,
     title: "The Great Gatsby",
     author: "F. Scott Fitzgerald",
-    cover:
-      "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=64&h=64&fit=crop&crop=center",
+    cover: "/02.jpg",
   },
   {
     id: 2,
     title: "To Kill a Mockingbird",
     author: "Harper Lee",
-    cover:
-      "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=64&h=64&fit=crop&crop=center",
+    cover: "/03.jpg",
   },
 
   {
-    id: 5,
+    id: 4,
     title: "The Hobbit",
     author: "J.R.R. Tolkien",
-    cover:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=center",
+    cover: "/04.jpg",
+  },
+
+  {
+    id: 4,
+    title: "The Hobbit",
+    author: "J.R.R. Tolkien",
+    cover: "/05.jpg",
+  },
+
+  {
+    id: 4,
+    title: "The Hobbit",
+    author: "J.R.R. Tolkien",
+    cover: "/06.jpg",
   },
 ]);
 
@@ -112,5 +123,4 @@ const library = useAudioBookLibrary();
 const emptyLibrary = computed(() => library.audioBooks.length == 0);
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
