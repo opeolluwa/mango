@@ -1,9 +1,9 @@
 <template>
   <div
     class="px-8 flex flex-col h-screen pb-[15vh] justify-end w-screen relative layout"
-  >
+  >    <img src="/screen-one.png" alt="" />
     <h1
-      class="text-4xl capitalize leading-loose w-[70%] dark:text-white/70"
+      class="text-4xl capitalize leading-loose w-[90%] dark:text-white/70"
       style="line-height: 50px"
     >
       <span class="font-bold">Empower</span>
@@ -25,7 +25,7 @@
       :to="{ name: 'Home' }"
       class="leading-loose flex mt-2 relative justify-end -bottom-24"
     >
-      Skip
+    
     </RouterLink>
   </div>
 </template>
