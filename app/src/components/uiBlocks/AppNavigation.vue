@@ -43,7 +43,7 @@
 
       <button
         class="outline-none border-none text-app-orange flex items-center gap-x-2 px-6 cursor-pointer text-sm"
-        @click="createNewPlaylist()"
+
       >
         Import new book
         <Icon icon="stash:plus" class="icon" />
@@ -56,7 +56,6 @@
 import { Icon } from "@iconify/vue";
 import { ref } from "vue";
 import { createNewBook } from "../../composibles/book.ts";
-import { createNewPlaylist } from "../../composibles/modals.ts";
 import PlayListTag from "../PlayListTag.vue";
 import AppLabeledIcon from "./AppLabeledIcon.vue";
 

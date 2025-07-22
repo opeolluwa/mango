@@ -5,7 +5,7 @@
       @click="router.back"
     />
 
-    <h1 class="text-5xl w-[70%]">Create a free account</h1>
+    <AuthScreenHeaderText>Create a free account</AuthScreenHeaderText>
     <p class="small text-gray-400">Register a free account to get started!</p>
 
     <form
@@ -17,7 +17,7 @@
         <AppFormLabel text="Email" for="email" />
         <input
           id="email"
-          class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
+          class="app-form-input"
           type="email"
           placeholder="jane@mailer.com"
         />
@@ -28,7 +28,7 @@
 
         <input
           id="password"
-          class="hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange app-form-input"
+          class="app-form-input"
           type="password"
           placeholder="********"
         />
@@ -37,17 +37,35 @@
         <label
           class="flex flex-row gap-4 items-center [&>.checkbox]:hover:bg-neutral-100"
         >
-          <CheckboxRoot
-            v-model="checkboxOne"
-            class="hover:bg-app-orange flex h-5 w-5 appearance-none items-center justify-center rounded-md bg-app-orange shadow-sm border-none outline-none"
-          >
-            <CheckboxIndicator
-              class="bg-app-orange h-full w-full rounded flex items-center justify-center"
-            >
-              <Icon icon="radix-icons:check" class="h-5 w-5 text-app-white" />
-            </CheckboxIndicator>
-          </CheckboxRoot>
-          <span class="select-none text-gray-400 text-sm"
+          <div class="inline-flex items-center">
+            <label class="flex items-center cursor-pointer relative">
+              <input
+                type="checkbox"
+                :checked="checkboxOne"
+                class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
+                id="check"
+              />
+              <span
+                class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-3.5 w-3.5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  stroke="currentColor"
+                  stroke-width="1"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+              </span>
+            </label>
+          </div>
+          <span class="select-none text-stone-700 text-sm dark:text-white"
             >Accept terms and conditions.</span
           >
         </label>
@@ -55,7 +73,7 @@
       <SubmitButton :loading="processingRequest" />
       <RouterLink
         :to="{ name: 'Login' }"
-        class="text-stone-500  flex justify-end -mt-4"
+        class="text-stone-500 flex justify-end -mt-4"
         >Already have an account?
         <span class="text-app-orange pl-1">Login</span></RouterLink
       >
@@ -65,10 +83,11 @@
 
 <script lang="ts" setup>
 import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
-import { CheckboxIndicator, CheckboxRoot } from "reka-ui";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 import AppFormLabel from "../../components/form/AppFormLabel.vue";
+import SubmitButton from "../../components/form/SubmitButton.vue";
 const router = useRouter();
 const checkboxOne = ref(true);
 const processingRequest = ref(false);
