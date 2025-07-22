@@ -1,20 +1,11 @@
 <template>
-  <div
-    class="w-scren z-101 absolute top-2 left-0 h-[100vh]"
-    @click="toggleSideNav"
-    v-show="showSideNav"
-  >
-    <Transition name="fase">
-      <AppNavigation class="w-[70vw] absolute bg-app-dark" />
-    </Transition>
-  </div>
   <header
-    class="flex gap-x-4 items-center justify-between dark:border-none border-b min-h-12 py-2 px-4 border-gray-100/50 bg-white shadow-sm dark:border-gray-100 dark:bg-app-orange-100/10"
+    class="flex gap-x-4 items-center justify-between dark:border-none border-b min-h-12 py-2 px-4 border-gray-100/40 bg-linear-to-b from-white to-app-orange-50/40"
   >
     <Icon
       icon="mage:dash-menu"
       class="text-gray-400 size-6 flex items-center h-full cursor-pointer"
-      @click="toggleSideNav"
+      @click="$emit('toggle-nav', true)"
     />
 
     <div class="col-span-4 flex gap-x-3 items-center">
@@ -56,6 +47,21 @@ const toggleSideNav = () => (showSideNav.value = !showSideNav.value);
 </script>
 
 <style>
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(-40px);
+}
+.slide-fade-enter-to,
+.slide-fade-leave-from {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 /* we will explain what these classes do next! */
 .v-enter-active,
 .v-leave-active {

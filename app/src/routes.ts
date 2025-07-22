@@ -17,7 +17,7 @@ import LoginPage from "./views/authentication/LoginPage.vue";
 import LoginExistingPage from "./views/authentication/LoginExistingPage.vue";
 import SetNewPassword from "./views/authentication/SetNewPassword.vue";
 import SignupPage from "./views/authentication/SignupPage.vue";
-import WelcomePage from "./views/authentication/WelcomePage.vue";
+
 import ScreenOne from "./views/walkthrough/ScreenOne.vue";
 import ScreenTwo from "./views/walkthrough/ScreenTwo.vue";
 import ScreenThree from "./views/walkthrough/ScreenThree.vue";
@@ -40,29 +40,31 @@ const routes = [
   },
   {
     path: "/app",
-    children: [
-      { path: "", component: Home, name: "home" },
-      { path: "favourites", component: Favourites },
-      { path: "library", component: Library },
-      { path: "recent", name: "recent", component: History },
-      { path: "voices", component: Voices },
-      { path: "settings", name: "settings", component: Settings },
-      { path: "notification", name: "notification", component: Notification },
-      { path: "player", component: AudioPlayer },
-    ],
+    name: "AppLayout",
     component: AppLayout,
+    children: [
+      { path: "", component: Home, name: "Home" },
+      { path: "favourites", component: Favourites, name: "Favourites" },
+      { path: "library", component: Library, name: "Library" },
+      { path: "recent", component: History, name: "Recent" },
+      { path: "voices", component: Voices, name: "Voices" },
+      { path: "settings", component: Settings, name: "Settings" },
+      { path: "notification", component: Notification, name: "Notification" },
+      { path: "player", component: AudioPlayer, name: "Player" },
+    ],
   },
   {
     path: "/auth",
-    coponent: AuthenticationLayout,
+    name: "AuthenticationLayout",
+    component: AuthenticationLayout,
     children: [
-      { path: "", component: WelcomePage },
+      { path: "", component: SignupPage, name: "SignUp" },
       { path: "signup", component: SignupPage, name: "SignUp" },
       { path: "login", component: LoginPage, name: "Login" },
       {
         path: "login2",
         component: LoginExistingPage,
-        name: "existingUserLogin",
+        name: "ExistingUserLogin",
       },
       {
         path: "forgotten-password",

@@ -26,17 +26,13 @@
       </div>
 
       <SubmitButton :loading="processingRequest" />
-      <RouterLink
-        :to="{ name: 'l=Login' }"
-        class="text-stone-500 flex justify-end -mt-4"
-        >Return to login</RouterLink
-      >
+      <RouterLink :to="{ name: 'Login' }" class="text-stone-500 flex justify-end -mt-4">
+        Return to login
+      </RouterLink>
 
-      <RouterLink
-        :to="{ name: 'ConfirmOtp' }"
-        class="text-stone-500 flex justify-end -mt-4"
-        >confirm otp</RouterLink
-      >
+      <RouterLink :to="{ name: 'ConfirmOtp' }" class="text-stone-500 flex justify-end -mt-4">
+        confirm otp
+      </RouterLink>
     </form>
   </div>
 </template>

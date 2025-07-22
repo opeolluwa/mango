@@ -23,9 +23,9 @@
         />
       </div>
       <SubmitButton type="submit" :loading="processingRequest" />
-      <RouterLink to="/login" class="text-stone-500 flex justify-end -mt-4"
-        >Not Olatunde?</RouterLink
-      >
+      <RouterLink :to="{ name: 'Login' }" class="text-stone-500 flex justify-end -mt-4">
+        Not Olatunde?
+      </RouterLink>
     </form>
   </div>
 </template>
