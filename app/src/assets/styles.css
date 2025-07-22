@@ -67,7 +67,7 @@
 
 
 .layout {
-    @apply pt-8 px-4 h-screen overflow-scroll scroll-smooth;
+    @apply pt-8 px-6 h-screen overflow-scroll scroll-smooth;
 
 }
 

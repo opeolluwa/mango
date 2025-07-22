@@ -5,7 +5,7 @@
       @click="router.back"
     />
 
-    <h1 class="text-5xl">Login to continue!</h1>
+    <h1 class="text-5xl w-[70%]">Login to continue!</h1>
     <p class="small text-gray-400">
       Get crank up where you stopped your last audio book!
     </p>
@@ -36,7 +36,7 @@
       </div>
       <SubmitButton type="submit" :loading="processingRequest" />
       <RouterLink
-        to="/forgotten-password"
+        :to="{ name: 'ForgottenPassword' }"
         class="text-stone-500 flex justify-end -mt-4"
         >Forgotten password?</RouterLink
       >

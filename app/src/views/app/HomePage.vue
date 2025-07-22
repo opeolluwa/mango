@@ -29,7 +29,7 @@
         </div>
       </div>
 
-      <dic class="mt-12">
+      <dic class="mt-12 hidden">
         <h3 class="text-stone-400 text-xl mb-2 dark:text-gray-400/60">
           Continue listening
         </h3>

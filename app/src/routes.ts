@@ -18,8 +18,26 @@ import LoginExistingPage from "./views/authentication/LoginExistingPage.vue";
 import SetNewPassword from "./views/authentication/SetNewPassword.vue";
 import SignupPage from "./views/authentication/SignupPage.vue";
 import WelcomePage from "./views/authentication/WelcomePage.vue";
+import ScreenOne from "./views/walkthrough/ScreenOne.vue";
+import ScreenTwo from "./views/walkthrough/ScreenTwo.vue";
+import ScreenThree from "./views/walkthrough/ScreenThree.vue";
 
 const routes = [
+  {
+    path: "/",
+    name: "ScreenOne",
+    component: ScreenOne,
+  },
+  {
+    path: "/screen-two",
+    name: "ScreenTwo",
+    component: ScreenTwo,
+  },
+  {
+    path: "/screen-three",
+    name: "ScreenThree",
+    component: ScreenThree,
+  },
   {
     path: "/app",
     children: [
@@ -35,20 +53,28 @@ const routes = [
     component: AppLayout,
   },
   {
-    path: "/",
+    path: "/auth",
     coponent: AuthenticationLayout,
     children: [
       { path: "", component: WelcomePage },
-      { path: "signup", component: SignupPage },
-      { path: "login", component: LoginPage, name: "defaultLogin" },
+      { path: "signup", component: SignupPage, name: "SignUp" },
+      { path: "login", component: LoginPage, name: "Login" },
       {
         path: "login2",
         component: LoginExistingPage,
         name: "existingUserLogin",
       },
-      { path: "forgotten-password", component: ForgottenPassword },
-      { path: "confirm-otp", component: ConfirmOtpPage },
-      { path: "set-new-password", component: SetNewPassword },
+      {
+        path: "forgotten-password",
+        component: ForgottenPassword,
+        name: "ForgottenPassword",
+      },
+      { path: "confirm-otp", component: ConfirmOtpPage, name: "ConfirmOtp" },
+      {
+        path: "set-new-password",
+        component: SetNewPassword,
+        name: "SetNewPassword",
+      },
     ],
   },
 ];
