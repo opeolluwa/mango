@@ -8,7 +8,7 @@ use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
 
 mod adapters;
-// mod commands;
+mod commands;
 mod database;
 mod error;
 mod state;
@@ -131,6 +131,18 @@ SELECT identifier, title, created_at, updated_at, is_loved FROM audio_books_old;
 -- Step 4: Drop the old table
 DROP TABLE audio_books_old;
 
+
+            "#,
+        },
+        Migration {
+            version: 4,
+            description: "create_app_settings_table",
+            kind: MigrationKind::Up,
+            sql: r#"
+            -- create a new table that stores the app settings --
+            CREATE TABLE IF NOT EXISTS app_settings (
+               app_initialized BOOLEAN DEFAULT 0
+            );
             "#,
         },
     ];
