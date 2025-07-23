@@ -1,4 +1,4 @@
-// use crate::{database, LAME_SIDECAR, MEDIA_DIR, MODEL_CONFIG_FILE};
+use crate::{database, LAME_SIDECAR, MEDIA_DIR, MODEL_CONFIG_FILE};
 // use libaudify::core::Audify;
 // use libaudify::error::AudifyError;
 use std::path::{Path, PathBuf};
@@ -10,15 +10,21 @@ use tauri_plugin_shell::process::CommandEvent;
 use tauri_plugin_shell::ShellExt;
 use walkdir::WalkDir;
 
-// use crate::adapters::AudioLibrary;
-// use crate::adapters::AudioSynthesisEvent;
-// use crate::adapters::CurrentAudioMetadata;
-// use crate::adapters::AUDIO_PROCESSING_EVENT;
-// use crate::adapters::CURRENTLY_PLAYING_EVENT;
-// use crate::adapters::FINISHED_AUDIO_PROCESSING_EVENT;
-// use crate::database::{AudioBook, ModelTrait};
+use crate::error::DbError;
+use crate::database::AppSettings;
+use crate::adapters::AudioLibrary;
+use crate::adapters::AudioSynthesisEvent;
+use crate::adapters::CurrentAudioMetadata;
+use crate::adapters::AUDIO_PROCESSING_EVENT;
+use crate::adapters::CURRENTLY_PLAYING_EVENT;
+use crate::adapters::FINISHED_AUDIO_PROCESSING_EVENT;
+use crate::database::{AudioBook, ModelTrait};
 use crate::error::CommandError;
 use crate::state::AppState;
+// #[no_mangle]
+// pub extern "C" fn __cxa_pure_virtual() {
+//     loop {}
+// }
 // use rodio::{Decoder, OutputStream, Sink};
 use std::fs;
 use std::fs::File;
@@ -140,6 +146,7 @@ use std::sync::Arc;
 
 //     Ok(())
 // }
+
 // #[tauri::command]
 // pub async fn read_library(state: State<'_, Arc<AppState>>) -> Result<AudioLibrary, CommandError> {
 //     sync_playlist(state.clone()).await?;
@@ -173,7 +180,7 @@ use std::sync::Arc;
 //             Err(err) => return Err(CommandError::from(err.to_string())),
 //         };
 
-//         let sink = match Sink::try_new(&stream_handle) {
+//         let sink : Arc<Sink>  = match Sink::try_new(&stream_handle) {
 //             Ok(sink) => Arc::new(sink),
 //             Err(err) => return Err(CommandError::from(err.to_string())),
 //         };
@@ -342,6 +349,30 @@ use std::sync::Arc;
 // }
 
 #[tauri::command]
-pub async fn initalize_app(state: State<'_, Arc<AppState>>) -> Result<(), CommandError> {
-    todo!()
+pub async fn initalize_app_settings(state: State<'_, Arc<AppState>>) -> Result<(), CommandError> {
+    let pool = state.db.clone();
+
+    sqlx::query(r"INSERT INTO app_settings (app_initialized) VALUES (1)")
+        .execute(&*pool)
+        .await
+        .map_err(|e| CommandError::from(e.to_string()))?;
+
+    Ok(())
+}
+
+
+#[tauri::command]
+pub async fn fetch_app_settings<R: Runtime>(state: State<'_, Arc<AppState>>, app: tauri::AppHandle<R>, window: tauri::Window<R>) -> Result<AppSettings, CommandError> {
+    let pool = state.db.clone();
+
+   let result =  sqlx::query_as::<_, AppSettings>(r#"SELECT * FROM app_settings"#)
+        .fetch_one(&*pool)
+        .await
+        .map_err(|err| {
+            log::error!("{}", err);
+            DbError::QueryFailed
+        })?;
+
+        println!("hey man {:#?}", result);
+        Ok(result)
 }

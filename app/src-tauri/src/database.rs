@@ -9,6 +9,14 @@ pub trait ModelTrait: Sized + Sync + Send {
     async fn find_all(&self, db_conn: &Pool<Sqlite>) -> Result<Vec<Self>, DbError>;
 }
 
+
+#[derive(Debug, Serialize, Deserialize, Clone, TS, FromRow, Default)]
+#[ts(export)]
+#[serde(rename_all = "camelCase")]
+pub struct AppSettings {
+    pub app_initialized: bool,
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone, TS, FromRow, Default)]
 #[ts(export)]
 #[serde(rename_all = "camelCase")]

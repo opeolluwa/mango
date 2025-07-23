@@ -31,6 +31,32 @@
 </template>
 <script lang="ts" setup>
 import { ArrowLongRightIcon } from "@heroicons/vue/24/solid";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 import SensationalTint from "@/components/uiBlocks/SensationalTint.vue";
+import { invoke } from "@tauri-apps/api/core";
+import { AppSettings } from "../../../src-tauri/bindings/AppSettings";
+import { onMounted, ref } from "vue";
+
+const settings = ref<AppSettings>();
+const router = useRouter();
+
+const fetchAppSettings = async () => {
+  try {
+    const result: AppSettings = await invoke("fetch_app_settings");
+    settings.value = result;
+  } catch (error) {
+    console.error("Failed to fetch app settings:", error);
+  }
+};
+onMounted(async () => {
+  // alert("hey")
+  await fetchAppSettings();
+alert("App settings on ScreenThree:"+ settings.value);
+  if (settings.value?.appInitialized) {
+    console.log("App is already initialized, redirecting to home...");
+    router.push({ name: "Login" });
+  } else {
+    console.log("App is not initialized, staying on ScreenThree...");
+  }
+});
 </script>

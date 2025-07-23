@@ -35,6 +35,8 @@ pub const DATABASE_PATH: &str = "echo.db";
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+
+    // commands::fetch_app_settings();
     let migrations = vec![
         Migration {
             version: 1,
@@ -209,6 +211,8 @@ DROP TABLE audio_books_old;
             // commands::set_audio_book_playback_speed,
             // commands::resume_playing_audio_book,
             // commands::sync_playlist
+            commands::initalize_app_settings,
+            commands::fetch_app_settings,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
