@@ -1,6 +1,20 @@
-# Project Audify
+# Project Eckko
 
-## Dependencies
+- [Project Eckko](#project-eckko)
+  - [Description](#description)
+  - [Getting Started](#getting-started)
+    - [Dependencies](#dependencies)
+    - [Installing](#installing)
+    - [Executing program](#executing-program)
+  - [Help](#help)
+
+## Description
+
+Eckko is a platform for converting documents to audio books
+
+## Getting Started
+
+### Dependencies
 
 - [GNU make](https://gnu.org/software/make)
 - [Cmake](https://cmake.org)
@@ -9,12 +23,33 @@
 - [Clang/g++](https://)
 - [just](https://just.systems)
 
-## Getting started
+### Installing
 
 ```sh
 git clone https://github.com/opeolluwa/eckko
-cd audify
-just configure
+cd eckko
 ```
 
+### Executing program
 
+- Frontend
+
+```sh
+just watch frontend
+```
+
+- Backend
+
+```sh
+just server-watch
+```
+
+- Application (android,desktop or ios)
+
+```sh
+  just watch {target}
+```
+
+## Help
+
+Run `just` to see all available commands
