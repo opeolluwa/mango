@@ -13,7 +13,6 @@
       </RouterView>
     </main>
     <AppDock />
-    <AppDockPlayer />
     <SensationalTint
       class="absolute inset-x-2 top-24 -z-10 transform-gpu overflow-hidden blur-3xl opacity-70"
     />
