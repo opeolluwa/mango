@@ -2,7 +2,9 @@
   <div
     class="px-8 flex flex-col h-screen pb-[15vh] justify-end w-screen relative layout"
   >
-    <!-- <img src="/screen-two.png" alt="" /> -->
+    <div class="relative -bottom-10" style="clip-path: circle(62% at 41% 41%)">
+      <img src="/screen-three.png" alt="" style="" />
+    </div>
     <h1
       class="text-4xl mt-16 capitalize leading-loose dark:text-white/70 w-[90%]"
       style="line-height: 50px"

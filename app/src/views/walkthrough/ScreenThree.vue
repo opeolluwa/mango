@@ -2,7 +2,7 @@
   <div
     class="px-8 flex flex-col h-screen pb-[15vh] justify-end w-screen relative layout"
   >
-    <!-- <img src="/screen-three-02.png" alt="" /> -->
+    <img src="/screen-two.png" alt="" />
     <h1
       class="text-4xl mt-6 capitalize leading-loose dark:text-white/70 w-[90%]"
       style="line-height: 50px"
@@ -15,7 +15,7 @@
 
     <RouterLink
       :to="{ name: 'SignUp' }"
-      class="relative -bottom-14 border border-app-dark bg-app-dark text-white font-medium dark:bg-app-orange rounded-lg py-4 text-center hover:animate-pulse mt-8"
+      class="relative -bottom-14  text-white font-medium bg-app-orange rounded-lg py-4 text-center hover:animate-pulse mt-8"
     >
       Get started
     </RouterLink>
