@@ -25,10 +25,18 @@ where
         let TypedHeader(Authorization(bearer)) = parts
             .extract::<TypedHeader<Authorization<Bearer>>>()
             .await
-            .map_err(|_| AuthenticationError::MissingCredentials)?;
+            .map_err(|err| {
+                log::error!("failed to extract authorization header due to {}", err);
+                AuthenticationError::MissingCredentials
+            })?;
         // Decode the user data
-        let token_data = decode::<Claims>(bearer.token(), &decoding_key, &Validation::default())
-            .map_err(|_| AuthenticationError::InvalidToken)?;
+        let mut jwt_validation = Validation::default();
+        jwt_validation.set_audience(&["eckko.mobile"]);
+        let token_data =
+            decode::<Claims>(bearer.token(), &decoding_key, &jwt_validation).map_err(|err| {
+                log::error!("failed to decode JWT token due to {}", err);
+                AuthenticationError::InvalidToken
+            })?;
 
         Ok(token_data.claims)
     }

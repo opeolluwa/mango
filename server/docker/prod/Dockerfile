@@ -31,6 +31,13 @@ RUN apt-get update && \
     apt-get install -y libssl-dev && \
     rm -rf /var/lib/apt/lists/*
 
+    
+RUN echo "deb http://deb.debian.org/debian bullseye main contrib non-free" > /etc/apt/sources.list
+RUN apt-get update
+RUN apt-get install -y lame
+RUN lame --version 
+
+
 WORKDIR /app
 
 COPY --from=build /app/target/release/aers ./aers

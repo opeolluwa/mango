@@ -13,13 +13,13 @@ RUN set -e && \
         llvm-dev \
         cmake \
         git \
-        # zlib1g-dev \
+        lame \
         build-essential && \
     rm -rf /var/lib/apt/lists/*
 
 RUN rustup component add rustfmt
-# RUN apt update && apt install libmp3lame0
-# RUN lame --version 
+
+RUN apt-get install -y lame
 
 WORKDIR /app
 

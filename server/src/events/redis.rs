@@ -20,13 +20,14 @@ impl RedisClient {
         let redis_client =
             redis::Client::open(redis_connection_url).map_err(ServiceError::RedisError)?;
 
-        let config = ConnectionManagerConfig::new()
-            .set_number_of_retries(5)
-            .set_automatic_resubscription();
+        let config = ConnectionManagerConfig::new().set_number_of_retries(5);
         let connection_manager =
             redis::aio::ConnectionManager::new_with_config(redis_client, config)
                 .await
-                .map_err(ServiceError::RedisError)?;
+                .map_err(|err| {
+                    log::error!("failed to create redis connection manager due to {}", err);
+                    ServiceError::RedisError(err)
+                })?;
 
         Ok(Self { connection_manager })
     }
@@ -52,13 +53,13 @@ pub trait RedisClientExt {
     ) -> impl std::future::Future<Output = Result<u64, ServiceError>>;
 
     fn publish_message<T: Serialize + DeserializeOwned + std::fmt::Debug>(
-        &self,
+        &mut self,
         channel: &RedisMessageChannel,
         message: &T,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>>;
 
     fn consume_message(
-        &self,
+        &mut self,
         channel: &RedisMessageChannel,
         message: impl ToString,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>>;
@@ -127,7 +128,7 @@ impl RedisClientExt for RedisClient {
     }
 
     async fn publish_message<T>(
-        &self,
+        &mut self,
         channel: &RedisMessageChannel,
         message: &T,
     ) -> Result<(), ServiceError>
@@ -143,18 +144,41 @@ impl RedisClientExt for RedisClient {
             ServiceError::SerdeJsonError(err)
         })?;
 
-        // let rr = self
-        //     .connection_manager
-        //     .publish(channel.to_string(), message_as_str)
-        //     .await;
+        let () = self
+            .connection_manager
+            .publish(channel.to_string(), message_as_str)
+            .await
+            .map_err(ServiceError::from)?;
         todo!()
     }
 
     async fn consume_message(
-        &self,
+        &mut self,
         channel: &RedisMessageChannel,
         message: impl ToString,
     ) -> Result<(), ServiceError> {
-        todo!()
+        let message_str = message.to_string();
+        log::info!(
+            "Consuming message from channel {}: {}",
+            channel,
+            message_str
+        );
+
+        match channel {
+            RedisMessageChannel::FileUploaded => {
+                log::info!("File uploaded: {}", message_str);
+                // Handle file upload logic here
+            }
+            RedisMessageChannel::FileConverted => {
+                log::info!("File converted: {}", message_str);
+                // Handle file conversion logic here
+            }
+            RedisMessageChannel::Mp3Converted => {
+                log::info!("MP3 converted: {}", message_str);
+                // Handle MP3 conversion logic here
+            }
+            RedisMessageChannel::Email => todo!(),
+        }
+        Ok(())
     }
 }
