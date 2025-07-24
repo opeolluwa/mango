@@ -14,7 +14,7 @@
     </main>
     <AppDock />
     <SensationalTint
-      class="absolute inset-x-2 top-24 -z-10 transform-gpu overflow-hidden blur-3xl opacity-70"
+      class="absolute inset-x-2 top-24 -z-10 transform-gpu overflow-hidden blur-3xl opacity-50"
     />
   </div>
 </template>

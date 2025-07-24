@@ -13,7 +13,9 @@ use crate::{AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH};
 use aers_audify::Audify;
 use aers_imagekit_client::ImagekitClient;
 use aers_utils::{extract_env, generate_file_name};
+use aers_wav_mp3_converter::WavToMp3Converter;
 use axum_typed_multipart::TypedMultipart;
+use regex::Regex;
 use sqlx::Postgres;
 use sqlx::pool::Pool;
 use uuid::Uuid;
@@ -99,56 +101,80 @@ impl AudioBooksServiceExt for AudioBooksService {
         }): TypedMultipart<UploadAssetRequest>,
         claim: &Claims,
     ) -> Result<Uuid, ServiceError> {
-        // tokio::task::spawn(async move {
-        let file_name = document
+        // 1. Prepare the file name
+        let original_file_name = document
             .metadata
             .file_name
             .clone()
-            .unwrap_or(generate_file_name());
+            .unwrap_or_else(generate_file_name);
 
+        // Normalize file name: replace whitespace with hyphens
+        let sanitized_file_name = Regex::new(r"\s+")
+            .unwrap()
+            .replace_all(&original_file_name, "-")
+            .to_string();
+
+        // 2. Save the PDF to disk
+        let timestamp = chrono::Local::now().timestamp();
         let temp_dir = Path::new(AERS_FILE_UPLOAD_PATH);
-        let file_path = temp_dir.join(format!(
-            "{time_stamp}_{file_name}.pdf",
-            time_stamp = chrono::Local::now().timestamp()
-        ));
+        let pdf_path = temp_dir.join(format!("{timestamp}_{sanitized_file_name}.pdf"));
 
-        // create file object
-        if let Err(err) = document.contents.persist(&file_path) {
-            log::error!("error processing file due to {}", err);
+        if let Err(err) = document.contents.persist(&pdf_path) {
+            log::error!("Failed to persist file: {}", err);
             return Err(ServiceError::OperationFailed);
         }
 
+        // 3. Convert PDF to WAV audio using Audify
         let config_path = "resources/models/en_US-libritts_r-medium.onnx.json";
         let audify_client = Audify::new(config_path);
 
-        let pdf_path = file_path.to_str().ok_or(ServiceError::OperationFailed)?;
+        let pdf_path_str = pdf_path.to_str().ok_or(ServiceError::OperationFailed)?;
 
-        let audio_output = format!("{}/{}.wav", AERS_EXPORT_PATH, file_name);
+        let wav_path = format!("{}/{}.wav", AERS_EXPORT_PATH, sanitized_file_name);
+
         audify_client
-            .synthesize_pdf(pdf_path, &audio_output)
+            .synthesize_pdf(pdf_path_str, &wav_path)
             .map_err(|err| {
-                log::error!("failed to process document due to {} ", err);
+                log::error!("Audify synthesis failed: {}", err);
                 ServiceError::OperationFailed
             })?;
 
+        // 4. Convert WAV to MP3
+        if !Path::new(&wav_path).exists() {
+            log::error!("WAV file does not exist: {}", wav_path);
+            return Err(ServiceError::OperationFailed);
+        } else {
+            log::info!("WAV file generated: {}", wav_path);
+        }
+
+        let mp3_export = WavToMp3Converter::new()
+            .convert_and_export(&wav_path)
+            .map_err(|err| {
+                log::error!("WAV to MP3 conversion failed: {}", err);
+                ServiceError::OperationFailed
+            })?;
+
+        // 5. Upload MP3 to ImageKit
         let private_key = extract_env::<String>("IMAGEKIT_PRIVATE_KEY").unwrap();
         let public_key = extract_env::<String>("IMAGEKIT_PUBLIC_KEY").unwrap();
 
-        let imagekit_upload_response = ImagekitClient::new(&public_key, &private_key)
-            .map_err(|err| {
-                log::error!("error creating client due to {}", err);
-                ServiceError::OperationFailed
-            })?
-            .upload_file(&file_path, &file_name)
+        let imagekit_client = ImagekitClient::new(&public_key, &private_key).map_err(|err| {
+            log::error!("ImageKit client creation failed: {}", err);
+            ServiceError::OperationFailed
+        })?;
+
+        let upload_response = imagekit_client
+            .upload_file(&mp3_export, &sanitized_file_name)
             .await
             .map_err(|err| {
-                log::error!("error creating client due to {}", err);
+                log::error!("MP3 upload failed: {}", err);
                 ServiceError::OperationFailed
             })?;
 
+        // 6. Persist audio book record
         let request = CreateAudioBookRequest {
-            file_name: file_name.to_owned(),
-            src: imagekit_upload_response.url,
+            file_name: sanitized_file_name.clone(),
+            src: upload_response.url,
             playlist_identifier,
         };
 
@@ -158,8 +184,6 @@ impl AudioBooksServiceExt for AudioBooksService {
             .await?;
 
         Ok(book_identifier)
-        // });
-        // todo!()
     }
 
     async fn fetch_one(

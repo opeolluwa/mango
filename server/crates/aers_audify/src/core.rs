@@ -99,3 +99,32 @@ impl Audify {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_audify_new() {
+        let audify = Audify::new("en_US-libritts_r-medium.onnx.json");
+        assert_eq!(audify.config_path, "en_US-libritts_r-medium.onnx.json");
+    }
+
+    #[test]
+    fn test_audify_default() {
+        let audify = Audify::default();
+        assert_eq!(audify.language, Languages::default());
+        assert_eq!(audify.export_path, ".");
+        assert_eq!(audify.source, "");
+        assert_eq!(audify.sid, 80);
+    }
+
+    #[test]
+    fn test_audify_synthesize_text() {
+        let audify = Audify::new("../../../resources/models/en_US-libritts_r-medium.onnx.json");
+        let result = audify.synthesize_text("Hello, world!", "test.wav");
+        assert!(result.is_ok());
+        // Clean up test file
+        // std::fs::remove_file("test.wav").unwrap_or(());
+    }
+}

@@ -30,7 +30,7 @@ impl Default for Claims {
             iat: Default::default(),
             exp: Default::default(),
             email: Default::default(),
-            aud: Default::default(),
+            aud: "eckko.mobile".to_string(),
             user_identifier: Default::default(),
         }
     }
