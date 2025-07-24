@@ -33,8 +33,9 @@ default:
 
 #>> execute all initial setup after cloning the project
 configure:
-    @just configure-piper-rs
-    @just install-dependencies
+    # @just configure-piper-rs
+    # @just install-dependencies
+    rustup target add aarch64-unknown-linux-gnu
 
         
 #>> download piper-rs dependnecies 

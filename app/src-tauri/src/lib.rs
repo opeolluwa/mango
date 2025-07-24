@@ -35,7 +35,6 @@ pub const DATABASE_PATH: &str = "echo.db";
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-
     let migrations = vec![
         Migration {
             version: 1,
@@ -146,8 +145,7 @@ DROP TABLE audio_books_old;
             );
             "#,
         },
-
-           Migration {
+        Migration {
             version: 5,
             description: "create_app_personalization_table",
             kind: MigrationKind::Up,
@@ -166,10 +164,10 @@ DROP TABLE audio_books_old;
     ];
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_stronghold::Builder::new(|pass| todo!()).build())
         .plugin(tauri_plugin_notification::init())
         .setup(|app| {
-   
             // Extract app path synchronously BEFORE entering async block
             let app_data_dir = app.path().app_data_dir().unwrap();
             std::fs::create_dir_all(&app_data_dir)?;

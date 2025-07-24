@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
 use std::fmt::Display;
-use crate::database::AudioBook;
+use ts_rs::TS;
 
 pub const AUDIO_PROCESSING_EVENT: &str = "processing-audio";
 pub const FINISHED_AUDIO_PROCESSING_EVENT: &str = "finished-processing-audio";
@@ -28,19 +27,9 @@ pub struct CurrentAudioMetadata {
     pub speed: f32,
     pub duration: u32,
 }
-#[derive(Debug, Serialize, Deserialize, Clone)]
-#[serde(rename_all = "camelCase")]
-#[derive(TS)]
-#[ts(export)]
-pub struct AudioLibrary {
-    audio_books: Vec<AudioBook>,
-}
 
-impl AudioLibrary {
-    pub fn new(books: Vec<AudioBook>) -> Self {
-        Self { audio_books: books }
-    }
-}
+
+
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 #[serde(rename_all = "camelCase")]
 #[derive(TS)]
@@ -49,8 +38,6 @@ pub struct AudioSynthesisEvent {
     pub file_name: String,
     pub audio_src: String,
 }
-
-
 
 #[derive(Debug, Serialize, Deserialize, Clone, TS)]
 #[ts(export)]
@@ -62,9 +49,13 @@ pub enum Theme {
 
 impl Display for Theme {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:?}", match self {
-            Theme::Light => "light",
-            Theme::Dark => "dark",
-        })
+        write!(
+            f,
+            "{:?}",
+            match self {
+                Theme::Light => "light",
+                Theme::Dark => "dark",
+            }
+        )
     }
 }
