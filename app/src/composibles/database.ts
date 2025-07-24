@@ -1,6 +1,6 @@
 import Database, {QueryResult} from "@tauri-apps/plugin-sql";
 
-import {v4 as uuidv4} from "uuid";
+
 
 // const DB = await Database.load("sqlite:echo.db");
 
@@ -44,7 +44,7 @@ export class Playlist extends BaseModel {
 
     constructor(name: string | null, description: string | null) {
         super();
-        this.identifier = uuidv4();
+        this.identifier ="";
         this.name = name || "";
         this.description = description || "";
         this.createdAt = new Date().toLocaleDateString();
@@ -122,7 +122,7 @@ export class History extends BaseModel {
 
     constructor(audioBookIdentifier: string) {
         super()
-        this.identifier = uuidv4();
+        this.identifier = "";
         this.audioBookIdentifier = audioBookIdentifier;
     }
 
