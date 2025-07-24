@@ -3,7 +3,7 @@ use crate::state::AppState;
 use lazy_static::lazy_static;
 use sqlx::sqlite::SqliteConnectOptions;
 use sqlx::SqlitePool;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
 
@@ -168,6 +168,16 @@ DROP TABLE audio_books_old;
         .plugin(tauri_plugin_stronghold::Builder::new(|pass| todo!()).build())
         .plugin(tauri_plugin_notification::init())
         .setup(|app| {
+            // use tauri_plugin_notification::NotificationExt;
+            // app.notification()
+            //     .builder()
+            //     .title("Tauri")
+            //     .body("Tauri is awesome")
+            //     .show()
+            //     .unwrap();
+    
+            // Ok(())
+
             // Extract app path synchronously BEFORE entering async block
             let app_data_dir = app.path().app_data_dir().unwrap();
             std::fs::create_dir_all(&app_data_dir)?;

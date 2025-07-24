@@ -1,12 +1,10 @@
 use crate::error::DbError;
-use chrono::Local;
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, Pool, Sqlite};
 use ts_rs::TS;
 
 pub trait ModelTrait: Sized + Sync + Send {
     async fn save(&self, db_conn: &Pool<Sqlite>) -> Result<(), DbError>;
-    async fn find_all(&self, db_conn: &Pool<Sqlite>) -> Result<Vec<Self>, DbError>;
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, TS, FromRow, Default)]
@@ -53,21 +51,13 @@ impl ModelTrait for AppPersonalization {
             .execute(db_conn)
             .await
             .map_err(|err| {
-                log::error!("{}", err);
+                log::error!("{err}");
                 DbError::QueryFailed
             })?;
         Ok(())
     }
 
-    async fn find_all(&self, db_conn: &Pool<Sqlite>) -> Result<Vec<Self>, DbError> {
-        sqlx::query_as::<_, AppPersonalization>(r#"SELECT * FROM app_personalization LIMIT 1"#)
-            .fetch_all(db_conn)
-            .await
-            .map_err(|err| {
-                log::error!("{}", err);
-                DbError::QueryFailed
-            })
-    }
+
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, TS, FromRow, Default)]

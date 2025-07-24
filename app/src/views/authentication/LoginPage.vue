@@ -70,6 +70,12 @@ const submitForm = async () => {
 
 onMounted(async () => {
   appPersonalization.value = await invoke("fetch_app_personalization");
-  console.log(appPersonalization.value);
+  console.log("appPersonalization", appPersonalization.value);
+  if (appPersonalization.value?.firstName) {
+    router.push({
+      name: "LoginExisting",
+      params: { firstName: appPersonalization.value?.firstName },
+    });
+  }
 });
 </script>
