@@ -41,7 +41,9 @@
         >Forgotten password?</RouterLink
       >
 
-      <RouterLink :to="{ name: 'Home' }" class="text-stone-500 flex justify-end -mt-4"
+      <RouterLink
+        :to="{ name: 'Home' }"
+        class="text-stone-500 flex justify-end -mt-4"
         >go to app</RouterLink
       >
     </form>
@@ -53,13 +55,27 @@ import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
 import { useRouter } from "vue-router";
 import SubmitButton from "../../components/form/SubmitButton.vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
+import { invoke } from "@tauri-apps/api/core";
+import { AppPersonalization } from "../../../src-tauri/bindings/AppPersonalization";
 
+const appPersonalization = ref<AppPersonalization>();
 const router = useRouter();
 
 const processingRequest = ref(false);
 const submitForm = async () => {
   processingRequest.value = true;
 };
+
+onMounted(async () => {
+  appPersonalization.value = await invoke("fetch_app_personalization");
+  console.log("appPersonalization", appPersonalization.value);
+  if (appPersonalization.value?.firstName) {
+    router.push({
+      name: "LoginExisting",
+      params: { firstName: appPersonalization.value?.firstName },
+    });
+  }
+});
 </script>

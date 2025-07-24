@@ -22,10 +22,10 @@
     <div class="flex flex-col overflow-scroll pb-48">
       <div class="flex justify-between">
         <div>
-          <h2 class="text-2xl font-black text-app-dark/90 dark:text-gray-400">
+          <h2 class="text-2xl font-black text-app-dark/90 dark:text-gray-200">
             Hey, Olatunde! 👋
           </h2>
-          <VueGreetings class="leading-5 text-gray-600 dark:text-gray-400/60" />
+          <VueGreetings class="leading-5 text-gray-600 dark:text-gray-400" />
         </div>
       </div>
 

@@ -2,7 +2,7 @@
   <div class="flex gap-y-4 items-center justify-between w-full py-2">
     <div class="flex items-center gap-x-4">
       <img :src="cover" class="size-12 rounded-lg" alt="" />
-      <div class="flex flex-col -gap-y-[4px]">
+      <div class="flex flex-col -gap-y-[4px] text-app-dark dark:text-gray-200">
         <h2 class="">
           {{ title }}
         </h2>

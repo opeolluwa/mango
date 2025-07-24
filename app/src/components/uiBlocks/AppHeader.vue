@@ -9,7 +9,7 @@
     </Transition>
   </div>
   <header
-    class="flex gap-x-4 items-center justify-between dark:border-none border-b min-h-12 py-2 px-4 border-gray-100/40 bg-linear-to-b from-white to-app-orange-50/40"
+    class="flex gap-x-4 items-center justify-between dark:border-none border-b min-h-12 py-2 px-4 border-gray-100/40 bg-linear-to-b from-white to-app-orange-50/40 dark:bg-app-dark/50 dark:from-app-dark/50 dark:to-app-dark/50 backdrop-blur-md shadow-white/20 shadow-sm"
   >
     <Icon
       icon="mage:dash-menu"
@@ -48,8 +48,6 @@ import { Icon } from "@iconify/vue";
 import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
 import { ref } from "vue";
 import AppNavigation from "./AppNavigation.vue";
-// const store = useAudioBookLibrary();
-// const emptyLibrary = computed(() => store.audioBooks.length == 0);
 
 const showSideNav = ref(false);
 const toggleSideNav = () => (showSideNav.value = !showSideNav.value);

@@ -5,7 +5,7 @@
       @click="router.back"
     />
 
-    <AuthScreenHeaderText>Welcome back, Olatunde!</AuthScreenHeaderText>
+    <AuthScreenHeaderText>Welcome back, {{ firstName }}!</AuthScreenHeaderText>
     <p class="small text-gray-400">Login with your password to continue</p>
 
     <form
@@ -23,8 +23,11 @@
         />
       </div>
       <SubmitButton type="submit" :loading="processingRequest" />
-      <RouterLink :to="{ name: 'Login' }" class="text-stone-500 flex justify-end -mt-4">
-        Not Olatunde?
+      <RouterLink
+        :to="{ name: 'Login' }"
+        class="text-stone-500 flex justify-end -mt-4"
+      >
+        Not {{ firstName }}?
       </RouterLink>
     </form>
   </div>
@@ -39,7 +42,7 @@ import { ref } from "vue";
 import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 
 const router = useRouter();
-
+const firstName = ref(router.currentRoute.value.params.firstName);
 const processingRequest = ref(false);
 const submitForm = async () => {
   processingRequest.value = true;

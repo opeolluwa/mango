@@ -3,12 +3,12 @@ use crate::state::AppState;
 use lazy_static::lazy_static;
 use sqlx::sqlite::SqliteConnectOptions;
 use sqlx::SqlitePool;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
 
 mod adapters;
-// mod commands;
+mod commands;
 mod database;
 mod error;
 mod state;
@@ -131,21 +131,52 @@ SELECT identifier, title, created_at, updated_at, is_loved FROM audio_books_old;
 -- Step 4: Drop the old table
 DROP TABLE audio_books_old;
 
+
+            "#,
+        },
+        Migration {
+            version: 4,
+            description: "create_app_settings_table",
+            kind: MigrationKind::Up,
+            sql: r#"
+            -- create a new table that stores the app settings --
+            CREATE TABLE IF NOT EXISTS app_settings (
+               app_initialized BOOLEAN DEFAULT 0
+            );
+            "#,
+        },
+        Migration {
+            version: 5,
+            description: "create_app_personalization_table",
+            kind: MigrationKind::Up,
+            sql: r#"
+            -- create a new table that stores the app personalization --
+            CREATE TABLE IF NOT EXISTS app_personalization (
+               theme TEXT DEFAULT 'light',
+               language TEXT,
+               first_name TEXT,
+               last_name TEXT,
+               email TEXT,
+               preferred_voice TEXT
+            );
             "#,
         },
     ];
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_stronghold::Builder::new(|pass| todo!()).build())
         .plugin(tauri_plugin_notification::init())
-        .plugin(tauri_plugin_http::init())
         .setup(|app| {
-            #[cfg(desktop)]
-            {
-                let _ = app
-                    .handle()
-                    .plugin(tauri_plugin_single_instance::init(|_app, _args, _cwd| {}));
-            }
+            // use tauri_plugin_notification::NotificationExt;
+            // app.notification()
+            //     .builder()
+            //     .title("Tauri")
+            //     .body("Tauri is awesome")
+            //     .show()
+            //     .unwrap();
+    
+            // Ok(())
 
             // Extract app path synchronously BEFORE entering async block
             let app_data_dir = app.path().app_data_dir().unwrap();
@@ -177,26 +208,17 @@ DROP TABLE audio_books_old;
                 Err(e) => Err(e),
             }
         })
-        .plugin(tauri_plugin_fs::init())
         .plugin(
             tauri_plugin_sql::Builder::default()
                 .add_migrations(&DATABASE_FILE, migrations)
                 .build(),
         )
-        .plugin(tauri_plugin_upload::init())
-        .plugin(tauri_plugin_shell::init())
-        .plugin(tauri_plugin_dialog::init())
-        .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
-            // commands::synthesize_audio,
-            // commands::read_library,
-            // commands::play_audio_book,
-            // commands::pause_audio_book,
-            // commands::set_audio_book_volume,
-            // commands::seek_audio_book_to_position,
-            // commands::set_audio_book_playback_speed,
-            // commands::resume_playing_audio_book,
-            // commands::sync_playlist
+            commands::initalize_app_settings,
+            commands::fetch_app_settings,
+            commands::fetch_app_personalization,
+            commands::update_app_personalization,
+            commands::set_theme,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
