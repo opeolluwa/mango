@@ -25,7 +25,7 @@ pub fn load_routes(pool: Pool<Postgres>) -> Router {
 
     Router::new()
         .merge(public_routes(state.clone()))
-        .merge(authentication_routes(state.clone()))
+        .nest("/auth", authentication_routes(state.clone()))
         .nest("/users", user_routes(state.clone()))
         .nest("/books", audio_book_routes(state.clone()))
         .nest("/playlist", playlist_routes(state.clone()))

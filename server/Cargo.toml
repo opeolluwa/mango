@@ -36,15 +36,30 @@ jsonwebtoken = "9.3.1"
 log = { workspace = true }
 openssl = { version = "0.10.73", features = ["vendored"] }
 rabbitmq-stream-client = "0.9.0"
-redis = { workspace = true, features = ["aio", "cluster", "connection-manager", "tokio-comp", "uuid"] }
+redis = { workspace = true, features = [
+    "aio",
+    "cluster",
+    "connection-manager",
+    "tokio-comp",
+    "uuid",
+] }
 regex = "1.11.1"
 serde = { workspace = true, features = ["derive"] }
 serde_json = "1.0.140"
-sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "macros", "uuid", "migrate", "time", "chrono", "tls-rustls"] }
+sqlx = { version = "0.8", features = [
+    "runtime-tokio",
+    "postgres",
+    "macros",
+    "uuid",
+    "migrate",
+    "time",
+    "chrono",
+    "tls-rustls",
+] }
 tempfile = "3.20.0"
 thiserror = { workspace = true }
 tokio = { version = "1.44.2", features = ["full"] }
-tower-http = { version = "0.6.1", features = ["limit", "trace"] }
+tower-http = { version = "0.6.1", features = ["limit", "trace", "cors"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 uuid = { version = "1.16.0", features = ["serde", "v4"] }
