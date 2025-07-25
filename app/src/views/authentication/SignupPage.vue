@@ -13,6 +13,9 @@
       @submit.prevent="submitForm"
       class="mt-8 flex flex-col gap-y-8"
     >
+      <ErrorOutlet v-if="formSubmitError">
+        {{ formSubmitError }}
+      </ErrorOutlet>
       <div class="flex flex-col w-full">
         <AppFormLabel text="Email" for="email" />
         <input
@@ -20,7 +23,12 @@
           class="app-form-input"
           type="email"
           placeholder="jane@mailer.com"
+          v-model="email"
+          v-bind="emailProps"
         />
+        <ErrorOutlet v-if="errors.email" class="mt-2">
+          {{ errors.email }}
+        </ErrorOutlet>
       </div>
 
       <div class="flex flex-col w-full">
@@ -31,7 +39,12 @@
           class="app-form-input"
           type="password"
           placeholder="********"
+          v-model="password"
+          v-bind="passwordProps"
         />
+        <ErrorOutlet v-if="errors.password" class="mt-2">
+          {{ errors.password }}
+        </ErrorOutlet>
       </div>
       <div class="flex flex-col gap-2.5">
         <label
@@ -88,14 +101,42 @@ import { useRouter } from "vue-router";
 import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import SubmitButton from "../../components/form/SubmitButton.vue";
+import { useForm } from "vee-validate";
+import * as yup from "yup";
+import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
+import axios from "../../axios.config.ts";
+
+const validationSchema = yup.object({
+  email: yup.string().required().email(),
+  password: yup.string().required().min(6),
+});
+
+const { defineField, errors, handleSubmit } = useForm({
+  validationSchema,
+});
+
+const [email, emailProps] = defineField("email");
+const [password, passwordProps] = defineField("password");
+const formSubmitError = ref("");
 const router = useRouter();
 const checkboxOne = ref(true);
 const processingRequest = ref(false);
-const submitForm = async () => {
+
+const submitForm = handleSubmit(async (values) => {
   processingRequest.value = true;
 
-  window.setTimeout(() => {
+  console.log("Form submitted with values:", values);
+  try {
+    const response = await axios.post("http://localhost:5006/auth/signup", {
+      email: values.email,
+      password: values.password,
+    });
+    console.log(response.data);
+  } catch (error: any) {
+    console.log(error.response.data);
+    formSubmitError.value = error.response.data.message;
+  } finally {
     processingRequest.value = false;
-  }, 3000);
-};
+  }
+});
 </script>
