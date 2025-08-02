@@ -16,7 +16,10 @@ use std::{
     net::{Ipv4Addr, SocketAddr, SocketAddrV4},
     path::Path,
 };
-use tower_http::limit::RequestBodyLimitLayer;
+use tower_http::{
+    cors::{Any, CorsLayer},
+    limit::RequestBodyLimitLayer,
+};
 
 #[tokio::main]
 async fn main() -> Result<(), AppError> {
@@ -47,7 +50,13 @@ async fn main() -> Result<(), AppError> {
         .layer(RequestBodyLimitLayer::new(
             25 * 1024 * 1024, //25mb
         ))
-        .layer(tower_http::trace::TraceLayer::new_for_http());
+        .layer(tower_http::trace::TraceLayer::new_for_http())
+        .layer(
+            CorsLayer::new()
+                .allow_origin(Any)
+                .allow_methods(Any)
+                .allow_headers(Any),
+        ); //TOdo: restrict to tauri url
 
     let port = extract_env::<u16>("PORT")?;
     let ip_address = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, port));

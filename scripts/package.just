@@ -7,7 +7,8 @@ package target:
 @package-web:
 
 @package-server:
-
+    cargo install css-inline
+    cargo install mailtutan
 
 [working-directory :'app']
 @package-android:

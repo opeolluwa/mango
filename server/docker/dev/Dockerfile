@@ -10,6 +10,7 @@ RUN set -e && \
         pkg-config \
         clang \
         libclang-dev \
+        zlib1g-dev \
         llvm-dev \
         cmake \
         git \

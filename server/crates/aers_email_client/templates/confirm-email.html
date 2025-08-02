@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Email</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+            padding: 24px 10px;
+            font-size: 16px;
+        }
+
+        .leading-text {
+            line-height: 28px;
+        }
+
+        #verification-link {
+            border-radius: 8px;
+            /* height: 24px; */
+            background-color: #FF6500;
+            text-decoration: none;
+            width: 100%;
+            padding: 15px 6px;
+            color: currentColor;
+            text-align: center;
+        }
+
+        .accent-text {
+            color: #FF6500;
+        }
+
+        body {
+            line-height: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 style="font-size: 152%;">Verify your email</h1>
+    </div>
+    <div class="container">
+
+        <p class="leading-text">Hi there! <br />We&apos;re glad to onboard you on our platform. click the link below to
+            very your email
+            address or pest the address below it into your browser.</p>
+    </div>
+
+    <div class="container"
+        style="display: flex; justify-items: center; align-items: center; justify-content: center; margin-top: 12px;">
+        <a href="{{verification_link}}" id="verification-link">Verify email</a>
+    </div>
+
+    <div class="container">
+        Questions? Email us at <span class="accent-text">support@mailer.com</span>
+    </div>
+    <footer class="container" style="font-size: 80%;">
+
+    </footer>
+</body>
+
+</html>

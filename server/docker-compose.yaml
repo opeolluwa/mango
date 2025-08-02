@@ -82,6 +82,17 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  mailtutan: 
+    image: mailtutan/mailtutan:latest 
+    ports:
+      - 1080:1080
+      - 1025:1025 
+    environment:
+      - SMTP_AUTH_USERNAME=${SMTP_AUTH_USERNAME}
+      - SMTP_AUTH_PASSWORD=${SMTP_AUTH_PASSWORD}
+    platform: linux/amd64
+    networks:
+      - internal
 
 volumes:
   cargo-target:

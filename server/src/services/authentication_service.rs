@@ -1,8 +1,14 @@
 use std::time::Duration;
 
+use aers_email_client::ConfirmEmailTemplate;
+use aers_email_client::Email;
+use aers_email_client::EmailClient;
+use aers_utils::extract_env;
 use sqlx::{Pool, Postgres};
+use uuid::Uuid;
 
 use crate::adapters::jwt::Claims;
+use crate::adapters::repository::DatabaseInsertResult;
 use crate::entities::user::UserEntity;
 use crate::errors;
 use crate::errors::repository_error::RepositoryError;
@@ -68,6 +74,12 @@ pub trait AuthenticationServiceTrait {
         &self,
         request: &RefreshTokenRequest,
     ) -> impl std::future::Future<Output = Result<RefreshTokenResponse, ServiceError>> + Send;
+
+    fn set_avatar_url(
+        &self,
+        user_identifier: &Uuid,
+        avatar_url: &str,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 }
 
 impl AuthenticationServiceTrait for AuthenticationService {
@@ -84,15 +96,48 @@ impl AuthenticationServiceTrait for AuthenticationService {
         let password_hash = self.user_helper_service.hash_password(&request.password)?;
         let user = CreateUserRequest {
             password: password_hash,
-            first_name: request.first_name.to_owned(),
             email: request.email.to_owned(),
-            last_name: request.last_name.to_owned(),
         };
 
-        self.user_repository
-            .create_user(user)
+        let DatabaseInsertResult { identifier } = self
+            .user_repository
+            .create_user(&user)
             .await
-            .map_err(ServiceError::from)
+            .map_err(ServiceError::from)?;
+
+        let claim = Claims::builder()
+            .subject("confirm_account")
+            .email(&user.email)
+            .user_identifier(&identifier)
+            .validity(Duration::from_secs(120 /*2 hour */))
+            .build_and_sign()?;
+
+        let frontend_base_url: String = extract_env("FRONTEND_BASE_URL").map_err(|err| {
+            log::error!("Failed to extract FRONTEND_BASE_URL: {}", err);
+            ServiceError::OperationFailed
+        })?;
+
+        let verification_link = format!("{frontend_base_url}/verify?token={}", claim);
+
+        let template = ConfirmEmailTemplate::new(&user.email, &verification_link);
+        let email = Email::builder()
+            .subject("Confirm your account")
+            .to(&request.email)
+            .template(template)
+            .from("admin@eckko.oapp")
+            .build();
+
+        println!("Verification link: {}", verification_link);
+log::info!("Sending confirmation email to {:#?}", email);
+
+        let email_client = EmailClient::new();
+
+        email_client.send_email(&email).map_err(|err| {
+            log::error!("Failed to send confirmation email due to: {}", err);
+            ServiceError::OperationFailed
+        })?;
+
+        Ok(())
     }
 
     async fn login(&self, request: &LoginRequest) -> Result<LoginResponse, ServiceError> {
@@ -110,14 +155,14 @@ impl AuthenticationServiceTrait for AuthenticationService {
         let access_token = Claims::builder()
             .subject("access_token")
             .email(&user.email)
-            .user_identifier(user.identifier)
+            .user_identifier(&user.identifier)
             .validity(Duration::from_secs(15 * 60 /*15 minutes */))
             .build()?;
 
         let refresh_token = Claims::builder()
             .subject("refresh_token")
             .email(&user.email)
-            .user_identifier(user.identifier)
+            .user_identifier(&user.identifier)
             .validity(Duration::from_secs(7 * 60 * 60 /*7 hours */))
             .build()?;
 
@@ -153,7 +198,7 @@ impl AuthenticationServiceTrait for AuthenticationService {
         let token = Claims::builder()
             .subject("forgotten_password")
             .email(&email)
-            .user_identifier(identifier)
+            .user_identifier(&identifier)
             .validity(Duration::from_secs(15 * 60 /*15 minutes */))
             .build_and_sign()?;
 
@@ -213,14 +258,14 @@ impl AuthenticationServiceTrait for AuthenticationService {
         let access_token = Claims::builder()
             .subject("access_token")
             .email(&request.email)
-            .user_identifier(request.user_identifier)
+            .user_identifier(&request.user_identifier)
             .validity(Duration::from_secs(15 * 60 /*15 minutes */))
             .build()?;
 
         let refresh_token = Claims::builder()
             .subject("refresh_token")
             .email(&request.email)
-            .user_identifier(request.user_identifier)
+            .user_identifier(&request.user_identifier)
             .validity(Duration::from_secs(7 * 60 * 60 /*7 hours */))
             .build()?;
 
@@ -236,5 +281,16 @@ impl AuthenticationServiceTrait for AuthenticationService {
             iat: access_token.iat,
             exp: access_token.exp,
         })
+    }
+
+    async fn set_avatar_url(
+        &self,
+        user_identifier: &Uuid,
+        avatar_url: &str,
+    ) -> Result<(), ServiceError> {
+        self.user_repository
+            .set_avatar_url(user_identifier, avatar_url)
+            .await
+            .map_err(ServiceError::from)
     }
 }
