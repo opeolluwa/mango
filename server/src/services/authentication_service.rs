@@ -1,9 +1,5 @@
 use std::time::Duration;
 
-use aers_email_client::ConfirmEmailTemplate;
-use aers_email_client::Email;
-use aers_email_client::EmailClient;
-use aers_utils::extract_env;
 use sqlx::{Pool, Postgres};
 use uuid::Uuid;
 
@@ -20,7 +16,7 @@ use crate::{
     adapters::authentication::{
         CreateUserRequest, ForgottenPasswordRequest, ForgottenPasswordResponse, LoginRequest,
         LoginResponse, RefreshTokenRequest, RefreshTokenResponse, SetNewPasswordRequest,
-        SetNewPasswordResponse, VerifyAccountRequest, VerifyAccountResponse,
+        SetNewPasswordResponse, VerifyAccountResponse,
     },
     errors::auth_error::AuthenticationError,
     repositories::user_repository::{UserRepository, UserRepositoryTrait},
@@ -67,7 +63,6 @@ pub trait AuthenticationServiceTrait {
     fn verify_account(
         &self,
         claims: &Claims,
-        request: &VerifyAccountRequest,
     ) -> impl std::future::Future<Output = Result<VerifyAccountResponse, ServiceError>> + Send;
 
     fn request_refresh_token(
@@ -96,7 +91,7 @@ impl AuthenticationServiceTrait for AuthenticationService {
         let password_hash = self.user_helper_service.hash_password(&request.password)?;
         let user = CreateUserRequest {
             password: password_hash,
-            email: request.email.to_owned(),
+            email: request.email.clone(),
         };
 
         let DatabaseInsertResult { identifier } = self
@@ -105,37 +100,15 @@ impl AuthenticationServiceTrait for AuthenticationService {
             .await
             .map_err(ServiceError::from)?;
 
-        let claim = Claims::builder()
-            .subject("confirm_account")
-            .email(&user.email)
-            .user_identifier(&identifier)
-            .validity(Duration::from_secs(120 /*2 hour */))
-            .build_and_sign()?;
-
-        let frontend_base_url: String = extract_env("FRONTEND_BASE_URL").map_err(|err| {
-            log::error!("Failed to extract FRONTEND_BASE_URL: {}", err);
-            ServiceError::OperationFailed
-        })?;
-
-        let verification_link = format!("{frontend_base_url}/verify?token={}", claim);
-
-        let template = ConfirmEmailTemplate::new(&user.email, &verification_link);
-        let email = Email::builder()
-            .subject("Confirm your account")
-            .to(&request.email)
-            .template(template)
-            .from("admin@eckko.oapp")
-            .build();
-
-        println!("Verification link: {}", verification_link);
-log::info!("Sending confirmation email to {:#?}", email);
-
-        let email_client = EmailClient::new();
-
-        email_client.send_email(&email).map_err(|err| {
-            log::error!("Failed to send confirmation email due to: {}", err);
-            ServiceError::OperationFailed
-        })?;
+        tokio::task::spawn(async move {
+            let service_helpers = ServiceHelpers::init();
+            service_helpers
+                .send_confirmation_email(&user.email, identifier)
+                .await
+                .unwrap_or_else(|err| {
+                    log::error!("Failed to send confirmation email: {}", err);
+                });
+        });
 
         Ok(())
     }
@@ -189,7 +162,18 @@ log::info!("Sending confirmation email to {:#?}", email);
             return Err(AuthenticationError::WrongCredentials.into());
         };
 
-        tokio::task::spawn(async move { todo!("send account retrival email") });
+        tokio::task::spawn(async move {
+            // let service_helper = ServiceHelpers::init();
+            // // let otp = service_helper.generate_otp(&user_email);
+            // let otp = service_helper.generate_otp(&request.email).unwrap();
+            // match service_helper
+            //     .send_forgotten_password_email(&user.unwrap().email, &otp)
+            //     .await
+            // {
+            //     Ok(_) => log::info!("Forgotten password email sent successfully"),
+            //     Err(err) => log::error!("Failed to send forgotten password email: {}", err),
+            // }
+        });
 
         let UserEntity {
             email, identifier, ..
@@ -228,11 +212,7 @@ log::info!("Sending confirmation email to {:#?}", email);
         Ok(SetNewPasswordResponse {})
     }
 
-    async fn verify_account(
-        &self,
-        claims: &Claims,
-        _request: &VerifyAccountRequest,
-    ) -> Result<VerifyAccountResponse, ServiceError> {
+    async fn verify_account(&self, claims: &Claims) -> Result<VerifyAccountResponse, ServiceError> {
         if self
             .user_repository
             .find_by_identifier(&claims.user_identifier)
@@ -244,7 +224,6 @@ log::info!("Sending confirmation email to {:#?}", email);
             ));
         };
 
-        //todo: validate account credentials
         self.user_repository
             .update_account_status(&claims.user_identifier)
             .await?;

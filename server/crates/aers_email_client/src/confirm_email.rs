@@ -2,7 +2,7 @@ use askama::Template;
 use serde::{Deserialize, Serialize};
 
 #[derive(Template)]
-#[template(path = "inlined.confirm-email.html")]
+#[template(path = "confirm_email.html")]
 
 #[derive(Debug, Serialize, Deserialize, Default)]
 pub struct ConfirmEmailTemplate {

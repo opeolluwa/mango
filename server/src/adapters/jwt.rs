@@ -1,6 +1,6 @@
 use crate::errors::auth_error::AuthenticationError;
 use crate::shared::extract_env::extract_env;
-use jsonwebtoken::{DecodingKey, EncodingKey, Header, encode};
+use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use std::time::Duration;
@@ -231,17 +231,20 @@ impl Claims {
         let remaining = (self.exp - now).max(0) as u64;
         Duration::from_secs(remaining)
     }
+
+    pub fn from_token(token: &str) -> Result<Self, AuthenticationError> {
+        let secret = extract_env::<String>("JWT_SIGNING_KEY").map_err(AuthenticationError::from)?;
+        let decoding_key = Keys::new(secret.as_bytes()).decoding;
+
+        let mut jwt_validation = Validation::default();
+        jwt_validation.set_audience(&["eckko.mobile"]);
+
+        let token_data =
+            decode::<Claims>(token, &decoding_key, &jwt_validation).map_err(|err| {
+                log::error!("failed to decode JWT token due to {}", err);
+                AuthenticationError::InvalidToken
+            })?;
+
+        Ok(token_data.claims)
+    }
 }
-
-// trait IntoToken {
-//     type Claim;
-//     fn into_token(&self) -> Result<String, AuthenticationError> {
-//         let secret = extract_env::<String>("JWT_SIGNING_KEY").map_err(AuthenticationError::from)?;
-//         let encoding_key = Keys::new(secret.as_bytes()).encoding;
-
-//         let token = encode(&Header::default(), self.claim, &encoding_key)
-//             .map_err(AuthenticationError::from)?;
-
-//         Ok(token)
-//     }
-// }

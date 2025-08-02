@@ -56,7 +56,7 @@ async fn main() -> Result<(), AppError> {
                 .allow_origin(Any)
                 .allow_methods(Any)
                 .allow_headers(Any),
-        ); //TOdo: restrict to tauri url
+        ); //TODO: restrict to tauri url
 
     let port = extract_env::<u16>("PORT")?;
     let ip_address = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, port));

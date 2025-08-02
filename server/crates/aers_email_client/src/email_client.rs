@@ -50,7 +50,6 @@ impl EmailClient {
         let email_content = template
             .render()
             .map_err(|e| EmailError::TemplateError(e.to_string()))?;
-        println!("Sending email to: {}", email_content );
 
         let email: Mailbox = email
             .from

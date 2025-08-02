@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+
+{% block title %}Confirm email{% endblock %}
+
+{% block content %}
+
+<div class="container" style="padding-bottom: 16px;">
+Hi there! 
+</div>
+
+<div class="container">
+    <p class="leading-text">We&apos;re glad to onboard you on our platform. click the link below to
+        very your email
+        address or pest the address below it into your browser.</p>
+</div>
+
+<div class="container"
+    style="display: flex; justify-items: center; align-items: center; justify-content: center; margin-top: 12px;">
+    <a href="{{verification_link}}" id="verification-link">Verify email</a>
+</div>
+
+<div class="container">
+    Questions? Email us at <span class="accent-text">support@mailer.com</span>
+</div>
+
+{% endblock %}
