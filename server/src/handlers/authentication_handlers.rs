@@ -43,9 +43,8 @@ pub async fn login(
 pub async fn verify_account(
     State(auth_service): State<AuthenticationService>,
     claims: Claims,
-    ValidatedRequest(request): ValidatedRequest<VerifyAccountRequest>,
 ) -> Result<ApiResponse<VerifyAccountResponse>, ServiceError> {
-    let verify_account_response = auth_service.verify_account(&claims, &request).await?;
+    let verify_account_response = auth_service.verify_account(&claims).await?;
     Ok(ApiResponseBuilder::new()
         .status_code(StatusCode::OK)
         .data(verify_account_response)
