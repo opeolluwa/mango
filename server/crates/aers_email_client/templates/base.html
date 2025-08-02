@@ -4,7 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirm Email</title>
+    <title>
+        <title>{% block title %}{{ title }} - My Site{% endblock %}</title>
+        {% block head %}{% endblock %}
+    </title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -47,32 +50,26 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            font-size: 16px;
+        }
+
+        .container {
+            margin: 12px 0;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1 style="font-size: 152%;">Verify your email</h1>
-    </div>
-    <div class="container">
 
-        <p class="leading-text">Hi there! <br />We&apos;re glad to onboard you on our platform. click the link below to
-            very your email
-            address or pest the address below it into your browser.</p>
-    </div>
+    <div class="container" style="background-color: #FF6500; height: 2px; border-radius: 6px  6px 0  0;"></div>
 
-    <div class="container"
-        style="display: flex; justify-items: center; align-items: center; justify-content: center; margin-top: 12px;">
-        <a href="{{verification_link}}" id="verification-link">Verify email</a>
-    </div>
 
-    <div class="container">
-        Questions? Email us at <span class="accent-text">support@mailer.com</span>
-    </div>
+    {% block content %}<p>Placeholder content</p>{% endblock %}
+
     <footer class="container" style="font-size: 80%;">
 
     </footer>
+    <div class="container" style="background-color: #FF6500; height: 2px; border-radius: 0  0 6px 6px;"></div>
 </body>
 
 </html>
