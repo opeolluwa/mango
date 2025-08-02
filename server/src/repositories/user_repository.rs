@@ -6,6 +6,7 @@ use uuid::Uuid;
 use crate::{
     adapters::{
         authentication::CreateUserRequest,
+        repository::DatabaseInsertResult,
         users::{PartialUserProfile, UserDto},
     },
     entities::user::UserEntity,
@@ -52,8 +53,8 @@ pub trait UserRepositoryTrait {
 
     fn create_user(
         &self,
-        user: CreateUserRequest,
-    ) -> impl std::future::Future<Output = Result<(), UserServiceError>> + Send;
+        user: &CreateUserRequest,
+    ) -> impl std::future::Future<Output = Result<DatabaseInsertResult, UserServiceError>> + Send;
 
     fn retrieve_information(
         &self,
@@ -74,20 +75,17 @@ pub trait UserRepositoryTrait {
 }
 
 impl UserRepositoryTrait for UserRepository {
-    async fn create_user(&self, user: CreateUserRequest) -> Result<(), UserServiceError> {
-        sqlx::query(
-    "INSERT INTO users (identifier, first_name, last_name, email, password) VALUES ($1, $2, $3, $4, $5)"
-)
-.bind(uuid::Uuid::new_v4())
-.bind(user.first_name)
-.bind(user.last_name)
-.bind(user.email)
-.bind(user.password)
-.execute(self.pool.as_ref())
-.await
-.map_err(|err| UserServiceError::OperationFailed(err.to_string()))?;
-
-        Ok(())
+    async fn create_user(
+        &self,
+        user: &CreateUserRequest,
+    ) -> Result<DatabaseInsertResult, UserServiceError> {
+        sqlx::query_as::<_, DatabaseInsertResult>("INSERT INTO users (identifier, email, password) VALUES ($1, $2, $3) RETURNING identifier")
+            .bind(uuid::Uuid::new_v4())
+            .bind(&user.email)
+            .bind(&user.password)
+            .fetch_one(self.pool.as_ref())
+            .await
+            .map_err(|err| UserServiceError::OperationFailed(err.to_string()))
     }
     async fn find_by_identifier(&self, identifier: &Uuid) -> Option<UserEntity> {
         sqlx::query_as::<_, UserEntity>("SELECT * FROM users WHERE identifier = $1")
@@ -98,11 +96,17 @@ impl UserRepositoryTrait for UserRepository {
     }
 
     async fn find_by_email(&self, email: &str) -> Option<UserEntity> {
-        sqlx::query_as::<_, UserEntity>("SELECT * FROM users WHERE email = $1")
+        let user = sqlx::query_as::<_, UserEntity>("SELECT * FROM users WHERE email = $1")
             .bind(email)
             .fetch_one(self.pool.as_ref())
             .await
-            .ok()
+            .map_err(|err| {
+                log::error!("Failed to find user by email: {}", err);
+                // UserServiceError::OperationFailed(err.to_string())
+            })
+            .ok();
+
+        user
     }
 
     async fn update_account_status(&self, identifier: &Uuid) -> Result<(), ServiceError> {
@@ -172,7 +176,8 @@ impl UserRepositoryTrait for UserRepository {
             .ok_or(RepositoryError::RecordNotFound)
             .map_err(ServiceError::from)?;
 
-        sqlx::query(r#"UPDATE users SET email =$1, first_name = $2, last_name =$3 WHERE user_identifier =$4"#).bind(email.clone().unwrap_or(user.email)).bind(first_name.clone(). unwrap_or(user.first_name)).bind(last_name.clone().unwrap_or(user.last_name)).bind(user_identifier).execute(self.pool.as_ref()).await.map_err(UserServiceError::from)?;
+        //FIXME: Update the query to handle optional fields
+        // sqlx::query(r#"UPDATE users SET email =$1, first_name = $2, last_name =$3 WHERE user_identifier =$4"#).bind(email.clone().unwrap_or(user.email)).bind(first_name.clone(). unwrap_or(user.first_name)).bind(last_name.clone().unwrap_or(user.last_name)).bind(user_identifier).execute(self.pool.as_ref()).await.map_err(UserServiceError::from)?;
 
         Ok(())
     }

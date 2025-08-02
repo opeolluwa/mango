@@ -28,7 +28,19 @@ where
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+impl<T> Email<T>
+where
+    T: Template + Send + Serialize + Default,
+{
+    pub fn builder() -> EmailBuilder<T>
+    where
+        T: Template + Send + Serialize + Default,
+    {
+        EmailBuilder::new()
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct EmailBuilder<T>
 where
     T: Template + Send + Serialize + Default,
@@ -44,8 +56,8 @@ impl<T> EmailBuilder<T>
 where
     T: Template + Send + Serialize + Default,
 {
-    pub fn new() -> Email<T> {
-        Email::default()
+    pub fn new() -> EmailBuilder<T> {
+        EmailBuilder::default()
     }
 
     pub fn to(mut self, to: &str) -> Self {
@@ -72,14 +84,14 @@ where
         self.reply_to = Some(reply_to.to_string());
         self
     }
-}
 
-impl<T> Email<T>
-where
-    T: Template + Send + Serialize + Default,
-{
-    pub fn build(self) -> EmailBuilder<T> {
-        EmailBuilder {
+    pub fn template(mut self, template: T) -> Self {
+        self.template = template;
+        self
+    }
+
+    pub fn build(self) -> Email<T> {
+        Email {
             to: self.to,
             from: self.from,
             subject: self.subject,

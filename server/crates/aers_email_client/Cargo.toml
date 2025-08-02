@@ -6,7 +6,7 @@ edition = "2024"
 [dependencies]
 aers_utils = { version = "0.1.0", path = "../aers_utils" }
 askama.workspace = true
-lettre = { version = "0.11.18", features = ["tracing"] }
+lettre = { version = "0.11.18", features = ["aws-lc-rs", "rustls", "rustls-platform-verifier", "tracing"] }
 log.workspace = true
 serde = { workspace = true, features = ["derive"] }
 thiserror.workspace = true

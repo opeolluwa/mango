@@ -6,3 +6,4 @@ pub mod jwt;
 pub mod pagination;
 pub mod playlist;
 pub mod users;
+pub mod repository;

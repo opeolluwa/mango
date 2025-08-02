@@ -7,9 +7,9 @@ use crate::adapters::api_response::ApiResponseBuilder;
 
 #[derive(thiserror::Error, Debug)]
 pub enum RepositoryError {
-    #[error("Record not found")]
+    #[error("Record not found: The requested record does not exist or has been deleted.")]
     RecordNotFound,
-    #[error("Duplicate Record")]
+    #[error("Duplicate Record: The information you provided already exists.")]
     DuplicateRecord,
     #[error(transparent)]
     SqlxError(#[from] sqlx::Error),

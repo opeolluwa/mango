@@ -10,10 +10,6 @@ pub struct CreateUserRequest {
     pub email: String,
     #[validate(length(min = 1, message = "password is required"))]
     pub password: String,
-    #[validate(length(min = 1, message = "first name cannot be empty"))]
-    pub first_name: String,
-    #[validate(length(min = 1, message = "last name cannot be empty "))]
-    pub last_name: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Validate)]

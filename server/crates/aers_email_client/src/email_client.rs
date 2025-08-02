@@ -64,12 +64,17 @@ impl EmailClient {
             .to(to)
             .subject(subject)
             .multipart(
-                MultiPart::alternative() // This is composed of two parts.
+                MultiPart::alternative()
                     .singlepart(
                         SinglePart::builder()
-                            .header(header::ContentType::TEXT_HTML)
-                            .body(email_content),
-                    ),
+                            .header(header::ContentType::TEXT_PLAIN)
+                            .body(String::from("Hello from Lettre! A mailer library for Rust")), // Every message should have a plain text fallback.
+                    ) // This is composed of two parts.
+                    // .singlepart(
+                    //     SinglePart::builder()
+                    //         .header(header::ContentType::TEXT_HTML)
+                    //         .body(email_content),
+                    // ),
             )
             .map_err(|e| {
                 log::info!("failed to send email due to {e}");
@@ -89,20 +94,16 @@ pub trait EmailClientExt {
         &self,
         email: &Email<impl Template + Send + Serialize + Default>,
     ) -> Result<(), EmailError>;
-
 }
-
 
 impl EmailClientExt for EmailClient {
     fn send_confirmation_email(
         &self,
         email: &Email<impl Template + Send + Serialize + Default>,
     ) -> Result<(), EmailError> {
-        self.send_email(email)
-            .map_err(|e| {
-                log::error!("Failed to send confirmation email: {}", e);
-                e
-            })
+        self.send_email(email).map_err(|e| {
+            log::error!("Failed to send confirmation email: {}", e);
+            e
+        })
     }
-    
 }

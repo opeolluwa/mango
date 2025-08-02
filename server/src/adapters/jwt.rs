@@ -64,8 +64,8 @@ impl ClaimsBuilder {
         self
     }
 
-    pub fn user_identifier(mut self, user_id: Uuid) -> Self {
-        self.claims.user_identifier = user_id;
+    pub fn user_identifier(mut self, user_id: &Uuid) -> Self {
+        self.claims.user_identifier = *user_id;
         self
     }
 
