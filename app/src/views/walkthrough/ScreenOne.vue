@@ -8,11 +8,11 @@
       style="line-height: 50px"
     >
       <span class="font-bold">Empower</span>
-      yourself with <span class="font-bold">quick</span> knowledge
+      yourself with <span class="font-bold">Audible</span> knowledge
     </h1>
 
     <div
-      class="size-14 flex justify-center items-center mt-4 rounded-full border-r-2 border-r-app-orange border-app-orange-50/20 hover:animate-ping"
+      class="size-14 flex justify-center items-center mt-4 rounded-full border-2 border-t-app-orange border-app-orange-50/20 hover:animate-ping"
     >
       <RouterLink
         :to="{ name: 'ScreenTwo' }"
@@ -30,14 +30,16 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ArrowLongRightIcon } from "@heroicons/vue/24/solid";
-import { RouterLink, useRouter } from "vue-router";
 import SensationalTint from "@/components/uiBlocks/SensationalTint.vue";
+import { ArrowLongRightIcon } from "@heroicons/vue/24/solid";
 import { invoke } from "@tauri-apps/api/core";
-import { AppSettings } from "../../../src-tauri/bindings/AppSettings";
 import { onMounted, ref } from "vue";
+import { RouterLink, useRouter } from "vue-router";
+import { AppSettings } from "../../../src-tauri/bindings/AppSettings";
+import { useCachedUserStore } from "../../stores/cachedUser";
 
 const settings = ref<AppSettings>();
+const cachedUser = useCachedUserStore();
 const router = useRouter();
 
 const fetchAppSettings = async () => {
@@ -48,11 +50,16 @@ const fetchAppSettings = async () => {
     console.error("Failed to fetch app settings:", error);
   }
 };
+
 onMounted(async () => {
   await fetchAppSettings();
-  if (settings.value?.appInitialized) {
-    console.log("App is already initialized, redirecting to home...");
-    router.push({ name: "Login" });
+  const appInitialized = settings.value?.appInitialized;
+  const storeIsNull = cachedUser.storeIsNull;
+
+  if (appInitialized && !storeIsNull) {
+    router.push({ name: "LoginExisting" });
+  } else if (appInitialized && storeIsNull) {
+    router.push({ name: "LoginExisting" });
   } else {
     console.log("App is not initialized, staying on ScreenThree...");
   }

@@ -14,17 +14,17 @@
     </h1>
     <div class="flex justify-between items-center mt-4">
       <div
-        class="size-14 flex justify-end items-center mt-4 rounded-full border-l-2 border-app-dark-50/20 hover:animate-ping"
+        class="size-14 flex justify-end items-center mt-4 rounded-full border-2 border-l-app-orange hover:animate-ping border-transparent"
       >
         <RouterLink
           :to="{ name: 'ScreenThree' }"
-          class="size-12 bg-app-orange-300/60 rounded-full border-r border-r-app-dark-300 text-white flx justify-center items-center hidden"
+          class="size-12  rounded-full border-r border-r-app-dark-300 text-white bg-app-dark justify-center items-center hidden"
         >
           <ArrowLongLeftIcon class="size-6" />
         </RouterLink>
       </div>
       <div
-        class="size-14 flex justify-end items-center mt-4 rounded-full border-l-2 border-app-dark-50/20 hover:animate-ping"
+        class="size-14 flex justify-end items-center mt-4 rounded-full border-2 border-b-app-orange hover:animate-ping border-transparent"
       >
         <RouterLink
           :to="{ name: 'ScreenThree' }"

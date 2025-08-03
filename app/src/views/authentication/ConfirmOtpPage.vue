@@ -30,10 +30,10 @@
           @complete="handleComplete"
         >
           <PinInputInput
-            v-for="(id, index) in 5"
+            v-for="(id, index) in 6"
             :key="id"
             :index="index"
-            class="w-12 h-12 border-stone-600 dark:border-stone-500 hover:border-app-orange rounded-lg text-center shadow-sm border text-green10 placeholder:text-mauve8 focus:shadow-[0_0_0_2px] focus:shadow-stone-800 outline-none"
+            class="size-12 border-stone-600 dark:border-stone-500 hover:border-app-orange rounded-lg text-center shadow-sm border text-green10 placeholder:text-mauve8 focus:shadow-[0_0_0_2px] focus:shadow-stone-800 outline-none"
           />
         </PinInputRoot>
       </div>
