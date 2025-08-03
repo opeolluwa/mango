@@ -1,11 +1,7 @@
-use crate::error::DbError;
+use crate::{database::ModelTrait, error::DbError};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, Pool, Sqlite};
 use ts_rs::TS;
-
-pub trait ModelTrait: Sized + Sync + Send {
-    async fn save(&self, db_conn: &Pool<Sqlite>) -> Result<(), DbError>;
-}
 
 #[derive(Debug, Serialize, Deserialize, Clone, TS, FromRow, Default)]
 #[ts(export)]
@@ -18,6 +14,7 @@ pub struct AppPersonalization {
     pub email: Option<String>,
     pub preferred_voice: Option<String>,
 }
+
 
 impl AppPersonalization {
     pub fn new(
@@ -56,11 +53,7 @@ impl ModelTrait for AppPersonalization {
             })?;
         Ok(())
     }
+
+
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, TS, FromRow, Default)]
-#[ts(export)]
-#[serde(rename_all = "camelCase")]
-pub struct AppSettings {
-    pub app_initialized: bool,
-}
