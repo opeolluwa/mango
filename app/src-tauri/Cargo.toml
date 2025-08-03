@@ -27,7 +27,7 @@ log = "0.4.27"
 
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-sqlx = { version = "0.8.6", features = ["sqlite", "tls-rustls"] }
+sqlx = { version = "0.8.6", features = ["sqlite", "tls-rustls", "uuid"] }
 
 tauri = { version = "2", features = ["tracing"] }
 tauri-plugin-dialog = "2"

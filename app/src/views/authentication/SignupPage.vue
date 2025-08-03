@@ -109,24 +109,22 @@
 
 <script lang="ts" setup>
 import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
-import AppFormLabel from "../../components/form/AppFormLabel.vue";
-import SubmitButton from "../../components/form/SubmitButton.vue";
-import { useForm } from "vee-validate";
-import * as yup from "yup";
-import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
-import axios from "../../axios.config.ts";
 import {
-  ToastAction,
-  ToastClose,
   ToastDescription,
   ToastProvider,
   ToastRoot,
   ToastTitle,
-  ToastViewport,
+  ToastViewport
 } from "reka-ui";
+import { useForm } from "vee-validate";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import * as yup from "yup";
+import axios from "../../axios.config.ts";
+import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
+import AppFormLabel from "../../components/form/AppFormLabel.vue";
+import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
+import SubmitButton from "../../components/form/SubmitButton.vue";
 
 const validationSchema = yup.object({
   email: yup.string().required().email(),

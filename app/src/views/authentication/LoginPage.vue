@@ -51,14 +51,13 @@
 </template>
 
 <script lang="ts" setup>
-import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
-import SubmitButton from "../../components/form/SubmitButton.vue";
-import { onMounted, ref } from "vue";
-import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
-import { invoke } from "@tauri-apps/api/core";
 import { AppPersonalization } from "../../../src-tauri/bindings/AppPersonalization";
+import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
+import AppFormLabel from "../../components/form/AppFormLabel.vue";
+import SubmitButton from "../../components/form/SubmitButton.vue";
 
 const appPersonalization = ref<AppPersonalization>();
 const router = useRouter();
@@ -68,14 +67,14 @@ const submitForm = async () => {
   processingRequest.value = true;
 };
 
-onMounted(async () => {
-  appPersonalization.value = await invoke("fetch_app_personalization");
-  console.log("appPersonalization", appPersonalization.value);
-  if (appPersonalization.value?.firstName) {
-    router.push({
-      name: "LoginExisting",
-      params: { firstName: appPersonalization.value?.firstName },
-    });
-  }
-});
+// onMounted(async () => {
+//   appPersonalization.value = await invoke("fetch_app_personalization");
+//   console.log("appPersonalization", appPersonalization.value);
+//   if (appPersonalization.value?.firstName) {
+//     router.push({
+//       name: "LoginExisting",
+//       params: { firstName: appPersonalization.value?.firstName },
+//     });
+//   }
+// });
 </script>

@@ -2,7 +2,9 @@
   <div
     class="px-8 flex flex-col h-screen pb-[15vh] justify-end w-screen relative layout"
   >
-    <img src="/screen-two.png" alt="" />
+    <!-- <img src="/screen-two.png" alt="" /> -->
+     
+        
     <h1
       class="text-4xl mt-6 capitalize leading-loose dark:text-white/70 w-[90%]"
       style="line-height: 50px"
