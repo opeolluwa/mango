@@ -28,11 +28,11 @@ lazy_static! {
         let _ = std::fs::create_dir(&media_dir);
         media_dir.clone()
     };
-    pub static ref DATABASE_FILE: &'static str = "sqlite:echo.db";
+    pub static ref DATABASE_FILE: &'static str = "sqlite:eckko.db";
 }
 
 pub const LAME_SIDECAR: &str = "lame";
-pub const DATABASE_PATH: &str = "echo.db";
+pub const DATABASE_PATH: &str = "eckko.db";
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let migrations = vec![
