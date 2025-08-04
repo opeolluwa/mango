@@ -188,6 +188,14 @@ DROP TABLE app_personalization;
 ALTER TABLE app_personalization_new RENAME TO app_personalization;
 "#,
         },
+
+             Migration {
+            version: 8,
+            description: "create_app_settings_table",
+            kind: MigrationKind::Up,
+            sql: r#"
+            CREATE TABLE app_settings(app_initialized)"#
+             }
     ];
 
     tauri::Builder::default()

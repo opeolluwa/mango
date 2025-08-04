@@ -12,6 +12,8 @@ use crate::errors::service_error::ServiceError;
 use crate::events::redis::RedisClient;
 use crate::events::redis::RedisClientExt;
 
+use crate::services::otp_service::OtpService;
+use crate::services::otp_service::OtpServiceExt;
 use crate::{
     adapters::authentication::{
         CreateUserRequest, ForgottenPasswordRequest, ForgottenPasswordResponse, LoginRequest,
@@ -27,6 +29,7 @@ use crate::{
 pub struct AuthenticationService {
     user_repository: UserRepository,
     user_helper_service: ServiceHelpers,
+    otp_service: OtpService,
 }
 
 impl AuthenticationService {
@@ -34,6 +37,7 @@ impl AuthenticationService {
         Self {
             user_repository: UserRepository::init(pool),
             user_helper_service: ServiceHelpers::init(),
+            otp_service: OtpService::init(pool),
         }
     }
 }
@@ -94,16 +98,22 @@ impl AuthenticationServiceTrait for AuthenticationService {
             email: request.email.clone(),
         };
 
-        let DatabaseInsertResult { identifier } = self
+        let DatabaseInsertResult {
+            identifier: user_identifier,
+        } = self
             .user_repository
             .create_user(&user)
             .await
             .map_err(ServiceError::from)?;
 
+        let otp = self
+            .otp_service
+            .new_otp_for_user(&user_identifier.to_string())
+            .await?;
         tokio::task::spawn(async move {
             let service_helpers = ServiceHelpers::init();
             service_helpers
-                .send_confirmation_email(&user.email, identifier)
+                .send_account_confirmation_email(&user.email, &otp)
                 .await
                 .unwrap_or_else(|err| {
                     log::error!("Failed to send confirmation email: {}", err);

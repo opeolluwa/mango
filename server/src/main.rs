@@ -6,8 +6,6 @@ use aers_lib::{
 };
 use axum::extract::DefaultBodyLimit;
 use errors::app_error::AppError;
-use redis::AsyncCommands;
-use redis::aio::PubSub;
 use routes::router::load_routes;
 use shared::extract_env::extract_env;
 use sqlx::migrate::Migrator;

@@ -19,7 +19,7 @@
     "@tauri-apps/plugin-notification": "^2.3.0",
     "@tauri-apps/plugin-sql": "^2.3.0",
     "@tauri-apps/plugin-stronghold": "^2.3.0",
-    "@vueuse/core": "^13.3.0",
+    "@vueuse/core": "^13.6.0",
     "axios": "^1.11.0",
     "music-metadata": "^11.2.3",
     "pinia": "^3.0.2",

@@ -28,7 +28,7 @@ export const useCachedUserStore = defineStore("cached_user", {
   actions: {
     async cacheUserData(user: UserCache) {
       await invoke("set_cached_user", { user }).catch((error) => {
-        console.log("failed to set user data cache");
+        console.log("failed to set user data cache", error);
       });
     },
   },
