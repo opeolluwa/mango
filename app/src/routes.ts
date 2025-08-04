@@ -23,6 +23,7 @@ import ScreenTwo from "./views/walkthrough/ScreenTwo.vue";
 import ScreenThree from "./views/walkthrough/ScreenThree.vue";
 
 import AudioPlayerLayout from "./views/player/layout.vue";
+import OnboardingPage from "./views/authentication/OnboardingPage.vue";
 const routes = [
   {
     path: "/",
@@ -82,6 +83,11 @@ const routes = [
         path: "set-new-password",
         component: SetNewPassword,
         name: "SetNewPassword",
+      },
+      {
+        path: "onboarding",
+        name: "Onboarding",
+        component: OnboardingPage,
       },
     ],
   },

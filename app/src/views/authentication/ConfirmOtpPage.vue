@@ -14,9 +14,12 @@
       @click="router.back"
     />
 
-    <AuthScreenHeaderText>Confirm reset OTP</AuthScreenHeaderText>
-    <p class="small text-gray-400">Return the reset otp back to us</p>
+    <AuthScreenHeaderText>Confirm OTP</AuthScreenHeaderText>
+    <p class="small text-gray-400">Return the reset OTP back to us</p>
 
+    <ErrorOutlet v-if="formSubmitError">
+      {{ formSubmitError }}
+    </ErrorOutlet>
     <form
       action=""
       @submit.prevent="submitForm"
@@ -24,9 +27,11 @@
     >
       <div class="flex flex-col w-full">
         <PinInputRoot
+          :otp="true"
           id="otp"
+          type="number"
           v-model="value"
-          class="flex gap-2 items-center justify-evenly mt-1"
+          class="flex gap-x-[5px] items-center justify-center mt-1"
           @complete="handleComplete"
         >
           <PinInputInput
@@ -37,16 +42,10 @@
           />
         </PinInputRoot>
       </div>
-      <div class="text-stone-500 justify-end flex items-center text-sm">
+      <div class="text-stone-500 justify-end flex items-center">
         <span>Did&apos;t get an OTP? Request new after</span>
-        <span class="text-app-orange pl-1">86s</span>
+        <span class="text-app-orange pl-1">{{ remaining }}s</span>
       </div>
-
-      <RouterLink
-        :to="{ name: 'SetNewPassword' }"
-        class="text-stone-500 flex justify-end -mt-4"
-        >new pswd</RouterLink
-      >
     </form>
   </div>
 </template>
@@ -55,19 +54,48 @@
 import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
 import { useRouter } from "vue-router";
 import { PinInputInput, PinInputRoot } from "reka-ui";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import FormLoader from "../../components/form/FormLoader.vue";
 import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
+import { useCountdown } from "@vueuse/core";
+import axios from "../../axios.config";
 
-const value = ref<string[]>([]);
-function handleComplete(otp: string[]) {
+const countdownSecs = 30;
+
+const { remaining, start } = useCountdown(countdownSecs, {
+  onComplete() {},
+  onTick() {},
+});
+const value = ref<number[]>([]);
+function handleComplete(otp: number[]) {
   console.log(otp);
   submitForm();
 }
+
+const formSubmitError = ref("");
 
 const router = useRouter();
 const processingRequest = ref(false);
 const submitForm = async () => {
   processingRequest.value = true;
+
+  try {
+    const response = await axios.post("/auth/verify-account", {});
+    if (response.status === 201) {
+      router.push({ name: "Onboarding" });
+    } else {
+      console.error("Failed to create user:", response.data);
+      formSubmitError.value = response.data.message || "Failed to create user";
+    }
+  } catch (error: any) {
+    console.log(error.response.data);
+    formSubmitError.value = error.response.data.message;
+  } finally {
+    processingRequest.value = false;
+  }
 };
+
+onMounted(() => {
+  start();
+});
 </script>

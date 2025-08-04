@@ -46,14 +46,15 @@ const fetchAppSettings = async () => {
   try {
     const result: AppSettings = await invoke("fetch_app_settings");
     settings.value = result;
-  } catch (error) {
-    console.error("Failed to fetch app settings:", error);
+    console.log(JSON.stringify(result,  null, 2))
+  } catch (error: any) {
+    console.error("Failed to fetch app settings: due to", error.message);
   }
 };
 
 onMounted(async () => {
   await fetchAppSettings();
-  const appInitialized = settings.value?.appInitialized;
+  const appInitialized = false;
   const storeIsNull = cachedUser.storeIsNull;
 
   if (appInitialized && !storeIsNull) {

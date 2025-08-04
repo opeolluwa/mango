@@ -1,9 +1,9 @@
 use tauri::{Runtime, State};
 
 use crate::adapters::theme::Theme;
-use crate::database::AppPersonalization;
 use crate::error::CommandError;
 use crate::error::DbError;
+use crate::models::app_personaliation::AppPersonalization;
 use crate::state::AppState;
 
 use std::sync::Arc;
