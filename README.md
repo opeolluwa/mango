@@ -35,7 +35,7 @@ cd eckko
 - Frontend
 
 ```sh
-just watch frontend
+just watch frontend 
 ```
 
 - Backend
