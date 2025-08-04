@@ -23,10 +23,10 @@ pub trait ServiceHelpersTrait {
     fn hash_password(&self, raw_password: &str) -> Result<String, ServiceError>;
     fn validate_password(&self, raw_password: &str, hash: &str) -> Result<bool, ServiceError>;
     fn delete_file_if_exists(path: &str) -> io::Result<()>;
-    fn send_confirmation_email(
+    fn send_account_confirmation_email(
         &self,
         user_email: &str,
-        identifier: Uuid,
+        otp: &str,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 
     fn send_forgotten_password_email(
@@ -72,26 +72,12 @@ impl ServiceHelpersTrait for ServiceHelpers {
         Ok(())
     }
 
-    async fn send_confirmation_email(
+    async fn send_account_confirmation_email(
         &self,
         user_email: &str,
-        identifier: Uuid,
+        otp: &str,
     ) -> Result<(), ServiceError> {
-        let claim = Claims::builder()
-            .subject("confirm_account")
-            .email(&user_email)
-            .user_identifier(&identifier)
-            .validity(EMAIL_CONFIRMATION_EXPIRY)
-            .build_and_sign()?;
-
-        let frontend_base_url: String = extract_env("FRONTEND_BASE_URL").map_err(|err| {
-            log::error!("Failed to extract FRONTEND_BASE_URL: {}", err);
-            ServiceError::OperationFailed
-        })?;
-
-        let verification_link = format!("{frontend_base_url}/verify?token={}", claim);
-
-        let template = ConfirmEmailTemplate::new(user_email, &verification_link);
+        let template = ConfirmEmailTemplate::new(user_email, otp);
         let email = Email::builder()
             .subject("Confirm your account")
             .to(user_email)

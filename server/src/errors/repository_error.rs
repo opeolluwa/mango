@@ -13,6 +13,8 @@ pub enum RepositoryError {
     DuplicateRecord,
     #[error(transparent)]
     SqlxError(#[from] sqlx::Error),
+    #[error("Operation failed due to {0}")]
+    OperationFailed(String),
 }
 
 impl RepositoryError {
@@ -21,6 +23,7 @@ impl RepositoryError {
             RepositoryError::RecordNotFound => StatusCode::NOT_FOUND,
             RepositoryError::DuplicateRecord => StatusCode::CONFLICT,
             RepositoryError::SqlxError(_) => StatusCode::UNPROCESSABLE_ENTITY,
+            RepositoryError::OperationFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
         }
     }
 }
