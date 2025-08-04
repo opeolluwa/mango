@@ -1,11 +1,3 @@
-<script setup lang="ts">
-import AppButton from "../button/AppButton.vue";
-import FormLoader from "./FormLoader.vue";
-defineProps({
-  loading: Boolean,
-});
-</script>
-
 <template>
   <div
     class="w-full h-full bg-gray-900/60 absolute left-0 bottom-0 flex justify-center items-center z-500"
@@ -22,3 +14,11 @@ defineProps({
     Continue
   </AppButton>
 </template>
+
+<script setup lang="ts">
+  import AppButton from '../button/AppButton.vue';
+  import FormLoader from './FormLoader.vue';
+  defineProps({
+    loading: Boolean,
+  });
+</script>

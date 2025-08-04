@@ -108,60 +108,61 @@
 </template>
 
 <script lang="ts" setup>
-import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
-import {
-  ToastDescription,
-  ToastProvider,
-  ToastRoot,
-  ToastTitle,
-  ToastViewport
-} from "reka-ui";
-import { useForm } from "vee-validate";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import * as yup from "yup";
-import axios from "../../axios.config.ts";
-import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
-import AppFormLabel from "../../components/form/AppFormLabel.vue";
-import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
-import SubmitButton from "../../components/form/SubmitButton.vue";
+  import { ArrowLongLeftIcon } from '@heroicons/vue/24/solid';
+  import {
+    ToastDescription,
+    ToastProvider,
+    ToastRoot,
+    ToastTitle,
+    ToastViewport,
+  } from 'reka-ui';
+  import { useForm } from 'vee-validate';
+  import { ref } from 'vue';
+  import { useRouter } from 'vue-router';
+  import * as yup from 'yup';
+  import axios from '../../axios.config.ts';
+  import AuthScreenHeaderText from '../../components/auth/AuthScreenHeaderText.vue';
+  import AppFormLabel from '../../components/form/AppFormLabel.vue';
+  import ErrorOutlet from '../../components/form/ErrorOutlet.vue';
+  import SubmitButton from '../../components/form/SubmitButton.vue';
 
-const validationSchema = yup.object({
-  email: yup.string().required().email(),
-  password: yup.string().required().min(6),
-});
+  const validationSchema = yup.object({
+    email: yup.string().required().email(),
+    password: yup.string().required().min(6),
+  });
 
-const { defineField, errors, handleSubmit } = useForm({
-  validationSchema,
-});
+  const { defineField, errors, handleSubmit } = useForm({
+    validationSchema,
+  });
 
-const [email, emailProps] = defineField("email");
-const [password, passwordProps] = defineField("password");
-const formSubmitError = ref("");
-const router = useRouter();
-const checkboxOne = ref(true);
-const processingRequest = ref(false);
+  const [email, emailProps] = defineField('email');
+  const [password, passwordProps] = defineField('password');
+  const formSubmitError = ref('');
+  const router = useRouter();
+  const checkboxOne = ref(true);
+  const processingRequest = ref(false);
 
-const submitForm = handleSubmit(async (values) => {
-  processingRequest.value = true;
+  const submitForm = handleSubmit(async (values) => {
+    processingRequest.value = true;
 
-  console.log("Form submitted with values:", values);
-  try {
-    const response = await axios.post("/auth/signup", {
-      email: values.email,
-      password: values.password,
-    });
-    if (response.status === 201) {
-      router.push({ name: "ConfirmOtp" });
-    } else {
-      console.error("Failed to create user:", response.data);
-      formSubmitError.value = response.data.message || "Failed to create user";
+    console.log('Form submitted with values:', values);
+    try {
+      const response = await axios.post('/auth/signup', {
+        email: values.email,
+        password: values.password,
+      });
+      if (response.status === 201) {
+        router.push({ name: 'ConfirmOtp' });
+      } else {
+        console.error('Failed to create user:', response.data);
+        formSubmitError.value =
+          response.data.message || 'Failed to create user';
+      }
+    } catch (error: any) {
+      console.log(error.response.data);
+      formSubmitError.value = error.response.data.message;
+    } finally {
+      processingRequest.value = false;
     }
-  } catch (error: any) {
-    console.log(error.response.data);
-    formSubmitError.value = error.response.data.message;
-  } finally {
-    processingRequest.value = false;
-  }
-});
+  });
 </script>
