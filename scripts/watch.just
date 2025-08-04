@@ -22,3 +22,7 @@ watch target:
 [working-directory: 'app']
 @watch-desktop:
     npm run tauri dev 
+
+[working-directory: 'app']
+@watch-frontend: 
+    npm run dev 
