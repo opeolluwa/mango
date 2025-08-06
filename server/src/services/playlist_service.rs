@@ -80,8 +80,7 @@ impl PlaylistServiceExt for PlaylistService {
             .map_err(ServiceError::from)
     }
 
-
-       async fn update_playlist(
+    async fn update_playlist(
         &self,
         playlist_identifier: &Uuid,
         user_identifier: &Uuid,

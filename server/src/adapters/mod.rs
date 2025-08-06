@@ -5,5 +5,5 @@ pub mod authentication;
 pub mod jwt;
 pub mod pagination;
 pub mod playlist;
-pub mod users;
 pub mod repository;
+pub mod users;

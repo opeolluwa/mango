@@ -35,7 +35,7 @@ pub trait OtpServiceExt {
 }
 
 impl OtpServiceExt for OtpService {
-    async fn new_otp_for_user(&self, user_identifier: &str,) -> Result<String, ServiceError> {
+    async fn new_otp_for_user(&self, user_identifier: &str) -> Result<String, ServiceError> {
         let otp = generate_otp();
         self.otp_repository
             .new_with_user(user_identifier, &otp)

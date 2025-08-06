@@ -46,7 +46,6 @@ impl EmailClient {
             reply_to,
         } = email;
 
-
         let email_content = template
             .render()
             .map_err(|e| EmailError::TemplateError(e.to_string()))?;
@@ -66,7 +65,7 @@ impl EmailClient {
             .subject(subject)
             .multipart(
                 MultiPart::alternative()
-                 // This is composed of two parts.
+                    // This is composed of two parts.
                     .singlepart(
                         SinglePart::builder()
                             .header(header::ContentType::TEXT_HTML)
@@ -91,20 +90,16 @@ pub trait EmailClientExt {
         &self,
         email: &Email<impl Template + Send + Serialize + Default>,
     ) -> Result<(), EmailError>;
-
 }
-
 
 impl EmailClientExt for EmailClient {
     fn send_confirmation_email(
         &self,
         email: &Email<impl Template + Send + Serialize + Default>,
     ) -> Result<(), EmailError> {
-        self.send_email(email)
-            .map_err(|e| {
-                log::error!("Failed to send confirmation email: {}", e);
-                e
-            })
+        self.send_email(email).map_err(|e| {
+            log::error!("Failed to send confirmation email: {}", e);
+            e
+        })
     }
-    
 }
