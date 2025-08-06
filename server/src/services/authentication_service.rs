@@ -330,15 +330,16 @@ impl AuthenticationServiceTrait for AuthenticationService {
         claims: &Claims,
         request: &OnboardingRequest,
     ) -> Result<(), ServiceError> {
-        if self
+        let Some(user)= self
             .user_repository
             .find_by_identifier(&claims.user_identifier)
             .await
-            .is_none()
+            else
         {
             return Err(RepositoryError::RecordNotFound.into());
-        }
+        };
 
+        println!("user {:#?}", user );
         self.user_repository
             .onboard_user(&claims.user_identifier, request)
             .await?;

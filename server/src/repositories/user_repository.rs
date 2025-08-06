@@ -193,10 +193,10 @@ impl UserRepositoryTrait for UserRepository {
         user_identifier: &Uuid,
         request: &OnboardingRequest,
     ) -> Result<(), ServiceError> {
-        sqlx::query(r#"UPDATE users SET first_name = $1 AND last_name =$2  WHERE identifier = $3"#)
-            .bind(user_identifier)
+        sqlx::query(r#"UPDATE users SET first_namer = $1, last_name =$2  WHERE identifier = $3"#)
             .bind(&request.first_name)
             .bind(&request.last_name)
+            .bind(user_identifier)
             .execute(self.pool.as_ref())
             .await
             .map_err(ServiceError::from)?;
