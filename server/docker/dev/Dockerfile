@@ -1,4 +1,4 @@
-FROM rust:1.86.0-slim
+FROM rust:1.86.0
 
 ENV CARGO_TARGET_DIR=/cargo-target 
 

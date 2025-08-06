@@ -5,7 +5,7 @@ use uuid::Uuid;
 
 use crate::{
     adapters::{
-        authentication::CreateUserRequest,
+        authentication::{CreateUserRequest, OnboardingRequest},
         repository::DatabaseInsertResult,
         users::{PartialUserProfile, UserDto},
     },
@@ -40,7 +40,7 @@ pub trait UserRepositoryTrait {
         email: &str,
     ) -> impl std::future::Future<Output = Option<UserEntity>> + Send;
 
-    fn update_account_status(
+    fn activate_account(
         &self,
         identifier: &Uuid,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
@@ -72,6 +72,12 @@ pub trait UserRepositoryTrait {
         request: &PartialUserProfile,
         user_identifier: &Uuid,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>>;
+
+    fn onboard_user(
+        &self,
+        user_identifier: &Uuid,
+        request: &OnboardingRequest,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 }
 
 impl UserRepositoryTrait for UserRepository {
@@ -109,12 +115,12 @@ impl UserRepositoryTrait for UserRepository {
         user
     }
 
-    async fn update_account_status(&self, identifier: &Uuid) -> Result<(), ServiceError> {
+    async fn activate_account(&self, identifier: &Uuid) -> Result<(), ServiceError> {
         let _ = sqlx::query_as::<_, UserEntity>(
             "UPDATE users SET is_active = $1  WHERE identifier = $2",
         )
         .bind(true)
-        .bind(identifier.to_string())
+        .bind(identifier)
         .fetch_one(self.pool.as_ref())
         .await
         .map_err(|err| UserServiceError::OperationFailed(err.to_string()));
@@ -178,6 +184,22 @@ impl UserRepositoryTrait for UserRepository {
 
         //FIXME: Update the query to handle optional fields
         // sqlx::query(r#"UPDATE users SET email =$1, first_name = $2, last_name =$3 WHERE user_identifier =$4"#).bind(email.clone().unwrap_or(user.email)).bind(first_name.clone(). unwrap_or(user.first_name)).bind(last_name.clone().unwrap_or(user.last_name)).bind(user_identifier).execute(self.pool.as_ref()).await.map_err(UserServiceError::from)?;
+
+        Ok(())
+    }
+
+    async fn onboard_user(
+        &self,
+        user_identifier: &Uuid,
+        request: &OnboardingRequest,
+    ) -> Result<(), ServiceError> {
+        sqlx::query(r#"UPDATE users SET first_name = $1 AND last_name =$2  WHERE identifier = $3"#)
+            .bind(user_identifier)
+            .bind(&request.first_name)
+            .bind(&request.last_name)
+            .execute(self.pool.as_ref())
+            .await
+            .map_err(ServiceError::from)?;
 
         Ok(())
     }

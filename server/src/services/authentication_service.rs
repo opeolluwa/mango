@@ -3,10 +3,14 @@ use std::time::Duration;
 use sqlx::{Pool, Postgres};
 use uuid::Uuid;
 
+use crate::adapters::authentication::CreateUserResponse;
+use crate::adapters::authentication::OnboardingRequest;
+use crate::adapters::authentication::VerifyAccountRequest;
 use crate::adapters::jwt::Claims;
+use crate::adapters::jwt::TWENTY_FIVE_MINUTES;
 use crate::adapters::repository::DatabaseInsertResult;
 use crate::entities::user::UserEntity;
-use crate::errors;
+
 use crate::errors::repository_error::RepositoryError;
 use crate::errors::service_error::ServiceError;
 use crate::events::redis::RedisClient;
@@ -45,7 +49,7 @@ pub trait AuthenticationServiceTrait {
     fn create_account(
         &self,
         request: &CreateUserRequest,
-    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
+    ) -> impl std::future::Future<Output = Result<CreateUserResponse, ServiceError>> + Send;
 
     fn login(
         &self,
@@ -67,6 +71,7 @@ pub trait AuthenticationServiceTrait {
     fn verify_account(
         &self,
         claims: &Claims,
+        request: &VerifyAccountRequest,
     ) -> impl std::future::Future<Output = Result<VerifyAccountResponse, ServiceError>> + Send;
 
     fn request_refresh_token(
@@ -79,10 +84,19 @@ pub trait AuthenticationServiceTrait {
         user_identifier: &Uuid,
         avatar_url: &str,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
+
+    fn onboard_user(
+        &self,
+        claims: &Claims,
+        request: &OnboardingRequest,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 }
 
 impl AuthenticationServiceTrait for AuthenticationService {
-    async fn create_account(&self, request: &CreateUserRequest) -> Result<(), ServiceError> {
+    async fn create_account(
+        &self,
+        request: &CreateUserRequest,
+    ) -> Result<CreateUserResponse, ServiceError> {
         if self
             .user_repository
             .find_by_email(&request.email)
@@ -106,6 +120,13 @@ impl AuthenticationServiceTrait for AuthenticationService {
             .await
             .map_err(ServiceError::from)?;
 
+        let token = Claims::builder()
+            .email(&user.email)
+            .user_identifier(&user_identifier)
+            .validity(TWENTY_FIVE_MINUTES)
+            .build()?
+            .generate_token()?;
+
         let otp = self
             .otp_service
             .new_otp_for_user(&user_identifier.to_string())
@@ -120,7 +141,7 @@ impl AuthenticationServiceTrait for AuthenticationService {
                 });
         });
 
-        Ok(())
+        Ok(CreateUserResponse { token })
     }
 
     async fn login(&self, request: &LoginRequest) -> Result<LoginResponse, ServiceError> {
@@ -222,22 +243,43 @@ impl AuthenticationServiceTrait for AuthenticationService {
         Ok(SetNewPasswordResponse {})
     }
 
-    async fn verify_account(&self, claims: &Claims) -> Result<VerifyAccountResponse, ServiceError> {
-        if self
+    async fn verify_account(
+        &self,
+        claims: &Claims,
+        request: &VerifyAccountRequest,
+    ) -> Result<VerifyAccountResponse, ServiceError> {
+        let Some(user) = self
             .user_repository
             .find_by_identifier(&claims.user_identifier)
             .await
-            .is_none()
-        {
-            return Err(errors::service_error::ServiceError::AuthenticationError(
+        else {
+            return Err(ServiceError::AuthenticationError(
                 AuthenticationError::InvalidToken,
             ));
         };
 
-        self.user_repository
-            .update_account_status(&claims.user_identifier)
+        let valid_otp = self
+            .otp_service
+            .validate_otp_for_user(&claims.user_identifier, &request.otp)
             .await?;
-        Ok(VerifyAccountResponse {})
+
+        if !valid_otp {
+            return Err(ServiceError::AuthenticationError(
+                AuthenticationError::InvalidOtp,
+            ));
+        }
+
+        let token = Claims::builder()
+            .email(&user.email)
+            .user_identifier(&user.identifier)
+            .validity(TWENTY_FIVE_MINUTES)
+            .build()?
+            .generate_token()?;
+
+        self.user_repository
+            .activate_account(&claims.user_identifier)
+            .await?;
+        Ok(VerifyAccountResponse { token })
     }
 
     async fn request_refresh_token(
@@ -281,5 +323,25 @@ impl AuthenticationServiceTrait for AuthenticationService {
             .set_avatar_url(user_identifier, avatar_url)
             .await
             .map_err(ServiceError::from)
+    }
+
+    async fn onboard_user(
+        &self,
+        claims: &Claims,
+        request: &OnboardingRequest,
+    ) -> Result<(), ServiceError> {
+        if self
+            .user_repository
+            .find_by_identifier(&claims.user_identifier)
+            .await
+            .is_none()
+        {
+            return Err(RepositoryError::RecordNotFound.into());
+        }
+
+        self.user_repository
+            .onboard_user(&claims.user_identifier, request)
+            .await?;
+        Ok(())
     }
 }
