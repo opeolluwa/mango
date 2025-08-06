@@ -1,5 +1,6 @@
 use aers_utils::generate_otp;
 use chrono::{Local, TimeDelta};
+use uuid::Uuid;
 
 const OTP_VALIDITY: TimeDelta = TimeDelta::minutes(5);
 use crate::{
@@ -28,7 +29,7 @@ pub trait OtpServiceExt {
 
     fn validate_otp_for_user(
         &self,
-        user_identifier: &str,
+        user_identifier: &Uuid,
         otp: &str,
     ) -> impl std::future::Future<Output = Result<bool, ServiceError>> + Send;
 }
@@ -46,7 +47,7 @@ impl OtpServiceExt for OtpService {
 
     async fn validate_otp_for_user(
         &self,
-        user_identifier: &str,
+        user_identifier: &Uuid,
         otp: &str,
     ) -> Result<bool, ServiceError> {
         if let Some(stored_otp) = self

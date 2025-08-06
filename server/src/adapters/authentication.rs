@@ -48,10 +48,7 @@ pub type RefreshTokenRequest = Claims;
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateUserResponse {
-    pub email: String,
-    pub password: String,
-    pub first_name: String,
-    pub last_name: String,
+    pub token: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -76,6 +73,17 @@ pub struct SetNewPasswordResponse {}
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct VerifyAccountResponse {}
+pub struct VerifyAccountResponse {
+    pub token: String,
+}
 
 pub type RefreshTokenResponse = LoginResponse;
+
+#[derive(Debug, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct OnboardingRequest {
+    #[validate(length(min = 1, message = "first name cannot be empty"))]
+    pub first_name: String,
+    #[validate(length(min = 1, message = "last name cannot be empty "))]
+    pub last_name: String,
+}

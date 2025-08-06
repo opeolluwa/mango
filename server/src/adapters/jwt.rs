@@ -1,6 +1,6 @@
 use crate::errors::auth_error::AuthenticationError;
 use crate::shared::extract_env::extract_env;
-use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
+use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use std::time::Duration;

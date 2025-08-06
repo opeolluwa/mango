@@ -7,7 +7,6 @@
 //     let output_path = "test.mp3";
 
 //     std::fs::File::create(input_path).expect("Failed to create input file");
-  
 
 //     // Perform the conversion
 //     let result = converter.convert(input_path, output_path);

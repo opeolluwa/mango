@@ -30,7 +30,7 @@ pub trait OtpRepositoryExt {
 
     fn find_latest_by_user(
         &self,
-        user_identifier: &str,
+        user_identifier: &Uuid,
     ) -> impl std::future::Future<Output = Result<Option<Otp>, RepositoryError>> + Send;
 
     fn find_by_identifier(
@@ -61,7 +61,7 @@ impl OtpRepositoryExt for OtpRepository {
 
     async fn find_latest_by_user(
         &self,
-        user_identifier: &str,
+        user_identifier: &Uuid,
     ) -> Result<Option<Otp>, RepositoryError> {
         sqlx::query_as::<_, Otp>(
         r#"SELECT * FROM one_time_passwords WHERE user_identifier = $1 ORDER BY created_at DESC LIMIT 1"#,

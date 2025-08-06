@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Template)]
 #[template(path = "confirm_email.html")]
-
 #[derive(Debug, Serialize, Deserialize, Default)]
 pub struct ConfirmEmailTemplate {
     pub email: String,

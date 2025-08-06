@@ -16,8 +16,8 @@ fn main() {
 
     println!("{:#?}", canonical_input.to_str());
     // Convert to MP3
-    let result = WavToMp3Converter::new()
-        .convert_and_export(canonical_input.to_str().unwrap_or(""));
+    let result =
+        WavToMp3Converter::new().convert_and_export(canonical_input.to_str().unwrap_or(""));
 
     println!("{:#?}", result);
 }

@@ -1,7 +1,7 @@
 use crate::adapters::api_request::AuthenticatedRequest;
 use crate::adapters::api_response::ApiResponseBuilder;
-use crate::adapters::authentication::VerifyAccountRequest;
 use crate::adapters::authentication::{ForgottenPasswordResponse, RefreshTokenResponse};
+use crate::adapters::authentication::{OnboardingRequest, VerifyAccountRequest};
 use crate::adapters::jwt::Claims;
 use crate::errors::service_error::ServiceError;
 use crate::middlewares::validator::ValidatedRequest;
@@ -22,11 +22,12 @@ pub async fn create_account(
     State(auth_service): State<AuthenticationService>,
     ValidatedRequest(request): ValidatedRequest<CreateUserRequest>,
 ) -> Result<ApiResponse<CreateUserResponse>, ServiceError> {
-    auth_service.create_account(&request).await?;
+    let resp = auth_service.create_account(&request).await?;
 
     Ok(ApiResponseBuilder::new()
         .status_code(StatusCode::CREATED)
         .message("Account created successfully")
+        .data(resp)
         .build())
 }
 pub async fn login(
@@ -42,12 +43,13 @@ pub async fn login(
 }
 pub async fn verify_account(
     State(auth_service): State<AuthenticationService>,
-    claims: Claims,
+    AuthenticatedRequest { data, claims }: AuthenticatedRequest<VerifyAccountRequest>,
 ) -> Result<ApiResponse<VerifyAccountResponse>, ServiceError> {
-    let verify_account_response = auth_service.verify_account(&claims).await?;
+    let verify_account_response = auth_service.verify_account(&claims, &data).await?;
     Ok(ApiResponseBuilder::new()
         .status_code(StatusCode::OK)
         .data(verify_account_response)
+        .message("Account verified successfully")
         .build())
 }
 pub async fn forgotten_password(
@@ -88,4 +90,15 @@ pub async fn request_refresh_token(
 
 pub async fn logout() -> Result<ApiResponse<()>, ServiceError> {
     todo!()
+}
+
+pub async fn onboard_user(
+    State(auth_service): State<AuthenticationService>,
+    AuthenticatedRequest { data, claims }: AuthenticatedRequest<OnboardingRequest>,
+) -> Result<ApiResponse<()>, ServiceError> {
+    auth_service.onboard_user(&claims, &data).await?;
+
+    Ok(ApiResponseBuilder::new()
+        .message("profile updated successfully")
+        .build())
 }
