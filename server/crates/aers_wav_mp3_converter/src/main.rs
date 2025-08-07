@@ -1,23 +1,25 @@
-use aers_wav_mp3_converter::WavToMp3Converter;
-use std::fs;
-use std::path::Path;
+use std::{
+    path::{Path, PathBuf},
+    process::Command,
+};
 
-fn main() {
-    let input = "./aud.wav";
+use aers_wav_mp3_converter::WavToMp3ConverterError;
 
-    // Resolve canonical (absolute) path
-    let canonical_input = match fs::canonicalize(Path::new(input)) {
-        Ok(path) => path,
-        Err(e) => {
-            eprintln!("Failed to get canonical path: {}", e);
-            return;
-        }
-    };
+fn main() -> Result<(), WavToMp3ConverterError> {
+    let wav_path = Path::new("./out_raw.wav");
+    if wav_path.extension().and_then(|ext| ext.to_str()) != Some("wav") {
+        return Err(WavToMp3ConverterError::InavlidFileFormat);
+    }
 
-    println!("{:#?}", canonical_input.to_str());
-    // Convert to MP3
-    let result =
-        WavToMp3Converter::new().convert_and_export(canonical_input.to_str().unwrap_or(""));
+    let mut lame_command = Command::new("lame");
+    lame_command.arg(wav_path);
 
-    println!("{:#?}", result);
+    let mp3_path: PathBuf = wav_path.with_extension("mp3");
+
+    let res = lame_command
+        .output()
+        .map_err(|_| WavToMp3ConverterError::LameError);
+    println!("{:#?}", mp3_path);
+
+    Ok(())
 }
