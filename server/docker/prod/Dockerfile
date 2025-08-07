@@ -29,6 +29,7 @@ FROM debian:bookworm-slim AS final
 
 RUN apt-get update && \
     apt-get install -y libssl-dev && \
+    apt-get install -y ca-certificates && update-ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
     

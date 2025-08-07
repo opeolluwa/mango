@@ -88,4 +88,4 @@
 
 [working-directory: 'server']
 @build-docker version:
-    docker build -t aers-{{version}} . -f /docker/prod/Dockerfile 
+    docker build -t aers-{{version}} . -f ./docker/prod/Dockerfile 
