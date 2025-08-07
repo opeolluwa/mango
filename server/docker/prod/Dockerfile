@@ -40,8 +40,12 @@ RUN lame --version
 
 WORKDIR /app
 
-COPY --from=build /app/target/release/aers ./aers
+# copy the app
+COPY --from=build /app/target/release/aers ./aers 
+# copy the models and other statics files 
+COPY --from=build /app/crates/aers_email_client/templates ./templates
 COPY --from=build /app/resources ./resources
+#copy the migrations
 COPY --from=build /app/migrations ./migrations
 COPY --from=build /usr/local/lib/libtika_native.so /usr/local/lib
 
