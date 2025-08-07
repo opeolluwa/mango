@@ -83,3 +83,9 @@
     fi
 
     echo "Sidecar copied to {{SIDECAR_PATH}}/lame-{{HOST_TRIPLE}}"
+
+
+
+[working-directory: 'server']
+@build-docker version:
+    docker build -t aers-{{version}} . -f /docker/prod/Dockerfile 
