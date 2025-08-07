@@ -1,14 +1,10 @@
-use std::{fs, io, path::Path, time::Duration};
+use std::{fs, io, path::Path};
 
-use crate::{adapters::jwt::Claims, errors::service_error::ServiceError};
+use crate::errors::service_error::ServiceError;
 use aers_email_client::{
     ConfirmEmailTemplate, Email, EmailClient, ForgottenPasswordTemplate, PasswordUpdatedTemplate,
 };
-use aers_utils::extract_env;
 use bcrypt::{DEFAULT_COST, hash, verify};
-use uuid::Uuid;
-
-const EMAIL_CONFIRMATION_EXPIRY: Duration = Duration::from_secs(2 * 60 * 60); // 2 hours
 
 #[derive(Clone)]
 pub struct ServiceHelpers {}

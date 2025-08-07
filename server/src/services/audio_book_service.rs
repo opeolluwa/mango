@@ -148,7 +148,7 @@ impl AudioBooksServiceExt for AudioBooksService {
         }
 
         let mp3_export = WavToMp3Converter::new()
-            .convert_and_export(&wav_path)
+            .convert_file(&wav_path)
             .map_err(|err| {
                 log::error!("WAV to MP3 conversion failed: {}", err);
                 ServiceError::OperationFailed
