@@ -57,7 +57,7 @@ pub trait RedisClientExt {
         key: &str,
     ) -> impl std::future::Future<Output = Result<u64, ServiceError>>;
 
-    fn publish_message<T: Serialize + DeserializeOwned + std::fmt::Debug>(
+    fn publish_message<T: Serialize + std::fmt::Debug>(
         &mut self,
         channel: &RedisMessageChannel,
         message: &T,
@@ -132,7 +132,7 @@ impl RedisClientExt for RedisClient {
         message: &T,
     ) -> Result<(), ServiceError>
     where
-        T: Serialize + DeserializeOwned + std::fmt::Debug,
+        T: Serialize + std::fmt::Debug,
     {
         let message_as_str = serde_json::to_string(message).map_err(|err| {
             log::error!(

@@ -8,6 +8,8 @@ pub enum RedisMessageChannel {
     Mp3Converted,
     #[default]
     Default,
+    DocumentConverted,
+    ConvertDocument,
 }
 
 impl Display for RedisMessageChannel {
@@ -18,6 +20,8 @@ impl Display for RedisMessageChannel {
             RedisMessageChannel::FileConverted => "file-converted",
             RedisMessageChannel::Mp3Converted => "mp3-converted",
             RedisMessageChannel::Default => "default",
+            RedisMessageChannel::ConvertDocument => "convert-document",
+            RedisMessageChannel::DocumentConverted => "document-converted",
         };
 
         write!(f, "aers-{}-channel", channel)
@@ -37,6 +41,8 @@ impl From<String> for RedisMessageChannel {
             "file-uploaded" => RedisMessageChannel::FileUploaded,
             "file-converted" => RedisMessageChannel::FileConverted,
             "mp3-converted" => RedisMessageChannel::Mp3Converted,
+            "document-converted" => RedisMessageChannel::DocumentConverted,
+            "convert-document" => RedisMessageChannel::ConvertDocument,
             _ => RedisMessageChannel::Default,
         }
     }

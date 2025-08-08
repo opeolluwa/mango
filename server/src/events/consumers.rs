@@ -1,6 +1,10 @@
 use crate::errors::app_error::AppError;
+use crate::errors::service_error::ServiceError;
 use crate::events::channels::RedisMessageChannel;
+use crate::events::message::{ConvertDocumentMessage, ConvertPcmMessage, RedisMessage};
 use crate::shared::extract_env::extract_env;
+use aers_audify::Audify;
+use aers_wav_mp3_converter::WavToMp3Converter;
 use futures_util::StreamExt;
 
 #[derive(Debug, Default)]
@@ -12,40 +16,39 @@ pub struct RedisWorker {
 // Private helper functions for processing each channel type
 impl RedisWorker {
     /// Process file uploaded events
-    async fn process_file_uploaded(message: &str) -> Result<(), AppError> {
-        log::info!("Processing file uploaded event: {}", message);
-        // TODO: Implement file upload processing logic
-        // - Parse the uploaded file information
-        // - Validate file format and size
-        // - Store file metadata in database
-        // - Trigger conversion pipeline if needed
+    async fn convert_document_to_audio(
+        message: &RedisMessage<ConvertDocumentMessage>,
+    ) -> Result<(), ServiceError> {
+        let config_path = "resources/models/en_US-libritts_r-medium.onnx.json";
+        let audify_client = Audify::new(config_path);
+
+        audify_client
+            .synthesize_pdf(
+                &message.payload.document_path,
+                &message.payload.wav_output_path,
+            )
+            .map_err(|err| {
+                log::error!("Audify synthesis failed: {}", err);
+                ServiceError::OperationFailed
+            })?;
         Ok(())
     }
 
-    /// Process file converted events
-    async fn process_file_converted(message: &str) -> Result<(), AppError> {
-        log::info!("Processing file converted event: {}", message);
-        // TODO: Implement file conversion processing logic
-        // - Parse conversion results
-        // - Update file status in database
-        // - Notify users of completion
-        // - Clean up temporary files
-        Ok(())
-    }
+
 
     /// Process MP3 converted events
-    async fn process_mp3_converted(message: &str) -> Result<(), AppError> {
-        log::info!("Processing MP3 converted event: {}", message);
-        // TODO: Implement MP3 conversion processing logic
-        // - Parse MP3 conversion results
-        // - Update audio book status
-        // - Generate audio metadata
-        // - Trigger next pipeline step
+    async fn convert_wav_to_mp3(message: &RedisMessage<ConvertPcmMessage>) -> Result<(), ServiceError> {
+        let mp3_export = WavToMp3Converter::new()
+            .convert_file(&message.payload.wav_input_file)
+            .map_err(|err| {
+                log::error!("WAV to MP3 conversion failed: {}", err);
+                ServiceError::OperationFailed
+            })?;
         Ok(())
     }
 
     /// Process email events
-    async fn process_email(message: &str) -> Result<(), AppError> {
+    async fn upload_mp3_audio_to_cloud(message: &str) -> Result<(), AppError> {
         log::info!("Processing email event: {}", message);
         // TODO: Implement email processing logic
         // - Parse email content
@@ -80,13 +83,17 @@ impl RedisWorkerExt for RedisWorker {
         channel: &RedisMessageChannel,
         message_str: &str,
     ) -> Result<(), AppError> {
-        match channel {
-            RedisMessageChannel::FileUploaded => Self::process_file_uploaded(message_str).await,
-            RedisMessageChannel::FileConverted => Self::process_file_converted(message_str).await,
-            RedisMessageChannel::Mp3Converted => Self::process_mp3_converted(message_str).await,
-            RedisMessageChannel::Email => Self::process_email(message_str).await,
-            RedisMessageChannel::Default => Self::process_default(message_str).await,
-        }
+        // match channel {
+        //     RedisMessageChannel::FileUploaded => Self::process_file_uploaded(message_str).await,
+        //     RedisMessageChannel::FileConverted => Self::process_file_converted(message_str).await,
+        //     RedisMessageChannel::Mp3Converted => Self::process_mp3_converted(message_str).await,
+        //     RedisMessageChannel::Email => Self::process_email(message_str).await,
+        //     RedisMessageChannel::Default => Self::process_default(message_str).await,
+        //     RedisMessageChannel::ConvertDocument => todo!(),
+        //     RedisMessageChannel::DocumentConverted => todo!(),
+        // }
+
+        Ok(())
     }
 
     async fn start_redis_listener() -> Result<(), AppError> {
