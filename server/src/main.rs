@@ -1,9 +1,12 @@
 #![warn(unused_extern_crates)]
 
 use aers_lib::{
-    AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH, errors, events::channels::RedisMessageChannel, routes,
-    shared,
+    AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH, errors,
+    events::{channels::RedisMessageChannel, redis::RedisClient},
+    routes, shared,
 };
+use futures_util::StreamExt;
+// use futures_util::stream::stream::StreamExt;
 use axum::extract::DefaultBodyLimit;
 use errors::app_error::AppError;
 use routes::router::load_routes;
@@ -63,26 +66,59 @@ async fn main() -> Result<(), AppError> {
     let listener = tokio::net::TcpListener::bind(ip_address)
         .await
         .map_err(|err| AppError::OperationFailed(err.to_string()))?;
-    axum::serve(listener, app)
-        .await
-        .map_err(|err| AppError::OperationFailed(err.to_string()))?;
+
 
     tokio::spawn(async move {
-        let redis_url = extract_env::<String>("REDIS_CONNECTION_URL").unwrap();
-        let client = redis::Client::open(redis_url).unwrap();
-        let mut conn = client.get_connection().unwrap();
-        let mut pubsub = conn.as_pubsub();
+    let redis_connection_url: String = extract_env("REDIS_CONNECTION_URL").unwrap();
 
-        loop {
-            let msg = pubsub
-                .subscribe(RedisMessageChannel::FileConverted.to_string())
-                // .await
-                .map_err(|err| {
-                    log::error!("failed to subscribe to Redis channel due to {}", err);
-                    AppError::OperationFailed(err.to_string())
-                });
-        }
+    let redis_client = redis::Client::open(redis_connection_url).unwrap();
+
+    let mut pubsub = redis_client.get_async_pubsub().await.unwrap();
+
+    pubsub
+        .subscribe(&[
+            RedisMessageChannel::Mp3Converted.to_string(),
+            RedisMessageChannel::FileUploaded.to_string(),
+            RedisMessageChannel::Email.to_string(),
+            RedisMessageChannel::FileConverted.to_string(),
+        ])
+        .await
+        .unwrap();
+
+    let mut stream = pubsub.on_message();
+      log::info!("in controller");
+    while let Some(msg) = stream.next().await {
+        log::info!("in controller");
+        let channel: String = msg.get_channel_name().to_string();
+        let payload: String = msg.get_payload().unwrap_or_default();
+
+        println!("Received on channel [{}]: {}", channel, payload);
+
+        // Optionally match channel to handle different message types
+        // match channel.as_str() {
+        //     c if c == RedisMessageChannel::Mp3Converted.to_string() => {
+        //         println!("hey man got some dat ");
+        //         // handle MP3 converted event
+        //     }
+        //     c if c == RedisMessageChannel::FileUploaded.to_string() => {
+        //         // handle file uploaded event
+        //     }
+        //     c if c == RedisMessageChannel::Email.to_string() => {
+        //         // handle email event
+        //     }
+        //     c if c == RedisMessageChannel::FileConverted.to_string() => {
+        //         // handle file converted event
+        //     }
+        //     _ => {
+        //         println!("Unhandled channel: {}", channel);
+        //     }
+        // }
+    }
     });
+
+        axum::serve(listener, app)
+        .await
+        .map_err(|err| AppError::OperationFailed(err.to_string()))?;
 
     Ok(())
 }

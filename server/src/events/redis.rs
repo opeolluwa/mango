@@ -21,6 +21,7 @@ impl RedisClient {
             redis::Client::open(redis_connection_url).map_err(ServiceError::RedisError)?;
 
         let config = ConnectionManagerConfig::new().set_number_of_retries(5);
+        // .set_automatic_resubscription();
         let connection_manager =
             redis::aio::ConnectionManager::new_with_config(redis_client, config)
                 .await
@@ -30,6 +31,10 @@ impl RedisClient {
                 })?;
 
         Ok(Self { connection_manager })
+    }
+
+    pub fn get_connection(&mut self) -> ConnectionManager {
+        self.connection_manager.clone()
     }
 }
 
@@ -149,7 +154,7 @@ impl RedisClientExt for RedisClient {
             .publish(channel.to_string(), message_as_str)
             .await
             .map_err(ServiceError::from)?;
-        todo!()
+        Ok(())
     }
 
     async fn consume_message(

@@ -34,6 +34,7 @@ axum-extra = { version = "0.10.1", features = ["typed-header"] }
 axum_typed_multipart = { version = "0.16.3", features = ["tempfile_3"] }
 bcrypt = "0.17.0"
 chrono = { version = "0.4.41", features = ["serde"] }
+futures-util = "0.3.31"
 jsonwebtoken = "9.3.1"
 log = { workspace = true }
 openssl = { version = "0.10.73", features = ["vendored"] }
