@@ -62,12 +62,6 @@ pub trait RedisClientExt {
         channel: &RedisMessageChannel,
         message: &T,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>>;
-
-    fn consume_message(
-        &mut self,
-        channel: &RedisMessageChannel,
-        message: impl ToString,
-    ) -> impl std::future::Future<Output = Result<(), ServiceError>>;
 }
 
 impl RedisClientExt for RedisClient {
@@ -154,36 +148,6 @@ impl RedisClientExt for RedisClient {
             .publish(channel.to_string(), message_as_str)
             .await
             .map_err(ServiceError::from)?;
-        Ok(())
-    }
-
-    async fn consume_message(
-        &mut self,
-        channel: &RedisMessageChannel,
-        message: impl ToString,
-    ) -> Result<(), ServiceError> {
-        let message_str = message.to_string();
-        log::info!(
-            "Consuming message from channel {}: {}",
-            channel,
-            message_str
-        );
-
-        match channel {
-            RedisMessageChannel::FileUploaded => {
-                log::info!("File uploaded: {}", message_str);
-                // Handle file upload logic here
-            }
-            RedisMessageChannel::FileConverted => {
-                log::info!("File converted: {}", message_str);
-                // Handle file conversion logic here
-            }
-            RedisMessageChannel::Mp3Converted => {
-                log::info!("MP3 converted: {}", message_str);
-                // Handle MP3 conversion logic here
-            }
-            RedisMessageChannel::Email => todo!(),
-        }
         Ok(())
     }
 }
