@@ -2,16 +2,16 @@ use std::fmt::Display;
 
 #[derive(Debug)]
 pub enum EventChannel {
-    ConvertWavFileToMp3,
-    ConvertDocumentToWavFile,
+    DocumentConvertedToAudio,
+    ConvertDocumentToAudio,
     Default,
 }
 
 impl Display for EventChannel {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let channel = match self {
-            EventChannel::ConvertDocumentToWavFile => "convert-document-to-audio",
-            EventChannel::ConvertWavFileToMp3 => "convert-wav-to-mp3",
+            EventChannel::ConvertDocumentToAudio => "convert-document-to-audio",
+            EventChannel::DocumentConvertedToAudio => "document-converted-to-audio",
             EventChannel::Default => "default",
         };
 
@@ -28,8 +28,8 @@ impl From<String> for EventChannel {
             .unwrap_or(&channel_string);
 
         match clean_channel {
-            "document-converted" => EventChannel::ConvertWavFileToMp3,
-            "convert-document" => EventChannel::ConvertDocumentToWavFile,
+            "document-converted" => EventChannel::DocumentConvertedToAudio,
+            "convert-document" => EventChannel::ConvertDocumentToAudio,
             _ => EventChannel::Default,
         }
     }
@@ -41,11 +41,17 @@ mod tests {
 
     #[test]
     fn display_formats_expected_strings() {
-        let convert = EventChannel::ConvertDocumentToWavFile;
-        assert_eq!(convert.to_string(), "aers-convert-document-to-audio-channel");
+        let convert = EventChannel::ConvertDocumentToAudio;
+        assert_eq!(
+            convert.to_string(),
+            "aers-convert-document-to-audio-channel"
+        );
 
-        let converted = EventChannel::ConvertWavFileToMp3;
-        assert_eq!(converted.to_string(), "aers-document-converted-toAudio-channel");
+        let converted = EventChannel::DocumentConvertedToAudio;
+        assert_eq!(
+            converted.to_string(),
+            "aers-document-converted-to-audio-channel"
+        );
 
         let default = EventChannel::Default;
         assert_eq!(default.to_string(), "aers-default-channel");
@@ -54,10 +60,10 @@ mod tests {
     #[test]
     fn from_string_parses_prefixed_and_suffixed_variants() {
         let ch: EventChannel = "aers-convert-document-channel".to_string().into();
-        assert!(matches!(ch, EventChannel::ConvertDocumentToWavFile));
+        assert!(matches!(ch, EventChannel::ConvertDocumentToAudio));
 
         let ch: EventChannel = "aers-document-converted-channel".to_string().into();
-        assert!(matches!(ch, EventChannel::ConvertWavFileToMp3));
+        assert!(matches!(ch, EventChannel::DocumentConvertedToAudio));
     }
 
     #[test]

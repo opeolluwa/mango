@@ -20,9 +20,9 @@ impl<T> EventPrducer<T>
 where
     T: Serialize + DeserializeOwned + Debug,
 {
-    pub fn new(channel: EventChannel, message: T) -> Self {
+    pub fn new(channel: &EventChannel, message: T) -> Self {
         Self {
-            channel,
+            channel: EventChannel::from(channel.to_string()),
             message: Event::new(message),
         }
     }
@@ -47,4 +47,6 @@ where
 
         Ok(())
     }
+
+   
 }

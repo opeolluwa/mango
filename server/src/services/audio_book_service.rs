@@ -1,23 +1,26 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use crate::adapters::audio_books::{
     AddBookToPlaylistRequest, UpdateBookRequest, UploadAssetRequest,
 };
+use crate::adapters::file::SaveFile;
 use crate::adapters::jwt::Claims;
 use crate::adapters::pagination::{PaginatedResponse, PaginationParams};
 use crate::entities::audio_book::AudioBookEntity;
 use crate::errors::repository_error::RepositoryError;
 use crate::errors::service_error::ServiceError;
 use crate::events::channels::EventChannel;
-use crate::events::message::{ConvertDocumentMessage, Event};
+use crate::events::message::{ConvertDocument, ConvertDocumentMessage, Event};
+use crate::events::producer::EventPrducer;
 use crate::events::redis::{RedisClient, RedisClientExt};
 use crate::repositories::audio_book_repository::{AudioBookRepository, AudioBookRepositoryExt};
 use crate::{AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH};
 use aers_utils::generate_file_name;
-use axum_typed_multipart::TypedMultipart;
+use axum_typed_multipart::{FieldData, TypedMultipart};
 use regex::Regex;
 use sqlx::Postgres;
 use sqlx::pool::Pool;
+use tempfile::NamedTempFile;
 use uuid::Uuid;
 
 #[derive(Clone)]
@@ -30,7 +33,7 @@ pub trait AudioBooksServiceExt {
         &self,
         request: TypedMultipart<UploadAssetRequest>,
         claim: &Claims,
-    ) -> impl std::future::Future<Output = Result<Uuid, ServiceError>> + Send;
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 
     fn fetch_one(
         &self,
@@ -85,8 +88,8 @@ pub trait AudioBooksServiceExt {
 
     fn save_file_to_disk(
         &self,
-        document: TypedMultipart<UploadAssetRequest>,
-    ) -> Result<String, ServiceError>;
+        document: FieldData<NamedTempFile>,
+    ) -> Result<SaveFile, ServiceError>;
 }
 
 impl AudioBooksService {
@@ -100,92 +103,33 @@ impl AudioBooksService {
 impl AudioBooksServiceExt for AudioBooksService {
     async fn create_new(
         &self,
-        document: TypedMultipart<UploadAssetRequest>,
+        TypedMultipart(UploadAssetRequest {
+            document,
+            playlist_identifier,
+        }): TypedMultipart<UploadAssetRequest>,
         claim: &Claims,
-    ) -> Result<Uuid, ServiceError> {
-        let document_path = self.save_file_to_disk(document)?;
-        let wav_output_path = format!("{AERS_EXPORT_PATH}/{document_path}.wav");
-        let user_identifier = claim.user_identifier;
+    ) -> Result<(), ServiceError> {
+        let SaveFile {
+            file_name,
+            file_path,
+        } = self.save_file_to_disk(document)?;
 
-        let payload = ConvertDocumentMessage {
-            wav_output_path,
+        let user_identifier = claim.user_identifier;
+        let payload = ConvertDocument {
+            playlist_identifier,
+            file_name,
             user_identifier,
-            document_path,
+            file_path,
         };
 
-        let message = Event::<ConvertDocumentMessage>::new(payload);
-
-        let mut redis_client = RedisClient::new().await?;
         tokio::task::spawn(async move {
-            let channel = EventChannel::ConvertDocumentToWavFile;
-            if let Err(err) = redis_client.publish_message(&channel, &message).await {
+            let channel = EventChannel::ConvertDocumentToAudio;
+            let message = payload;
+            if let Err(err) = EventPrducer::new(&channel, message).send().await {
                 log::error!("failed to publish message to {channel} due to {err}");
             }
         });
-        // 3. Convert PDF to WAV audio using Audify
-        // let config_path = "resources/models/en_US-libritts_r-medium.onnx.json";
-        // let audify_client = Audify::new(config_path);
-
-        // let pdf_path_str = pdf_path.to_str().ok_or(ServiceError::OperationFailed)?;
-
-        // let wav_path = format!("{}/{}.wav", AERS_EXPORT_PATH, sanitized_file_name);
-
-        // audify_client
-        //     .synthesize_pdf(pdf_path_str, &wav_path)
-        //     .map_err(|err| {
-        //         log::error!("Audify synthesis failed: {}", err);
-        //         ServiceError::OperationFailed
-        //     })?;
-
-        // // 4. Convert WAV to MP3
-        // if !Path::new(&wav_path).exists() {
-        //     log::error!("WAV file does not exist: {}", wav_path);
-        //     return Err(ServiceError::OperationFailed);
-        // } else {
-        //     log::info!("WAV file generated: {}", wav_path);
-        // }
-
-        // let mp3_export = WavToMp3Converter::new()
-        //     .convert_file(&wav_path)
-        //     .map_err(|err| {
-        //         log::error!("WAV to MP3 conversion failed: {}", err);
-        //         ServiceError::OperationFailed
-        //     })?;
-
-        // // 5. Upload MP3 to ImageKit
-        // let private_key = extract_env::<String>("IMAGEKIT_PRIVATE_KEY").unwrap();
-        // let public_key = extract_env::<String>("IMAGEKIT_PUBLIC_KEY").unwrap();
-
-        // let imagekit_client = ImagekitClient::new(&public_key, &private_key).map_err(|err| {
-        //     log::error!("ImageKit client creation failed: {}", err);
-        //     ServiceError::OperationFailed
-        // })?;
-
-        // let upload_response = imagekit_client
-        //     .upload_file(&mp3_export, &sanitized_file_name)
-        //     .await
-        //     .map_err(|err| {
-        //         log::error!("MP3 upload failed: {}", err);
-        //         ServiceError::OperationFailed
-        //     })?;
-
-        // // 6. Persist audio book record
-        // let request = CreateAudioBookRequest {
-        //     file_name: sanitized_file_name.clone(),
-        //     src: upload_response.url,
-        //     playlist_identifier,
-        // };
-
-        // let book_identifier = self
-        //     .audio_book_repository
-        //     .create(&request, &claim.user_identifier)
-        //     .await?;
-
-        // Ok(book_identifier)
-
-        // Ok(())
-
-        todo!()
+        Ok(())
     }
 
     async fn fetch_one(
@@ -298,8 +242,8 @@ impl AudioBooksServiceExt for AudioBooksService {
 
     fn save_file_to_disk(
         &self,
-        TypedMultipart(UploadAssetRequest { document, .. }): TypedMultipart<UploadAssetRequest>,
-    ) -> Result<String, ServiceError> {
+        document: FieldData<NamedTempFile>,
+    ) -> Result<SaveFile, ServiceError> {
         // 1. Prepare the file name
         let original_file_name = &document
             .metadata
@@ -322,6 +266,9 @@ impl AudioBooksServiceExt for AudioBooksService {
             return Err(ServiceError::OperationFailed);
         };
 
-        Ok(pdf_path.to_str().to_owned().unwrap().to_string())
+        Ok(SaveFile {
+            file_name: sanitized_file_name,
+            file_path: pdf_path,
+        })
     }
 }

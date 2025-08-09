@@ -4,7 +4,7 @@ use crate::errors::app_error::AppError;
 use crate::errors::service_error::ServiceError;
 use crate::events::channels::EventChannel;
 
-use crate::events::message::{ConvertDocumentMessage, ConvertWavToMp3Message, Event};
+use crate::events::message::{ConvertDocument, DocumentConverted, Event};
 use crate::events::worker::{EventWorker, EventWorkerExt};
 use crate::shared::extract_env::extract_env;
 use futures_util::StreamExt;
@@ -57,16 +57,12 @@ impl EventSubscriberExt for EventSubscriber {
         let worker = EventWorker::new();
 
         match channel {
-            EventChannel::ConvertWavFileToMp3 => {
-                let message = Self::parse_message::<ConvertWavToMp3Message>(message)?;
-               
+            EventChannel::DocumentConvertedToAudio => {
+                let _message = Self::parse_message::<DocumentConverted>(message)?;
             }
 
-            //  convert the document to audion then publish event to convert it to MP3 file
-            EventChannel::ConvertDocumentToWavFile => {
-                // get the incoming event data 
-                let message = Self::parse_message::<ConvertDocumentMessage>(message)?;
-            
+            EventChannel::ConvertDocumentToAudio => {
+                let message = Self::parse_message::<ConvertDocument>(message)?;
                 if let Err(err) = worker.convert_document_to_audio(&message).await {
                     log::error!(
                         "failed to process event {} due to {}",
@@ -74,7 +70,6 @@ impl EventSubscriberExt for EventSubscriber {
                         err
                     );
                 };
-
             }
 
             _ => worker.log_message(message),
@@ -96,8 +91,8 @@ impl EventSubscriberExt for EventSubscriber {
 
         pubsub
             .subscribe(&[
-                EventChannel::ConvertDocumentToWavFile.to_string(),
-                EventChannel::ConvertWavFileToMp3.to_string(),
+                EventChannel::ConvertDocumentToAudio.to_string(),
+                EventChannel::DocumentConvertedToAudio.to_string(),
                 EventChannel::Default.to_string(),
             ])
             .await

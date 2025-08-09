@@ -1,4 +1,7 @@
-use std::fmt::{Debug, Display};
+use std::{
+    fmt::{Debug, Display},
+    path::PathBuf,
+};
 
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
 use uuid::Uuid;
@@ -33,7 +36,6 @@ where
     }
 }
 
-
 #[derive(Serialize, Debug, Deserialize)]
 pub struct EmailMessage {}
 
@@ -61,4 +63,20 @@ pub struct WavConversionEnded {
     pub user_identifier: Uuid,
     pub input_file: String,
     pub output_file: String,
+}
+
+#[derive(Serialize, Debug, Deserialize)]
+pub struct ConvertDocument {
+    pub playlist_identifier: Option<Uuid>,
+    pub file_name: String,
+    pub user_identifier: Uuid,
+    pub file_path: PathBuf,
+}
+
+#[derive(Serialize, Debug, Deserialize)]
+pub struct DocumentConverted {
+    pub playlist_identifier: Option<Uuid>,
+    pub file_name: String,
+    pub user_identifier: Uuid,
+    pub url: String,
 }

@@ -19,17 +19,12 @@ pub async fn create_new_book(
     State(audio_book_service): State<AudioBooksService>,
     claims: Claims,
     request: TypedMultipart<UploadAssetRequest>,
-) -> Result<ApiResponse<AudioBookEntity>, ServiceError> {
-    let book_identifier = audio_book_service.create_new(request, &claims).await?;
-
-    let book = audio_book_service
-        .fetch_one(&book_identifier, &claims.user_identifier)
-        .await?;
+) -> Result<ApiResponse<()>, ServiceError> {
+    audio_book_service.create_new(request, &claims).await?;
 
     Ok(ApiResponseBuilder::new()
-        .data(book)
         .status_code(StatusCode::CREATED)
-        .message("Book created succesfully")
+        .message("You request is being processed, you'll get an email when it is done")
         .build())
 }
 
