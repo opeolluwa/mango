@@ -55,7 +55,7 @@ async fn main() -> Result<(), AppError> {
 
     let port = extract_env::<u16>("PORT")?;
     let ip_address = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, port));
-    log::info!("Application listening on http://{}", ip_address);
+    log::info!("Application listening on http://{ip_address}");
 
     let listener = tokio::net::TcpListener::bind(ip_address)
         .await
@@ -64,7 +64,7 @@ async fn main() -> Result<(), AppError> {
     // Spawn Redis listener
     tokio::spawn(async {
         if let Err(err) = EventSubscriber::start_redis_listener().await {
-            log::error!("Redis listener failed: {}", err);
+            log::error!("Redis listener failed: {err}");
         }
     });
 
@@ -77,12 +77,12 @@ async fn main() -> Result<(), AppError> {
 
 fn initialize_file_systems() -> Result<(), AppError> {
     std::fs::create_dir_all(AERS_FILE_UPLOAD_PATH).map_err(|err| {
-        log::error!("failed to create AERS_FILE_UPLOAD_PATH due to {}", err);
+        log::error!("failed to create AERS_FILE_UPLOAD_PATH due to {err}");
         AppError::OperationFailed("failed to create AERS_FILE_UPLOAD_PATH".to_string())
     })?;
 
     std::fs::create_dir_all(AERS_EXPORT_PATH).map_err(|err| {
-        log::error!("failed to create AERS_EXPORT_PATH due to {}", err);
+        log::error!("failed to create AERS_EXPORT_PATH due to {err}");
         AppError::OperationFailed("failed to create AERS_EXPORT_PATH".to_string())
     })?;
 

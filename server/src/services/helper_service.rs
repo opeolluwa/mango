@@ -49,13 +49,13 @@ pub trait ServiceHelpersTrait {
 impl ServiceHelpersTrait for ServiceHelpers {
     fn hash_password(&self, raw_password: &str) -> Result<String, ServiceError> {
         hash(raw_password.trim(), DEFAULT_COST).map_err(|err| {
-            log::error!("operation failed due to {}", err);
+            log::error!("operation failed due to {err}");
             ServiceError::OperationFailed
         })
     }
     fn validate_password(&self, password: &str, hash: &str) -> Result<bool, ServiceError> {
         verify(password, hash).map_err(|err| {
-            log::error!("operation failed due to {}", err);
+            log::error!("operation failed due to {err}");
             ServiceError::OperationFailed
         })
     }
@@ -83,7 +83,7 @@ impl ServiceHelpersTrait for ServiceHelpers {
 
         let email_client = EmailClient::new();
         email_client.send_email(&email).map_err(|err| {
-            log::error!("Failed to send confirmation email due to: {}", err);
+            log::error!("Failed to send confirmation email due to: {err}");
             ServiceError::OperationFailed
         })?;
 
@@ -104,12 +104,12 @@ impl ServiceHelpersTrait for ServiceHelpers {
             .build();
         let email_client = EmailClient::new();
         email_client.send_email(&email).map_err(|err| {
-            log::error!("Failed to send forgotten password email due to: {}", err);
+            log::error!("Failed to send forgotten password email due to: {err}");
             ServiceError::OperationFailed
         })?;
 
         email_client.send_email(&email).map_err(|err| {
-            log::error!("Failed to send forgotten password email due to: {}", err);
+            log::error!("Failed to send forgotten password email due to: {err}");
             ServiceError::OperationFailed
         })?;
 
@@ -127,12 +127,12 @@ impl ServiceHelpersTrait for ServiceHelpers {
             .build();
         let email_client = EmailClient::new();
         email_client.send_email(&email).map_err(|err| {
-            log::error!("Failed to send password updated email due to: {}", err);
+            log::error!("Failed to send password updated email due to: {err}");
             ServiceError::OperationFailed
         })?;
 
         email_client.send_email(&email).map_err(|err| {
-            log::error!("Failed to send password updated email due to: {}", err);
+            log::error!("Failed to send password updated email due to: {err}");
             ServiceError::OperationFailed
         })?;
 
@@ -152,7 +152,7 @@ impl ServiceHelpersTrait for ServiceHelpers {
             .build();
         let email_client = EmailClient::new();
         email_client.send_email(&email).map_err(|err| {
-            log::error!("Failed to send welcome email due to: {}", err);
+            log::error!("Failed to send welcome email due to: {err}");
             ServiceError::OperationFailed
         })?;
 
@@ -163,7 +163,7 @@ impl ServiceHelpersTrait for ServiceHelpers {
         let otp = aers_utils::generate_otp();
         //TODO: save the OTP in the database or cache for verification later
 
-        log::info!("Generated OTP for {}: {}", user_email, otp);
+        log::info!("Generated OTP for {user_email}: {otp}");
         Ok(otp)
     }
 }

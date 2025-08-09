@@ -8,6 +8,12 @@ use crate::{
 
 pub struct EventWorker {}
 
+impl Default for EventWorker {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl EventWorker {
     pub fn new() -> Self {
         Self {}
@@ -46,7 +52,7 @@ impl EventWorkerExt for EventWorker {
                 &message.payload.wav_output_path,
             )
             .map_err(|err| {
-                log::error!("Audify synthesis failed: {}", err);
+                log::error!("Audify synthesis failed: {err}");
                 ServiceError::OperationFailed
             })?;
         Ok(())
@@ -59,7 +65,7 @@ impl EventWorkerExt for EventWorker {
         let mp3_export = WavToMp3Converter::new()
             .convert_file(&message.payload.wav_input_file)
             .map_err(|err| {
-                log::error!("WAV to MP3 conversion failed: {}", err);
+                log::error!("WAV to MP3 conversion failed: {err}");
                 ServiceError::OperationFailed
             })?;
         Ok(())
@@ -67,7 +73,7 @@ impl EventWorkerExt for EventWorker {
 
     /// Process email events
     async fn upload_mp3_audio_to_cloud(&self, message: &str) -> Result<(), ServiceError> {
-        log::info!("Processing email event: {}", message);
+        log::info!("Processing email event: {message}");
         // TODO: Implement email processing logic
         // - Parse email content
         // - Send confirmation emails
@@ -77,6 +83,6 @@ impl EventWorkerExt for EventWorker {
     }
 
     fn log_message(&self, message: &str) {
-        log::debug!("got message {}", message);
+        log::debug!("got message {message}");
     }
 }

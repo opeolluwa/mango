@@ -15,7 +15,7 @@ impl Display for EventChannel {
             EventChannel::Default => "default",
         };
 
-        write!(f, "aers-{}-channel", channel)
+        write!(f, "aers-{channel}-channel")
     }
 }
 

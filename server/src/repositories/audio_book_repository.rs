@@ -106,7 +106,7 @@ impl AudioBookRepositoryExt for AudioBookRepository {
             .execute(self.pool.as_ref())
             .await
             .map_err(|err| {
-                log::error!("Operatation failed due to {}", err);
+                log::error!("Operatation failed due to {err}");
                 ServiceError::from(err)
             })?;
 

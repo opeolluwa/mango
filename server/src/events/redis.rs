@@ -26,7 +26,7 @@ impl RedisClient {
             redis::aio::ConnectionManager::new_with_config(redis_client, config)
                 .await
                 .map_err(|err| {
-                    log::error!("failed to create redis connection manager due to {}", err);
+                    log::error!("failed to create redis connection manager due to {err}");
                     ServiceError::RedisError(err)
                 })?;
 
@@ -66,7 +66,7 @@ pub trait RedisClientExt {
 
 impl RedisClientExt for RedisClient {
     async fn blacklist_refresh_token(&mut self, token: &str) -> Result<(), ServiceError> {
-        let key = &format!("blacklist_token:{}", token);
+        let key = &format!("blacklist_token:{token}");
         let stored_token = self.fetch_refresh_token(token).await?;
         if stored_token.is_some() {
             let key = format!("refresh_token:{}", stored_token.unwrap());
@@ -91,7 +91,7 @@ impl RedisClientExt for RedisClient {
     }
 
     async fn save_refresh_token(&mut self, token: &str) -> Result<(), ServiceError> {
-        let key = format!("refresh_token:{}", token);
+        let key = format!("refresh_token:{token}");
         let refresh_token_validity_in_minutes: u64 =
             extract_env("REFRESH_TOKEN_TTL_IN_MINUTES").unwrap_or(420);
         let validity_secs = refresh_token_validity_in_minutes * 60;
@@ -106,7 +106,7 @@ impl RedisClientExt for RedisClient {
     }
 
     async fn fetch_refresh_token(&mut self, token: &str) -> Result<Option<String>, ServiceError> {
-        let key = &format!("refresh_token:{}", token);
+        let key = &format!("refresh_token:{token}");
         let result: Option<String> = self
             .connection_manager
             .get(key)
@@ -136,9 +136,7 @@ impl RedisClientExt for RedisClient {
     {
         let message_as_str = serde_json::to_string(message).map_err(|err| {
             log::error!(
-                "failed to serialize {:#?} as string due to {}",
-                message,
-                err
+                "failed to serialize {message:#?} as string due to {err}"
             );
             ServiceError::SerdeJsonError(err)
         })?;

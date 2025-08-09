@@ -104,7 +104,7 @@ impl AudioBooksServiceExt for AudioBooksService {
         claim: &Claims,
     ) -> Result<Uuid, ServiceError> {
         let document_path = self.save_file_to_disk(document)?;
-        let wav_output_path = format!("{}/{}.wav", AERS_EXPORT_PATH, document_path);
+        let wav_output_path = format!("{AERS_EXPORT_PATH}/{document_path}.wav");
         let user_identifier = claim.user_identifier;
 
         let payload = ConvertDocumentMessage {
@@ -119,7 +119,7 @@ impl AudioBooksServiceExt for AudioBooksService {
         tokio::task::spawn(async move {
             let channel = EventChannel::ConvertDocumentToWavFile;
             if let Err(err) = redis_client.publish_message(&channel, &message).await {
-                log::error!("failed to publish message to {} due to {}", channel, err);
+                log::error!("failed to publish message to {channel} due to {err}");
             }
         });
         // 3. Convert PDF to WAV audio using Audify
@@ -310,7 +310,7 @@ impl AudioBooksServiceExt for AudioBooksService {
         // Normalize file name: replace whitespace with hyphens
         let sanitized_file_name = Regex::new(r"\s+")
             .unwrap()
-            .replace_all(&original_file_name, "-")
+            .replace_all(original_file_name, "-")
             .to_string();
 
         // 2. Save the PDF to disk
@@ -318,7 +318,7 @@ impl AudioBooksServiceExt for AudioBooksService {
         let temp_dir = Path::new(AERS_FILE_UPLOAD_PATH);
         let pdf_path = temp_dir.join(format!("{timestamp}_{sanitized_file_name}.pdf"));
         if let Err(err) = document.contents.persist(&pdf_path) {
-            log::error!("Failed to persist file: {}", err);
+            log::error!("Failed to persist file: {err}");
             return Err(ServiceError::OperationFailed);
         };
 

@@ -20,7 +20,7 @@ pub async fn health_check(
             },
         )
         .await;
-    println!(" publish event{:#?} ", res);
+    println!(" publish event{res:#?} ");
 
     root_service.health_check()?;
     Ok(ApiResponseBuilder::new()
