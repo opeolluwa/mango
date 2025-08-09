@@ -1,6 +1,6 @@
 use crate::adapters::api_response::{ApiResponse, ApiResponseBuilder, EmptyResponseBody};
 use crate::adapters::authentication::CreateUserRequest;
-use crate::events::channels::RedisMessageChannel;
+use crate::events::channels::EventChannel;
 use crate::events::redis::{RedisClient, RedisClientExt};
 use crate::services::root_serice::RootServiceTrait;
 use crate::{errors::app_error::AppError, services::root_serice::RootService};
@@ -13,7 +13,7 @@ pub async fn health_check(
 
     let res = redis_client
         .publish_message(
-            &RedisMessageChannel::Mp3Converted,
+            &EventChannel::Default,
             &CreateUserRequest {
                 email: "opeolluwa".to_string(),
                 password: "test".to_string(),
@@ -22,16 +22,6 @@ pub async fn health_check(
         .await;
     println!(" publish event{:#?} ", res);
 
-    // let sub = redis_client
-    //     .get_connection()
-    //     .subscribe(&RedisMessageChannel::Mp3Converted.to_string())
-    //     .await;
-
-    // println!("sub {:#?} ", sub);
-
-    // redis_client.get_connection().
-
-    // redis_client.consume_message(channel, message)
     root_service.health_check()?;
     Ok(ApiResponseBuilder::new()
         .message("service is healthy")

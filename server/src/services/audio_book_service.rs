@@ -8,8 +8,8 @@ use crate::adapters::pagination::{PaginatedResponse, PaginationParams};
 use crate::entities::audio_book::AudioBookEntity;
 use crate::errors::repository_error::RepositoryError;
 use crate::errors::service_error::ServiceError;
-use crate::events::channels::RedisMessageChannel;
-use crate::events::message::{ConvertDocumentMessage, RedisMessage};
+use crate::events::channels::EventChannel;
+use crate::events::message::{ConvertDocumentMessage, Event};
 use crate::events::redis::{RedisClient, RedisClientExt};
 use crate::repositories::audio_book_repository::{AudioBookRepository, AudioBookRepositoryExt};
 use crate::{AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH};
@@ -110,18 +110,17 @@ impl AudioBooksServiceExt for AudioBooksService {
         let wav_output_path = format!("{}/{}.wav", AERS_EXPORT_PATH, document_path);
         let user_identifier = claim.user_identifier;
 
-
         let payload = ConvertDocumentMessage {
             wav_output_path,
             user_identifier,
             document_path,
         };
 
-        let message = RedisMessage::<ConvertDocumentMessage>::new(payload);
+        let message = Event::<ConvertDocumentMessage>::new(payload);
 
         let mut redis_client = RedisClient::new().await?;
         tokio::task::spawn(async move {
-            let channel = RedisMessageChannel::ConvertDocument;
+            let channel = EventChannel::ConvertDocumentToWavFile;
             if let Err(err) = redis_client.publish_message(&channel, &message).await {
                 log::error!("failed to publish message to {} due to {}", channel, err);
             }

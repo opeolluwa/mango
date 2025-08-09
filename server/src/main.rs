@@ -1,9 +1,7 @@
 #![warn(unused_extern_crates)]
 
 use aers_lib::{
-    AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH, errors,
-    events::consumers::{RedisWorker, RedisWorkerExt},
-    routes, shared,
+    errors, events::subscriber::{EventSubscriber, EventSubscriberExt}, routes, shared, AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH
 };
 use axum::extract::DefaultBodyLimit;
 use errors::app_error::AppError;
@@ -65,7 +63,7 @@ async fn main() -> Result<(), AppError> {
 
     // Spawn Redis listener
     tokio::spawn(async {
-        if let Err(err) = RedisWorker::start_redis_listener().await {
+        if let Err(err) = EventSubscriber::start_redis_listener().await {
             log::error!("Redis listener failed: {}", err);
         }
     });

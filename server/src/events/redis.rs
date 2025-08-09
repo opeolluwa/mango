@@ -2,10 +2,10 @@ use redis::{
     AsyncCommands,
     aio::{ConnectionManager, ConnectionManagerConfig},
 };
-use serde::{Serialize, de::DeserializeOwned};
+use serde::Serialize;
 
 use crate::{
-    errors::service_error::ServiceError, events::channels::RedisMessageChannel,
+    errors::service_error::ServiceError, events::channels::EventChannel,
     shared::extract_env::extract_env,
 };
 
@@ -59,7 +59,7 @@ pub trait RedisClientExt {
 
     fn publish_message<T: Serialize + std::fmt::Debug>(
         &mut self,
-        channel: &RedisMessageChannel,
+        channel: &EventChannel,
         message: &T,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>>;
 }
@@ -128,7 +128,7 @@ impl RedisClientExt for RedisClient {
 
     async fn publish_message<T>(
         &mut self,
-        channel: &RedisMessageChannel,
+        channel: &EventChannel,
         message: &T,
     ) -> Result<(), ServiceError>
     where
