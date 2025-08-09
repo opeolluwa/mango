@@ -102,17 +102,17 @@ impl UserRepositoryTrait for UserRepository {
     }
 
     async fn find_by_email(&self, email: &str) -> Option<UserEntity> {
-        let user = sqlx::query_as::<_, UserEntity>("SELECT * FROM users WHERE email = $1")
+        
+
+        sqlx::query_as::<_, UserEntity>("SELECT * FROM users WHERE email = $1")
             .bind(email)
             .fetch_one(self.pool.as_ref())
             .await
             .map_err(|err| {
-                log::error!("Failed to find user by email: {}", err);
+                log::error!("Failed to find user by email: {err}");
                 // UserServiceError::OperationFailed(err.to_string())
             })
-            .ok();
-
-        user
+            .ok()
     }
 
     async fn activate_account(&self, identifier: &Uuid) -> Result<(), ServiceError> {

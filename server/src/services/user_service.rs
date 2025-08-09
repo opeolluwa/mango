@@ -101,7 +101,7 @@ impl UserServiceTrait for UserService {
 
         // create file object
         if let Err(err) = image.contents.persist(&file_path) {
-            log::error!("error processing file due to {}", err);
+            log::error!("error processing file due to {err}");
             return Err(ServiceError::OperationFailed);
         }
 
@@ -110,13 +110,13 @@ impl UserServiceTrait for UserService {
 
         let imagekit_upload_response = ImagekitClient::new(&public_key, &private_key)
             .map_err(|err| {
-                log::error!("error creating client due to {}", err);
+                log::error!("error creating client due to {err}");
                 ServiceError::OperationFailed
             })?
             .upload_file(&file_path, &file_name)
             .await
             .map_err(|err| {
-                log::error!("error creating client due to {}", err);
+                log::error!("error creating client due to {err}");
                 ServiceError::OperationFailed
             })?;
 

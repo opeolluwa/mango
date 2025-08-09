@@ -16,9 +16,6 @@ fn main() -> Result<(), WavToMp3ConverterError> {
 
     let mp3_path: PathBuf = wav_path.with_extension("mp3");
 
-    let res = lame_command
-        .output()
-        .map_err(|_| WavToMp3ConverterError::LameError);
     println!("{:#?}", mp3_path);
 
     Ok(())

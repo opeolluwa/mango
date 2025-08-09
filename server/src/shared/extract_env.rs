@@ -5,7 +5,7 @@ use crate::errors::app_error::AppError;
 pub fn extract_env<T: FromStr>(env_key: &str) -> Result<T, AppError> {
     let env = env::var(env_key)
         .map_err(|err| {
-            log::error!("error fetching env {}", env_key);
+            log::error!("error fetching env {env_key}");
             AppError::EnvError(err.to_string())
         })?
         .parse::<T>()

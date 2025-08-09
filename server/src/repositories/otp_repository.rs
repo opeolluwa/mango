@@ -54,7 +54,7 @@ impl OtpRepositoryExt for OtpRepository {
         let user_identifier = Uuid::from_str(user_identifier)
             .map_err(|err| RepositoryError::OperationFailed(err.to_string()))?;
 
-        sqlx::query(r#"INSERT INTO one_time_passwords (identifier, user_identifier, code) VALUES ($1,$2,$3)"#).bind(otp_identifier).bind(user_identifier).bind(code).execute(self.pool.as_ref()).await.map_err(|err|RepositoryError::SqlxError(err))?;
+        sqlx::query(r#"INSERT INTO one_time_passwords (identifier, user_identifier, code) VALUES ($1,$2,$3)"#).bind(otp_identifier).bind(user_identifier).bind(code).execute(self.pool.as_ref()).await.map_err(RepositoryError::SqlxError)?;
 
         Ok(())
     }
