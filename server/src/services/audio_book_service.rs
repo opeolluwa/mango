@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use crate::adapters::audio_books::{
-    AddBookToPlaylistRequest, CreateAudioBookRequest, UpdateBookRequest, UploadAssetRequest,
+    AddBookToPlaylistRequest, UpdateBookRequest, UploadAssetRequest,
 };
 use crate::adapters::jwt::Claims;
 use crate::adapters::pagination::{PaginatedResponse, PaginationParams};
@@ -13,10 +13,7 @@ use crate::events::message::{ConvertDocumentMessage, Event};
 use crate::events::redis::{RedisClient, RedisClientExt};
 use crate::repositories::audio_book_repository::{AudioBookRepository, AudioBookRepositoryExt};
 use crate::{AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH};
-use aers_audify::Audify;
-use aers_imagekit_client::ImagekitClient;
-use aers_utils::{extract_env, generate_file_name};
-use aers_wav_mp3_converter::WavToMp3Converter;
+use aers_utils::generate_file_name;
 use axum_typed_multipart::TypedMultipart;
 use regex::Regex;
 use sqlx::Postgres;

@@ -5,7 +5,6 @@ use crate::errors::service_error::ServiceError;
 use crate::events::channels::EventChannel;
 
 use crate::events::message::{ConvertDocumentMessage, ConvertWavToMp3Message, Event};
-use crate::events::producer::EventPrducer;
 use crate::events::worker::{EventWorker, EventWorkerExt};
 use crate::shared::extract_env::extract_env;
 use futures_util::StreamExt;
