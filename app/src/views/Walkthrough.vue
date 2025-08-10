@@ -7,10 +7,11 @@
       class="text-2xl mt-8 font-extrabold leading-loose text-center dark:text-white/70 w-[90%]"
       style="line-height: 50px; font-weight: 800"
     >
-      Share and collaborate
+      Convert document to audio
     </h1>
     <p class="text-center text-150">
-      Share audio books with friends, socialize and interract
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur sit
+      nulla, possimus do
     </p>
 
     <SensationalTint />
@@ -20,7 +21,7 @@
       class="text-white font-medium bg-app-orange rounded-lg py-4 text-center hover:animate-pulse mt-24 w-full bottom-3.5"
       @click="initializeAppSettings"
     >
-      Create account
+      Get started
     </RouterLink>
     <RouterLink
       :to="{ name: 'Login' }"
