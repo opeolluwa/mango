@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-y-4 items-center justify-between w-full py-2">
+  <RouterLink :to="{name:'Player'}" class="flex gap-y-4 items-center justify-between w-full py-2">
     <div class="flex items-center gap-x-4">
       <img :src="cover" class="size-12 rounded-lg" alt="" />
       <div class="flex flex-col -gap-y-[4px] text-app-dark dark:text-gray-200">
@@ -13,7 +13,7 @@
     </div>
 
     <Icon icon="fe:elipsis-v" class="size-5 text-gray-400 icon" />
-  </div>
+  </RouterLink>
 </template>
 
 <script lang="ts" setup>

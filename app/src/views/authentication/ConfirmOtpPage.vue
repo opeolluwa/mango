@@ -60,7 +60,7 @@ import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue
 import { useCountdown } from "@vueuse/core";
 import axios from "../../axios.config";
 
-const countdownSecs = 30;
+const countdownSecs = 120;
 
 const { remaining, start } = useCountdown(countdownSecs, {
   onComplete() {},
