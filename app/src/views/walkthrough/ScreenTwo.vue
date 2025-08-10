@@ -10,7 +10,7 @@
       Listen offline or online
     </h1>
     <p class="text-center text-150">
-      Listion to audio equivalent of your documents offline or online
+      Listen to audio equivalent of your documents offline or online
     </p>
 
     <SensationalTint />
