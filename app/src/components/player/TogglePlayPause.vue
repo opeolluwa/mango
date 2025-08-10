@@ -1,6 +1,6 @@
 <template>
-  <Icon icon="fluent:play-48-filled" class="icon" v-show="!isPlaying" />
-  <Icon icon="fluent:pause-48-filled" class="icon p-[2px]" v-show="isPlaying" />
+  <Icon v-show="!isPlaying" icon="fluent:play-48-filled" class="icon" />
+  <Icon v-show="isPlaying" icon="fluent:pause-48-filled" class="icon p-[2px]" />
 </template>
 
 <script lang="ts" setup>

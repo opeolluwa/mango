@@ -10,8 +10,8 @@
 
     <form
       action=""
-      @submit.prevent="submitForm"
       class="mt-8 flex flex-col gap-y-8"
+      @submit.prevent="submitForm"
     >
       <div class="flex flex-col w-full">
         <AppFormLabel text="Password" for="password" />

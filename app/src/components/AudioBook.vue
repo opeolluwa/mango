@@ -16,8 +16,6 @@
   </div>
 </template>
 
-<style scoped></style>
-
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 // import { playAudioBook } from "../composibles/book";
@@ -30,3 +28,5 @@ const props = defineProps<{
 
 const { cover, author, title } = props;
 </script>
+
+<style scoped></style>
