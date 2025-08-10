@@ -10,5 +10,5 @@
 <script lang="ts" setup>
 import { RouterLink } from "vue-router";
 
-defineProps(["href"]);
+defineProps<{ href: string }>();
 </script>

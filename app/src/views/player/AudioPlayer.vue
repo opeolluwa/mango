@@ -2,8 +2,8 @@
   <div class="">
     <Transition>
       <AppNavigation
-        class="w-full absolute top-0 left-0 h-screen z-110 bg-app-dark/95"
         v-if="show"
+        class="w-full absolute top-0 left-0 h-screen z-110 bg-app-dark/95"
         @click="show = !show"
       />
     </Transition>
@@ -11,14 +11,14 @@
     <div class="flex justify-between mb-10 pb-3">
       <Icon
         icon="fluent:chevron-left-32-filled"
-        @click="goBack"
         :class="['icon size-5 dark:text-white/90']"
+        @click="goBack"
       />
 
       <Icon
         icon="tabler:dots"
-        @click="show = !show"
         :class="['icon size-5 dark:text-white/90']"
+        @click="show = !show"
       />
     </div>
     <img
@@ -35,33 +35,33 @@
     <div class="flex gap-x-6 items-center justify-center">
       <Icon
         icon="iconoir:rewind-solid"
-        @click="playThePreviousBook"
         :class="['icon size-5 dark:text-white/90']"
+        @click="playThePreviousBook"
       />
 
       <Icon
         icon="mingcute:rewind-backward-10-line"
-        @click="playThePreviousBook"
         :class="['icon size-5 dark:text-white/90']"
+        @click="playThePreviousBook"
       />
 
       <div
         class="size-16 rounded-full bg-app-orange/90 shadow shadow-bg-app-orange/60 border-gray-600 flex items-center justify-center text-white"
         @click="togglePlaying"
       >
-        <Icon icon="fluent:play-48-filled" class="icon" v-show="!isPlaying" />
+        <Icon v-show="!isPlaying" icon="fluent:play-48-filled" class="icon" />
         <Icon
+          v-show="isPlaying"
           icon="fluent:pause-48-filled"
           class="icon p-[2px]"
-          v-show="isPlaying"
         />
       </div>
 
       <Icon icon="mingcute:rewind-forward-10-line" class="icon" />
       <Icon
         icon="iconoir:forward-solid"
-        @click="playThePreviousBook"
         :class="['icon size-5 dark:text-white/90']"
+        @click="playThePreviousBook"
       />
     </div>
 
@@ -94,11 +94,12 @@
     class="fixed left-0 w-full py-3 text-small items-center gap-y-1 justify-between gap-x-2 z-100 flex min-h-12 tems-center bottom-0 px-5 shadow-lg border-t-white/50"
   >
     <RouterLink
-      :to="{ name: 'Player' }"
       v-for="(item, index) in routes"
+      :key="index"
+      :to="{ name: 'Player' }"
       class="flex gap-y-1 flex-col items-center justify-center capitalize text-stone-500"
     >
-      <Icon :icon="item.default" :key="index" class="size-5" />
+      <Icon :icon="item.default" class="size-5" />
     </RouterLink>
   </footer>
 </template>

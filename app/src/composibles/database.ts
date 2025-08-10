@@ -36,11 +36,11 @@ abstract class BaseModel {
 
 export class Playlist extends BaseModel {
     // private conn = Database;
-    private readonly identifier: String;
-    private readonly name: String;
-    private readonly description: String;
-    private readonly createdAt: String;
-    private readonly updatedAt: String;
+    private readonly identifier: string;
+    private readonly name: string;
+    private readonly description: string;
+    private readonly createdAt: string;
+    private readonly updatedAt: string;
 
     constructor(name: string | null, description: string | null) {
         super();
@@ -117,8 +117,8 @@ export class Playlist extends BaseModel {
 
 export class History extends BaseModel {
     // private conn = DB;
-    private readonly identifier: String;
-    private readonly audioBookIdentifier: String;
+    private readonly identifier: string;
+    private readonly audioBookIdentifier: string;
 
     constructor(audioBookIdentifier: string) {
         super()

@@ -210,7 +210,7 @@ const generateGreeting = () => {
   const isValentine = month === 1 && date === 14;
   const isNewYear = month === 0 && date === 1;
 
-  let greetingParts = {
+  const greetingParts = {
     time: "",
     day: "",
     occasion: "",

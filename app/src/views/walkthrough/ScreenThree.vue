@@ -1,26 +1,33 @@
 <template>
   <div
-    class="px-8 flex flex-col h-screen pb-[15vh] justify-end w-screen relative layout"
+    class="px-8 py-2 relative flex flex-col h-screen justify-center items-center w-screen layout"
   >
-    <!-- <img src="/screen-two.png" alt="" /> -->
-     
-        
+    <img src="/community.svg" alt="" class="w-[200px]" />
     <h1
-      class="text-4xl mt-6 capitalize leading-loose dark:text-white/70 w-[90%]"
-      style="line-height: 50px"
+      class="text-2xl mt-8 font-extrabold leading-loose text-center dark:text-white/70 w-[90%]"
+      style="line-height: 50px; font-weight: 800"
     >
-      <span class="font-bold">Elevate</span>
-      your reading with <span class="font-bold">quick insight</span>
+      Share and collaborate
     </h1>
+    <p class="text-center text-150">
+      Share audio books with friends, socialize and interract
+    </p>
 
     <SensationalTint />
 
     <RouterLink
       :to="{ name: 'SignUp' }"
-      class="relative -bottom-14 text-white font-medium bg-app-orange rounded-lg py-4 text-center hover:animate-pulse mt-8"
+      class="text-white font-medium bg-app-orange rounded-lg py-4 text-center hover:animate-pulse mt-24 w-full bottom-3.5"
       @click="initializeAppSettings"
     >
-      Get started
+      Create account
+    </RouterLink>
+    <RouterLink
+      :to="{ name: 'Login' }"
+      class="text-app-dark border-app-dark border-2 dark:border-gray-400/50 dark:text-gray-400 font-medium bg-transparent rounded-lg py-4 text-center hover:animate-pulse mt-8 w-full"
+      @click="initializeAppSettings"
+    >
+      Login
     </RouterLink>
   </div>
 </template>

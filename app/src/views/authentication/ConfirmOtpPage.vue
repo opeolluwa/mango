@@ -1,7 +1,7 @@
 <template>
   <div
-    class="w-full h-full bg-gray-900/60 absolute left-0 bottom-0 flex justify-center items-center z-500"
     v-if="processingRequest"
+    class="w-full h-full bg-gray-900/60 absolute left-0 bottom-0 flex justify-center items-center z-500"
   >
     <Transition>
       <FormLoader />
@@ -22,15 +22,15 @@
     </ErrorOutlet>
     <form
       action=""
-      @submit.prevent="submitForm"
       class="mt-8 flex flex-col gap-y-8"
+      @submit.prevent="submitForm"
     >
       <div class="flex flex-col w-full">
         <PinInputRoot
-          :otp="true"
           id="otp"
-          type="number"
           v-model="value"
+          :otp="true"
+          type="number"
           class="flex gap-x-[5px] items-center justify-center mt-1"
           @complete="handleComplete"
         >
@@ -60,7 +60,7 @@ import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue
 import { useCountdown } from "@vueuse/core";
 import axios from "../../axios.config";
 
-const countdownSecs = 30;
+const countdownSecs = 120;
 
 const { remaining, start } = useCountdown(countdownSecs, {
   onComplete() {},
@@ -87,6 +87,7 @@ const submitForm = async () => {
       console.error("Failed to create user:", response.data);
       formSubmitError.value = response.data.message || "Failed to create user";
     }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.log(error.response.data);
     formSubmitError.value = error.response.data.message;

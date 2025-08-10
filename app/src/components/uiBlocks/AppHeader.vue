@@ -1,8 +1,8 @@
 <template>
   <div
+    v-show="showSideNav"
     class="w-screen  z-[5000]  absolute top-2 left-0 h-[100vh] bg-app-dark/10 backdrop-blur-sm"
     @click="toggleSideNav"
-    v-show="showSideNav"
   >
     <Transition name="slide-fade">
       <AppNavigation v-if="showSideNav" class="w-[70vw] absolute dark:bg-app-dark z-[5000] " />
