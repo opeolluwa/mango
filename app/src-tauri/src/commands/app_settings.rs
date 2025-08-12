@@ -31,13 +31,9 @@ pub async fn fetch_app_settings<R: Runtime>(
 ) -> Result<AppSettings, CommandError> {
     let pool = state.db.clone();
 
-    let result = sqlx::query_as::<_, AppSettings>(r#"SELECT * FROM app_settings"#)
+    let result = sqlx::query_as::<_, AppSettings>(r#"SELECT * FROM app_settings LIMIT 1"#)
         .fetch_one(&*pool)
-        .await
-        .map_err(|err| {
-            log::error!("{err}");
-            DbError::QueryFailed
-        })?;
+        .await.unwrap();
 
     Ok(result)
 }
