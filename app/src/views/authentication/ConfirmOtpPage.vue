@@ -52,13 +52,16 @@
 
 <script lang="ts" setup>
 import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { PinInputInput, PinInputRoot } from "reka-ui";
 import { onMounted, ref } from "vue";
 import FormLoader from "../../components/form/FormLoader.vue";
 import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 import { useCountdown } from "@vueuse/core";
-import axios from "../../axios.config";
+// import axios from '../../axios.config';
+import useToken from "../../composibles/useToken";
+import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
+import axios from "axios";
 
 const countdownSecs = 120;
 
@@ -66,35 +69,56 @@ const { remaining, start } = useCountdown(countdownSecs, {
   onComplete() {},
   onTick() {},
 });
+
 const value = ref<number[]>([]);
 function handleComplete(otp: number[]) {
   console.log(otp);
   submitForm();
 }
 
+const router = useRouter();
+const route = useRoute();
+
+const processingRequest = ref(false);
 const formSubmitError = ref("");
 
-const router = useRouter();
-const processingRequest = ref(false);
 const submitForm = async () => {
   processingRequest.value = true;
 
+  const otp = value.value.join("");
+
   try {
-    const response = await axios.post("/auth/verify-account", {});
+
+    console.log(otp);
+    const response = await axios.post(
+      "/auth/verify-account",
+      { otp },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${route.query.token}`,
+        },
+      }
+    );
+    console.log(response);
     if (response.status === 200) {
-      router.push({ name: "Onboarding" });
+      const { token } = response.data.data;
+      useToken("Onboarding", token, router);
+      
     } else {
       console.error("Failed to create user:", response.data);
       formSubmitError.value = response.data.message || "Failed to create user";
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.log(error.response.data);
+    console.log(error);
     formSubmitError.value = error.response.data.message;
   } finally {
     processingRequest.value = false;
   }
 };
+
 
 onMounted(() => {
   start();

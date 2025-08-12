@@ -45,54 +45,60 @@ import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue
 import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import SubmitButton from "../../components/form/SubmitButton.vue";
 
-import * as yup from "yup";
-import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
-import axios from "../../axios.config";
-import { useRoute, useRouter } from "vue-router";
-import { ref } from "vue";
-import { type CachedUser } from "../../../src-tauri/bindings/CachedUser";
 
-const route = useRoute();
-const router = useRouter();
+  import * as yup from 'yup';
+  import ErrorOutlet from '../../components/form/ErrorOutlet.vue';
 
-const formSchema = yup.object({
-  firstname: yup.string().required(),
-  lastname: yup.string().required(),
-});
+  import axios from 'axios';
+  import { useRoute, useRouter } from 'vue-router';
+  import { ref } from 'vue';
+
+  const formSchema = yup.object({
+    firstname: yup.string().required(),
+    lastname: yup.string().required(),
+  });
+
 
 const { defineField, errors, handleSubmit } = useForm({
   validationSchema: formSchema,
 });
 
-const [firstname, firstnameAttr] = defineField("firstname");
-const [lastname, lastnameAttr] = defineField("lastname");
-const formSubmitError = ref("");
-const processingRequest = ref(false);
+  const route = useRoute();
+  const router = useRouter();
 
-const cacheUser = () => {}
-const onSubmit = handleSubmit(async (values) => {
-  processingRequest.value = true;
-  try {
-    const { firstname, lastname } = values;
-    const { token } = route.params;
+  const [firstname, firstnameAttr] = defineField('firstname');
+  const [lastname, lastnameAttr] = defineField('lastname');
 
-    const response = await axios.post(
-      "/auth/onnboard",
-      { firstname, lastname },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+  const processingRequest = ref(false);
+  const formSubmitError = ref('');
+
+  const onSubmit = handleSubmit(async (values) => {
+    processingRequest.value = true;
+    try {
+      const { firstname: firstName, lastname: lastName } = values;
+
+      const response = await axios.post(
+        '/auth/onboard',
+        { firstName, lastName },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${route.query.token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        router.replace({ name: 'Home' });
+      } else {
+        formSubmitError.value = response.data.error || 'Failed';
       }
-    );
-
-    if (response.status === 200) {
-      const result: AppSettings = await invoke("fetch_app_settings");
-      settings.value = result;
-
-      router.push({ name: "Home" });
-    } else {
-      formSubmitError.value = response.data.error || "Failed";
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log(error);
+      // formSubmitError.value = error.response.data.message;
+    } finally {
+      processingRequest.value = false;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
