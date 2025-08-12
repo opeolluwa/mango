@@ -1,8 +1,7 @@
 #![warn(unused_extern_crates)]
 
 use aers_lib::{
-    AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH, errors, events::channels::RedisMessageChannel, routes,
-    shared,
+    errors, events::subscriber::{EventSubscriber, EventSubscriberExt}, routes, shared, AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH
 };
 use axum::extract::DefaultBodyLimit;
 use errors::app_error::AppError;
@@ -43,57 +42,48 @@ async fn main() -> Result<(), AppError> {
         .await
         .map_err(|err| AppError::StartupError(err.to_string()))?;
 
-    let app = load_routes(pool)
+    let db  = std::sync::Arc::new(pool);
+    let app = load_routes(db.clone())
         .layer(DefaultBodyLimit::disable())
-        .layer(RequestBodyLimitLayer::new(
-            25 * 1024 * 1024, //25mb
-        ))
+        .layer(RequestBodyLimitLayer::new(25 * 1024 * 1024)) // 25mb
         .layer(tower_http::trace::TraceLayer::new_for_http())
         .layer(
             CorsLayer::new()
                 .allow_origin(Any)
                 .allow_methods(Any)
                 .allow_headers(Any),
-        ); //TODO: restrict to tauri url
+        );
 
     let port = extract_env::<u16>("PORT")?;
     let ip_address = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, port));
-    log::info!("Application listening on http://{}", ip_address);
+    log::info!("Application listening on http://{ip_address}");
 
     let listener = tokio::net::TcpListener::bind(ip_address)
         .await
         .map_err(|err| AppError::OperationFailed(err.to_string()))?;
+
+    // Spawn Redis listener
+    tokio::spawn(async  {
+        if let Err(err) = EventSubscriber::start_redis_listener(db).await {
+            log::error!("Redis listener failed: {err}");
+        }
+    });
+
     axum::serve(listener, app)
         .await
         .map_err(|err| AppError::OperationFailed(err.to_string()))?;
-
-    tokio::spawn(async move {
-        let redis_url = extract_env::<String>("REDIS_CONNECTION_URL").unwrap();
-        let client = redis::Client::open(redis_url).unwrap();
-        let mut conn = client.get_connection().unwrap();
-        let mut pubsub = conn.as_pubsub();
-
-        loop {
-            let msg = pubsub
-                .subscribe(RedisMessageChannel::FileConverted.to_string())
-                // .await
-                .map_err(|err| {
-                    log::error!("failed to subscribe to Redis channel due to {}", err);
-                    AppError::OperationFailed(err.to_string())
-                });
-        }
-    });
 
     Ok(())
 }
 
 fn initialize_file_systems() -> Result<(), AppError> {
     std::fs::create_dir_all(AERS_FILE_UPLOAD_PATH).map_err(|err| {
-        log::error!("failed to create AERS_FILE_UPLOAD_PATH due to {}", err);
+        log::error!("failed to create AERS_FILE_UPLOAD_PATH due to {err}");
         AppError::OperationFailed("failed to create AERS_FILE_UPLOAD_PATH".to_string())
     })?;
+
     std::fs::create_dir_all(AERS_EXPORT_PATH).map_err(|err| {
-        log::error!("failed to create AERS_EXPORT_PATH due to {}", err);
+        log::error!("failed to create AERS_EXPORT_PATH due to {err}");
         AppError::OperationFailed("failed to create AERS_EXPORT_PATH".to_string())
     })?;
 

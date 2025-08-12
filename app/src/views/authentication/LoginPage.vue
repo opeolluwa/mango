@@ -12,8 +12,8 @@
 
     <form
       action=""
-      @submit.prevent="submitForm"
       class="mt-8 flex flex-col gap-y-8"
+      @submit.prevent="submitForm"
     >
       <ErrorOutlet v-if="formSubmitError">{{ formSubmitError }}</ErrorOutlet>
       <div class="flex flex-col w-full">

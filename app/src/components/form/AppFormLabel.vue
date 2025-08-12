@@ -7,7 +7,10 @@
 <script lang="ts" setup>
 import { Label } from "reka-ui";
 
-const props = defineProps(["text", "for"]);
+const props = defineProps<{
+  text: string;
+  for?: string;
+}>();
 const { text } = props;
 </script>
 

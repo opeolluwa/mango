@@ -29,6 +29,7 @@ FROM debian:bookworm-slim AS final
 
 RUN apt-get update && \
     apt-get install -y libssl-dev && \
+    apt-get install -y ca-certificates && update-ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
     
@@ -40,8 +41,12 @@ RUN lame --version
 
 WORKDIR /app
 
-COPY --from=build /app/target/release/aers ./aers
+# copy the app
+COPY --from=build /app/target/release/aers ./aers 
+# copy the models and other statics files 
+COPY --from=build /app/crates/aers_email_client/templates ./templates
 COPY --from=build /app/resources ./resources
+#copy the migrations
 COPY --from=build /app/migrations ./migrations
 COPY --from=build /usr/local/lib/libtika_native.so /usr/local/lib
 

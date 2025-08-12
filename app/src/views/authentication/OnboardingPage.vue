@@ -3,17 +3,17 @@
     <AuthScreenHeaderText>Complete your profile</AuthScreenHeaderText>
     <p class="small text-gray-400">Just a few details to get you started</p>
 
-    <form @submit="onSubmit" class="mt-8 flex flex-col gap-y-8">
+    <form class="mt-8 flex flex-col gap-y-8" @submit="onSubmit">
       <ErrorOutlet v-if="formSubmitError">{{ formSubmitError }}</ErrorOutlet>
 
       <div class="flex flex-col w-full">
         <AppFormLabel for="firstname" text="Firstname" />
         <input
           id="firstname"
+          v-model="firstname"
           class="app-form-input"
           type="text"
           placeholder="firstname"
-          v-model="firstname"
           v-bind="firstnameAttr"
         />
         <ErrorOutlet v-if="errors.firstname">{{
@@ -25,10 +25,10 @@
         <AppFormLabel for="lastname" text="lastname" />
         <input
           id="lastname"
+          v-model="lastname"
           class="app-form-input"
           type="text"
           placeholder="lastname"
-          v-model="lastname"
           v-bind="lastnameAttr"
         />
         <ErrorOutlet v-if="errors.firstname">{{ errors.lastname }}</ErrorOutlet>
@@ -91,6 +91,7 @@
       } else {
         formSubmitError.value = response.data.error || 'Failed';
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log(error);
       // formSubmitError.value = error.response.data.message;

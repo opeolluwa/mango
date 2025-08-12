@@ -1,66 +1,59 @@
 <template>
   <div
-    class="px-8 flex flex-col h-screen pb-[15vh] justify-end w-screen relative layout"
+    class="px-8 py-2 relative flex flex-col h-screen justify-center items-center w-screen layout"
   >
-    <img src="/screen-one.png" alt="" />
+    <img src="/add-file-2.svg" alt="" class="h-[50vh]" />
     <h1
-      class="text-4xl capitalize leading-loose w-[90%] dark:text-white/70"
-      style="line-height: 50px"
+      class="text-2xl mt-8 font-extrabold leading-loose text-center dark:text-white/70 w-[90%]"
+      style="line-height: 20px; font-weight: 800"
     >
-      <span class="font-bold">Empower</span>
-      yourself with <span class="font-bold">Audible</span> knowledge
+      Upload document
     </h1>
+    <p class="text-center text-150 w-[90%]">
+      Upload a new PDF document to our high frequency servers
+    </p>
 
-    <div
-      class="size-14 flex justify-center items-center mt-4 rounded-full border-2 border-t-app-orange border-app-orange-50/20 hover:animate-ping"
-    >
+  <SensationalTint class="absolute inset-x-2 bottom-1 -z-10 transform-gpu overflow-hidden blur-3xl opacity-30 " />
+
+    <div class="flex justify-between w-full mt-8 absolute px-8 bottom-7">
+      <RouterLink
+        :to="{ name: 'Login' }"
+        class="text-app-dark dark:text-gray-400 font-medium bg-transparent rounded-lg py-4 text-center hover:animate-pulse h-fit"
+      >
+        Skip
+      </RouterLink>
       <RouterLink
         :to="{ name: 'ScreenTwo' }"
-        class="size-12 bg-app-orange rounded-full border-r border-r-app-orange-300 text-white flex justify-center items-center"
+        class="text-white bg-app-orange h-fit py-2 px-6 rounded-lg"
       >
-        <ArrowLongRightIcon class="size-6" />
+        Next
       </RouterLink>
     </div>
-    <SensationalTint />
-    <RouterLink
-      :to="{ name: 'Home' }"
-      class="leading-loose flex mt-2 relative justify-end -bottom-24"
-    >
-    </RouterLink>
   </div>
 </template>
 <script lang="ts" setup>
 import SensationalTint from "@/components/uiBlocks/SensationalTint.vue";
-import { ArrowLongRightIcon } from "@heroicons/vue/24/solid";
 import { invoke } from "@tauri-apps/api/core";
 import { onMounted, ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { AppSettings } from "../../../src-tauri/bindings/AppSettings";
-import { useCachedUserStore } from "../../stores/cachedUser";
 
 const settings = ref<AppSettings>();
-const cachedUser = useCachedUserStore();
 const router = useRouter();
 
 const fetchAppSettings = async () => {
   try {
     const result: AppSettings = await invoke("fetch_app_settings");
     settings.value = result;
-    console.log(JSON.stringify(result,  null, 2))
-  } catch (error: any) {
-    console.error("Failed to fetch app settings: due to", error.message);
+  } catch (error) {
+    console.error("Failed to fetch app settings:", error);
   }
 };
-
 onMounted(async () => {
   await fetchAppSettings();
-  const appInitialized = false;
-  const storeIsNull = cachedUser.storeIsNull;
-
-  if (appInitialized && !storeIsNull) {
-    router.push({ name: "LoginExisting" });
-  } else if (appInitialized && storeIsNull) {
-    router.push({ name: "LoginExisting" });
+  if (settings.value?.appInitialized) {
+    console.log("App is already initialized, redirecting to home...");
+    router.push({ name: "Login" });
   } else {
     console.log("App is not initialized, staying on ScreenThree...");
   }

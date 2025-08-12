@@ -1,9 +1,9 @@
 <template>
   <div @click="swap != swap">
-    <div id="initial" v-show="swap">
+    <div v-show="swap" id="initial">
       <slot name="initial" />
     </div>
-    <div id="final" v-show="!swap">
+    <div v-show="!swap" id="final">
       <slot name="final" />
     </div>
   </div>

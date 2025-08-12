@@ -15,7 +15,7 @@ export default defineConfig(async () => ({
       "@hooks": fileURLToPath(new URL("./src/hooks", import.meta.url)),
       "@views": fileURLToPath(new URL("./src/views", import.meta.url)),
       "@bindings": fileURLToPath(
-        new URL("./src-tauri/bindings", import.meta.url)
+        new URL("../src-tauri/bindings/", import.meta.url)
       ),
     },
   },

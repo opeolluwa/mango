@@ -102,17 +102,17 @@ impl UserRepositoryTrait for UserRepository {
     }
 
     async fn find_by_email(&self, email: &str) -> Option<UserEntity> {
-        let user = sqlx::query_as::<_, UserEntity>("SELECT * FROM users WHERE email = $1")
+        
+
+        sqlx::query_as::<_, UserEntity>("SELECT * FROM users WHERE email = $1")
             .bind(email)
             .fetch_one(self.pool.as_ref())
             .await
             .map_err(|err| {
-                log::error!("Failed to find user by email: {}", err);
+                log::error!("Failed to find user by email: {err}");
                 // UserServiceError::OperationFailed(err.to_string())
             })
-            .ok();
-
-        user
+            .ok()
     }
 
     async fn activate_account(&self, identifier: &Uuid) -> Result<(), ServiceError> {
@@ -193,7 +193,7 @@ impl UserRepositoryTrait for UserRepository {
         user_identifier: &Uuid,
         request: &OnboardingRequest,
     ) -> Result<(), ServiceError> {
-        sqlx::query(r#"UPDATE users SET first_namer = $1, last_name =$2  WHERE identifier = $3"#)
+        sqlx::query(r#"UPDATE users SET first_name = $1, last_name =$2  WHERE identifier = $3"#)
             .bind(&request.first_name)
             .bind(&request.last_name)
             .bind(user_identifier)

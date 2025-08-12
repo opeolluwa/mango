@@ -1,7 +1,7 @@
 <template>
   <div
-    class="w-full h-full bg-gray-900/60 absolute left-0 bottom-0 flex justify-center items-center z-500"
     v-if="loading"
+    class="w-full h-full bg-stone-900/60 absolute left-0 bottom-0 flex justify-center items-center z-500"
   >
     <Transition>
       <FormLoader />

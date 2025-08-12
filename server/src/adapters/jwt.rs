@@ -241,7 +241,7 @@ impl Claims {
 
         let token_data =
             decode::<Claims>(token, &decoding_key, &jwt_validation).map_err(|err| {
-                log::error!("failed to decode JWT token due to {}", err);
+                log::error!("failed to decode JWT token due to {err}");
                 AuthenticationError::InvalidToken
             })?;
 

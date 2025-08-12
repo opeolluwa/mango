@@ -11,8 +11,8 @@
 
       <form
         action=""
-        @submit.prevent="submitForm"
         class="mt-8 flex flex-col gap-y-8"
+        @submit.prevent="submitForm"
       >
         <ErrorOutlet v-if="formSubmitError">
           {{ formSubmitError }}
@@ -21,10 +21,10 @@
           <AppFormLabel text="Email" for="email" />
           <input
             id="email"
+            v-model="email"
             class="app-form-input"
             type="email"
             placeholder="jane@mailer.com"
-            v-model="email"
             v-bind="emailProps"
           />
           <ErrorOutlet v-if="errors.email" class="mt-2">
@@ -37,10 +37,10 @@
 
           <input
             id="password"
+            v-model="password"
             class="app-form-input"
             type="password"
             placeholder="********"
-            v-model="password"
             v-bind="passwordProps"
           />
           <ErrorOutlet v-if="errors.password" class="mt-2">
@@ -54,10 +54,10 @@
             <div class="inline-flex items-center">
               <label class="flex items-center cursor-pointer relative">
                 <input
+                  id="check"
                   type="checkbox"
                   :checked="checkboxOne"
                   class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
-                  id="check"
                 />
                 <span
                   class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
@@ -163,6 +163,7 @@
         formSubmitError.value =
           response.data.message || 'Failed to create user';
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log(error);
       // formSubmitError.value = error.response.data.message;

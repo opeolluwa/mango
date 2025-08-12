@@ -2,10 +2,10 @@ use redis::{
     AsyncCommands,
     aio::{ConnectionManager, ConnectionManagerConfig},
 };
-use serde::{Serialize, de::DeserializeOwned};
+use serde::Serialize;
 
 use crate::{
-    errors::service_error::ServiceError, events::channels::RedisMessageChannel,
+    errors::service_error::ServiceError, events::channels::EventChannel,
     shared::extract_env::extract_env,
 };
 
@@ -21,15 +21,20 @@ impl RedisClient {
             redis::Client::open(redis_connection_url).map_err(ServiceError::RedisError)?;
 
         let config = ConnectionManagerConfig::new().set_number_of_retries(5);
+        // .set_automatic_resubscription();
         let connection_manager =
             redis::aio::ConnectionManager::new_with_config(redis_client, config)
                 .await
                 .map_err(|err| {
-                    log::error!("failed to create redis connection manager due to {}", err);
+                    log::error!("failed to create redis connection manager due to {err}");
                     ServiceError::RedisError(err)
                 })?;
 
         Ok(Self { connection_manager })
+    }
+
+    pub fn get_connection(&mut self) -> ConnectionManager {
+        self.connection_manager.clone()
     }
 }
 
@@ -52,22 +57,16 @@ pub trait RedisClientExt {
         key: &str,
     ) -> impl std::future::Future<Output = Result<u64, ServiceError>>;
 
-    fn publish_message<T: Serialize + DeserializeOwned + std::fmt::Debug>(
+    fn publish_message<T: Serialize + std::fmt::Debug>(
         &mut self,
-        channel: &RedisMessageChannel,
+        channel: &EventChannel,
         message: &T,
-    ) -> impl std::future::Future<Output = Result<(), ServiceError>>;
-
-    fn consume_message(
-        &mut self,
-        channel: &RedisMessageChannel,
-        message: impl ToString,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>>;
 }
 
 impl RedisClientExt for RedisClient {
     async fn blacklist_refresh_token(&mut self, token: &str) -> Result<(), ServiceError> {
-        let key = &format!("blacklist_token:{}", token);
+        let key = &format!("blacklist_token:{token}");
         let stored_token = self.fetch_refresh_token(token).await?;
         if stored_token.is_some() {
             let key = format!("refresh_token:{}", stored_token.unwrap());
@@ -92,7 +91,7 @@ impl RedisClientExt for RedisClient {
     }
 
     async fn save_refresh_token(&mut self, token: &str) -> Result<(), ServiceError> {
-        let key = format!("refresh_token:{}", token);
+        let key = format!("refresh_token:{token}");
         let refresh_token_validity_in_minutes: u64 =
             extract_env("REFRESH_TOKEN_TTL_IN_MINUTES").unwrap_or(420);
         let validity_secs = refresh_token_validity_in_minutes * 60;
@@ -107,7 +106,7 @@ impl RedisClientExt for RedisClient {
     }
 
     async fn fetch_refresh_token(&mut self, token: &str) -> Result<Option<String>, ServiceError> {
-        let key = &format!("refresh_token:{}", token);
+        let key = &format!("refresh_token:{token}");
         let result: Option<String> = self
             .connection_manager
             .get(key)
@@ -129,17 +128,15 @@ impl RedisClientExt for RedisClient {
 
     async fn publish_message<T>(
         &mut self,
-        channel: &RedisMessageChannel,
+        channel: &EventChannel,
         message: &T,
     ) -> Result<(), ServiceError>
     where
-        T: Serialize + DeserializeOwned + std::fmt::Debug,
+        T: Serialize + std::fmt::Debug,
     {
         let message_as_str = serde_json::to_string(message).map_err(|err| {
             log::error!(
-                "failed to serialize {:#?} as string due to {}",
-                message,
-                err
+                "failed to serialize {message:#?} as string due to {err}"
             );
             ServiceError::SerdeJsonError(err)
         })?;
@@ -149,36 +146,6 @@ impl RedisClientExt for RedisClient {
             .publish(channel.to_string(), message_as_str)
             .await
             .map_err(ServiceError::from)?;
-        todo!()
-    }
-
-    async fn consume_message(
-        &mut self,
-        channel: &RedisMessageChannel,
-        message: impl ToString,
-    ) -> Result<(), ServiceError> {
-        let message_str = message.to_string();
-        log::info!(
-            "Consuming message from channel {}: {}",
-            channel,
-            message_str
-        );
-
-        match channel {
-            RedisMessageChannel::FileUploaded => {
-                log::info!("File uploaded: {}", message_str);
-                // Handle file upload logic here
-            }
-            RedisMessageChannel::FileConverted => {
-                log::info!("File converted: {}", message_str);
-                // Handle file conversion logic here
-            }
-            RedisMessageChannel::Mp3Converted => {
-                log::info!("MP3 converted: {}", message_str);
-                // Handle MP3 conversion logic here
-            }
-            RedisMessageChannel::Email => todo!(),
-        }
         Ok(())
     }
 }

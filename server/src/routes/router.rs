@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use axum::{Router, http::StatusCode, response::IntoResponse};
 use sqlx::{Pool, Postgres};
 
@@ -14,7 +16,7 @@ use crate::{
     states::services_state::ServicesState,
 };
 
-pub fn load_routes(pool: Pool<Postgres>) -> Router {
+pub fn load_routes(pool: Arc<Pool<Postgres>>) -> Router {
     let state = ServicesState {
         user_service: UserService::init(&pool),
         root_service: RootService::init(),

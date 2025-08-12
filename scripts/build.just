@@ -34,11 +34,11 @@
     cargo build --target aarch64-linux-android
 
 [working-directory: 'app']
-@build-android:
+@build-apk:
     npm run tauri android build -- --apk
 
 [working-directory: 'app']
-@build-ios:
+@build-aab:
     npm run tauri android build -- --aab
 
 [working-directory: 'app']
@@ -83,3 +83,9 @@
     fi
 
     echo "Sidecar copied to {{SIDECAR_PATH}}/lame-{{HOST_TRIPLE}}"
+
+
+
+[working-directory: 'server']
+@build-docker version:
+    docker build -t aers-{{version}} . -f ./docker/prod/Dockerfile 

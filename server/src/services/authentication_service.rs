@@ -137,7 +137,7 @@ impl AuthenticationServiceTrait for AuthenticationService {
                 .send_account_confirmation_email(&user.email, &otp)
                 .await
                 .unwrap_or_else(|err| {
-                    log::error!("Failed to send confirmation email: {}", err);
+                    log::error!("Failed to send confirmation email: {err}");
                 });
         });
 
@@ -339,7 +339,7 @@ impl AuthenticationServiceTrait for AuthenticationService {
             return Err(RepositoryError::RecordNotFound.into());
         };
 
-        println!("user {:#?}", user );
+        println!("user {user:#?}" );
         self.user_repository
             .onboard_user(&claims.user_identifier, request)
             .await?;
