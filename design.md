@@ -30,3 +30,7 @@ https://dribbble.com/shots/17081657-Sewo-Real-Estate-App-Landing-Page
 
 walkthrough 
 https://dribbble.com/shots/24055579-Smart-Home-Welcome-Screen
+
+
+app settings
+https://dribbble.com/shots/12187754-DailyUi-007-App-Settings

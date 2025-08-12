@@ -1,4 +1,5 @@
 use std::fmt::Debug;
+use std::sync::Arc;
 
 use crate::errors::app_error::AppError;
 use crate::errors::service_error::ServiceError;
@@ -10,6 +11,7 @@ use crate::shared::extract_env::extract_env;
 use futures_util::StreamExt;
 use serde::Serialize;
 use serde::de::DeserializeOwned;
+use sqlx::{Pool, Postgres};
 
 #[derive(Debug)]
 pub struct EventSubscriber {}
@@ -33,7 +35,7 @@ pub trait EventSubscriberExt {
         channel: &str,
         message: &str,
     ) -> impl std::future::Future<Output = Result<(), AppError>>;
-    fn start_redis_listener() -> impl std::future::Future<Output = Result<(), AppError>>;
+    fn start_redis_listener(pool: Arc<Pool<Postgres>>) -> impl std::future::Future<Output = Result<(), AppError>>;
     fn parse_message<T: Debug + Serialize + DeserializeOwned>(
         message: &str,
     ) -> Result<Event<T>, AppError>;
@@ -78,7 +80,7 @@ impl EventSubscriberExt for EventSubscriber {
         Ok(())
     }
 
-    async fn start_redis_listener() -> Result<(), AppError> {
+    async fn start_redis_listener(pool: Arc<Pool<Postgres>>) -> Result<(), AppError> {
         let redis_connection_url = extract_env::<String>("REDIS_CONNECTION_URL")?;
 
         let redis_client = redis::Client::open(redis_connection_url)

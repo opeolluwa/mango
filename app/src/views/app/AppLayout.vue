@@ -13,14 +13,12 @@
       </RouterView>
     </main>
     <AppDock />
-    <SensationalTint
-      
-    />
+    <!-- <SensationalTint /> -->
   </div>
 </template>
 
 <script lang="ts" setup>
-import SensationalTint from "@/components/uiBlocks/SensationalTint.vue";
+// import SensationalTint from "@/components/uiBlocks/SensationalTint.vue";
 import { listen } from "@tauri-apps/api/event";
 import { onMounted, ref } from "vue";
 import { type AudioSynthesisEvent } from "../../../src-tauri/bindings/AudioSynthesisEvent.ts";

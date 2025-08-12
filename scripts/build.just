@@ -34,11 +34,11 @@
     cargo build --target aarch64-linux-android
 
 [working-directory: 'app']
-@build-android:
+@build-apk:
     npm run tauri android build -- --apk
 
 [working-directory: 'app']
-@build-ios:
+@build-aab:
     npm run tauri android build -- --aab
 
 [working-directory: 'app']

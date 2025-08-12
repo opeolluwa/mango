@@ -2,10 +2,10 @@
   <div
     class="px-8 py-2 relative flex flex-col h-screen justify-center items-center w-screen layout"
   >
-    <img src="/community.svg" alt="" class="w-[200px]" />
+    <img src="/community.svg" alt="" class="h-[50vh]" />
     <h1
-      class="text-2xl mt-8 font-extrabold leading-loose text-center dark:text-white/70 w-[90%]"
-      style="line-height: 50px; font-weight: 800"
+      class="text-2xl mt-4 font-extrabold leading-loose text-center dark:text-white/70 w-[90%]"
+      style="line-height: 20px; font-weight: 800"
     >
       Share and collaborate
     </h1>
@@ -13,11 +13,11 @@
       Share audio books with friends, socialize and interract
     </p>
 
-    <SensationalTint />
+  <SensationalTint class="absolute inset-x-2 bottom-1 -z-10 transform-gpu overflow-hidden blur-3xl opacity-30 " />
 
     <RouterLink
       :to="{ name: 'SignUp' }"
-      class="text-white font-medium bg-app-orange rounded-lg py-4 text-center hover:animate-pulse mt-24 w-full bottom-3.5"
+      class="text-white font-medium bg-app-orange rounded-lg py-4 text-center hover:animate-pulse mt-10 w-full bottom-3.5"
       @click="initializeAppSettings"
     >
       Create account
