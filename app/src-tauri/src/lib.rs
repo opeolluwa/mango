@@ -93,6 +93,7 @@ pub fn run() {
     ];
 
     tauri::Builder::default()
+        // .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_sql::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_stronghold::Builder::new(|pass| todo!()).build())
@@ -108,9 +109,8 @@ pub fn run() {
                     .filename(db_path)
                     .create_if_missing(true);
 
-                let pool = SqlitePool::connect_with(connection_options)
-                    .await.unwrap();
-                    // .map_err(|e| e.to_string())?;
+                let pool = SqlitePool::connect_with(connection_options).await
+                .map_err(|e| e.to_string())?;
 
                 Ok(AppState { db: Arc::new(pool) })
             });
@@ -122,8 +122,8 @@ pub fn run() {
                 }
                 Err(e) => {
                     log::error!("{}", e);
-                   Err(e)
-                },
+                    Err(e)
+                }
             }
         })
         .plugin(

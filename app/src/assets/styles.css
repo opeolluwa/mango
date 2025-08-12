@@ -165,3 +165,7 @@
     font-size: 15px;
     line-height: 1;
 }
+
+.accent{
+@apply text-app-orange
+}

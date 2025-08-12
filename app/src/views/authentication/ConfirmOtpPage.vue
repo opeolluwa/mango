@@ -17,7 +17,7 @@
     <AuthScreenHeaderText>Confirm OTP</AuthScreenHeaderText>
     <p class="small text-gray-400">Return the reset OTP back to us</p>
 
-    <ErrorOutlet v-if="formSubmitError">
+    <ErrorOutlet v-if="formSubmitError" class="text-red-500">
       {{ formSubmitError }}
     </ErrorOutlet>
     <form
@@ -31,7 +31,7 @@
           v-model="value"
           :otp="true"
           type="number"
-          class="flex gap-x-[5px] items-center justify-center mt-1"
+          class="flex gap-x-[5px] items-center justify-center mt-1 hover:border-none"
           @complete="handleComplete"
         >
           <PinInputInput
@@ -81,13 +81,13 @@ const submitForm = async () => {
 
   try {
     const response = await axios.post("/auth/verify-account", {});
-    if (response.status === 201) {
+    if (response.status === 200) {
       router.push({ name: "Onboarding" });
     } else {
       console.error("Failed to create user:", response.data);
       formSubmitError.value = response.data.message || "Failed to create user";
     }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.log(error.response.data);
     formSubmitError.value = error.response.data.message;

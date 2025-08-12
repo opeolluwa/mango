@@ -3,8 +3,8 @@ import { type CachedUser } from "../../src-tauri/bindings/CachedUser";
 import { type CreateCachedUser } from "../../src-tauri/bindings/CreateCachedUser";
 import { invoke } from "@tauri-apps/api/core";
 
-interface Store extends CachedUser {}
-export interface UserCache extends CreateCachedUser {}
+type Store = CachedUser;
+export type UserCache = CreateCachedUser;
 
 export const useCachedUserStore = defineStore("cached_user", {
   state: (): Store => ({
@@ -19,10 +19,17 @@ export const useCachedUserStore = defineStore("cached_user", {
     lastName: (state) => state.lastName,
     email: (state) => state.email,
     storeIsNull: (state): boolean => {
-      const entryIsFalsy = (currentEntry: any) =>
+      const entryIsFalsy = (currentEntry: string) =>
         Boolean(currentEntry) == false;
       return Object.values(state).every(entryIsFalsy);
     },
+    user: (state) => ({
+      identifier: state.identifier,
+      firstName: state.firstName,
+      lastName: state.lastName,
+      email: state.email,
+      avatarUrl: state.avatarUrl,
+    }),
   },
 
   actions: {
