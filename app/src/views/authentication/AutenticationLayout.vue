@@ -1,11 +1,8 @@
 <template>
-  <!-- <RouterView v-slot="{ Component }">
-    <Transition name="fade" mode="out-in">
-      <component :is="Component" />
-    </Transition>
-  </RouterView> -->
-  <RouterView/>
-  <SensationalTint class="absolute inset-x-2 bottom-1 -z-10 transform-gpu overflow-hidden blur-3xl opacity-30 " />
+  <RouterView />
+  <SensationalTint
+    class="absolute inset-x-2 bottom-1 -z-10 transform-gpu overflow-hidden blur-3xl opacity-30"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -21,7 +18,6 @@ h1 {
 h1 + p {
   margin-top: 10px;
 }
-
 
 h1.text-7xl {
   line-height: 1;

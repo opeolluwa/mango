@@ -4,7 +4,7 @@
       v-if="showSideNav"
       class="fixed left-0 bottom-16 w-[70vw] z-[6000] dark:bg-app-dark bg-white"
     />
-    <main class="layout pt-3 parent-element w-screen dark:bg-app-dark">
+    <main class="layout parent-element w-screen dark:bg-app-dark">
       <RouterView v-slot="{ Component }">
         <Transition name="fade">
           <Component :is="Component" />
