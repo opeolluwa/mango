@@ -84,7 +84,7 @@
             >
           </label>
         </div>
-        <SubmitButton :loading="processingRequest" />
+        <SubmitButton :loading="processingRequest" class="text-white" />
         <RouterLink
           :to="{ name: 'Login' }"
           class="text-stone-500 flex justify-end -mt-4"

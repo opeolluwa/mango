@@ -40,10 +40,11 @@
 </template>
 
 <script setup lang="ts">
-  import { useForm } from 'vee-validate';
-  import AuthScreenHeaderText from '../../components/auth/AuthScreenHeaderText.vue';
-  import AppFormLabel from '../../components/form/AppFormLabel.vue';
-  import SubmitButton from '../../components/form/SubmitButton.vue';
+import { useForm } from "vee-validate";
+import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
+import AppFormLabel from "../../components/form/AppFormLabel.vue";
+import SubmitButton from "../../components/form/SubmitButton.vue";
+
 
   import * as yup from 'yup';
   import ErrorOutlet from '../../components/form/ErrorOutlet.vue';
@@ -57,9 +58,10 @@
     lastname: yup.string().required(),
   });
 
-  const { defineField, errors, handleSubmit } = useForm({
-    validationSchema: formSchema,
-  });
+
+const { defineField, errors, handleSubmit } = useForm({
+  validationSchema: formSchema,
+});
 
   const route = useRoute();
   const router = useRouter();
@@ -98,5 +100,11 @@
     } finally {
       processingRequest.value = false;
     }
-  });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    formSubmitError.value = error.response.data.message;
+  } finally {
+    processingRequest.value = false;
+  }
+});
 </script>

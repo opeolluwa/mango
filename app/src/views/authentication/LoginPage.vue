@@ -1,5 +1,5 @@
 <template>
-  <div class="layout h-screen overflow-y-hidden">
+  <div class="layout h-screen overflow-y-hidden relative">
     <ArrowLongLeftIcon
       class="size-12 text-app-orange mb-4"
       @click="router.back"
@@ -20,11 +20,10 @@
         <AppFormLabel text="Email" for="email" />
         <input
           id="email"
+          v-model="email"
           class="app-form-input"
           type="text"
           placeholder="jane@mailer.com"
-          v-model="email"
-          v-bind="emailAttr"
         />
         <ErrorOutlet v-if="errors.email">{{ errors.email }}</ErrorOutlet>
       </div>
@@ -33,10 +32,10 @@
         <AppFormLabel text="password" for="password" />
         <input
           id="password"
+          v-model="password"
           class="app-form-input"
           type="password"
           placeholder="********"
-          v-model="password"
           v-bind="passwordAttr"
         />
         <ErrorOutlet v-if="errors.password">{{ errors.password }}</ErrorOutlet>
@@ -48,6 +47,13 @@
         >Forgotten password?</RouterLink
       >
     </form>
+    <div class="w-full text-center px-8 mt-28">
+      <RouterLink
+        :to="{ name: 'SignUp' }"
+        class="text-stone-500 mt-20 text-center"
+        >Don&apos;t have an account <span class="accent font-medium">Sign up</span>
+      </RouterLink>
+    </div>
   </div>
 </template>
 
@@ -117,4 +123,5 @@
     appPersonalization.value = await invoke('fetch_app_personalization');
     console.log('appPersonalization', appPersonalization.value);
   });
+
 </script>
