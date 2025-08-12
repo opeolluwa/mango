@@ -47,12 +47,10 @@
 
   import * as yup from 'yup';
   import ErrorOutlet from '../../components/form/ErrorOutlet.vue';
-  import axios from '../../axios.config';
+
+  import axios from 'axios';
   import { useRoute, useRouter } from 'vue-router';
   import { ref } from 'vue';
-
-  const route = useRoute();
-  const router = useRouter();
 
   const formSchema = yup.object({
     firstname: yup.string().required(),
@@ -63,34 +61,39 @@
     validationSchema: formSchema,
   });
 
+  const route = useRoute();
+  const router = useRouter();
+
   const [firstname, firstnameAttr] = defineField('firstname');
   const [lastname, lastnameAttr] = defineField('lastname');
-  const formSubmitError = ref('');
+
   const processingRequest = ref(false);
+  const formSubmitError = ref('');
 
   const onSubmit = handleSubmit(async (values) => {
     processingRequest.value = true;
     try {
-      const { firstname, lastname } = values;
-      const { token } = route.params;
+      const { firstname: firstName, lastname: lastName } = values;
 
       const response = await axios.post(
-        '/auth/onnboard',
-        { firstname, lastname },
+        '/auth/onboard',
+        { firstName, lastName },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${route.query.token}`,
           },
         }
       );
 
       if (response.status === 200) {
-        router.push({ name: 'Home' });
+        router.replace({ name: 'Home' });
       } else {
         formSubmitError.value = response.data.error || 'Failed';
       }
     } catch (error: any) {
-      formSubmitError.value = error.response.data.message;
+      console.log(error);
+      // formSubmitError.value = error.response.data.message;
     } finally {
       processingRequest.value = false;
     }

@@ -51,51 +51,72 @@
 </template>
 
 <script lang="ts" setup>
-import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
-import { useRouter } from "vue-router";
-import { PinInputInput, PinInputRoot } from "reka-ui";
-import { onMounted, ref } from "vue";
-import FormLoader from "../../components/form/FormLoader.vue";
-import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
-import { useCountdown } from "@vueuse/core";
-import axios from "../../axios.config";
+  import { ArrowLongLeftIcon } from '@heroicons/vue/24/solid';
+  import { useRoute, useRouter } from 'vue-router';
+  import { PinInputInput, PinInputRoot } from 'reka-ui';
+  import { onMounted, ref } from 'vue';
+  import FormLoader from '../../components/form/FormLoader.vue';
+  import AuthScreenHeaderText from '../../components/auth/AuthScreenHeaderText.vue';
+  import { useCountdown } from '@vueuse/core';
+  // import axios from '../../axios.config';
+  import useToken from '../../composibles/useToken';
+  import ErrorOutlet from '../../components/form/ErrorOutlet.vue';
+  import axios from 'axios';
 
-const countdownSecs = 30;
+  const countdownSecs = 30;
 
-const { remaining, start } = useCountdown(countdownSecs, {
-  onComplete() {},
-  onTick() {},
-});
-const value = ref<number[]>([]);
-function handleComplete(otp: number[]) {
-  console.log(otp);
-  submitForm();
-}
+  const { remaining, start } = useCountdown(countdownSecs, {
+    onComplete() {},
+    onTick() {},
+  });
 
-const formSubmitError = ref("");
-
-const router = useRouter();
-const processingRequest = ref(false);
-const submitForm = async () => {
-  processingRequest.value = true;
-
-  try {
-    const response = await axios.post("/auth/verify-account", {});
-    if (response.status === 201) {
-      router.push({ name: "Onboarding" });
-    } else {
-      console.error("Failed to create user:", response.data);
-      formSubmitError.value = response.data.message || "Failed to create user";
-    }
-  } catch (error: any) {
-    console.log(error.response.data);
-    formSubmitError.value = error.response.data.message;
-  } finally {
-    processingRequest.value = false;
+  const value = ref<number[]>([]);
+  function handleComplete(otp: number[]) {
+    console.log(otp);
+    submitForm();
   }
-};
 
-onMounted(() => {
-  start();
-});
+  const router = useRouter();
+  const route = useRoute();
+
+  const processingRequest = ref(false);
+  const formSubmitError = ref('');
+
+  const submitForm = async () => {
+    processingRequest.value = true;
+
+    const otp = value.value.join('');
+
+    try {
+      console.log(otp);
+      const response = await axios.post(
+        '/auth/verify-account',
+        { otp },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${route.query.token}`,
+          },
+        }
+      );
+      console.log(response);
+      if (response.status === 200) {
+        const { token } = response.data.data;
+        useToken('Onboarding', token, router);
+      } else {
+        console.error('Failed to create user:', response.data);
+        formSubmitError.value =
+          response.data.message || 'Failed to create user';
+      }
+    } catch (error: any) {
+      console.log(error);
+      formSubmitError.value = error.response.data.message;
+    } finally {
+      processingRequest.value = false;
+    }
+  };
+
+  onMounted(() => {
+    start();
+  });
 </script>
