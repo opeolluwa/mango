@@ -1,11 +1,14 @@
 <template>
   <div
     v-show="showSideNav"
-    class="w-screen  z-[5000]  absolute top-2 left-0 h-[100vh] bg-app-dark/10 backdrop-blur-sm"
+    class="w-screen z-[5000] absolute top-2 left-0 h-[100vh] bg-app-dark/10 backdrop-blur-sm"
     @click="toggleSideNav"
   >
     <Transition name="slide-fade">
-      <AppNavigation v-if="showSideNav" class="w-[70vw] absolute dark:bg-app-dark z-[5000] " />
+      <AppNavigation
+        v-if="showSideNav"
+        class="w-[70vw] absolute dark:bg-app-dark z-[5000]"
+      />
     </Transition>
   </div>
   <header
@@ -56,7 +59,8 @@ const toggleSideNav = () => (showSideNav.value = !showSideNav.value);
 <style>
 .slide-fade-enter-active,
 .slide-fade-leave-active {
-  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .slide-fade-enter-from,
 .slide-fade-leave-to {

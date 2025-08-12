@@ -1,6 +1,5 @@
 <template>
   <div class="overflow-x-hidden">
-    <AppHeader @toggle-nav="showSideNav = $event" />
     <AppNavigation
       v-if="showSideNav"
       class="fixed left-0 bottom-16 w-[70vw] z-[6000] dark:bg-app-dark bg-white"
@@ -13,21 +12,16 @@
       </RouterView>
     </main>
     <AppDock />
-    <SensationalTint
-      
-    />
   </div>
 </template>
 
 <script lang="ts" setup>
-import SensationalTint from "@/components/uiBlocks/SensationalTint.vue";
 import { listen } from "@tauri-apps/api/event";
 import { onMounted, ref } from "vue";
 import { type AudioSynthesisEvent } from "../../../src-tauri/bindings/AudioSynthesisEvent.ts";
 import { type CurrentAudioMetadata } from "../../../src-tauri/bindings/CurrentAudioMetadata.ts";
 import { type Events } from "../../../src-tauri/bindings/Events.ts";
 import AppDock from "../../components/uiBlocks/AppDock.vue";
-import AppHeader from "../../components/uiBlocks/AppHeader.vue";
 import AppNavigation from "../../components/uiBlocks/AppNavigation.vue";
 import { useAudioBookLibrary } from "../../stores/library.ts";
 const store = useAudioBookLibrary();

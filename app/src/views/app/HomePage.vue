@@ -1,4 +1,5 @@
 <template>
+  <AppHeader @toggle-nav="showSideNav = $event" />
   <template v-if="!emptyLibrary">
     <div
       class="overflow-hidden bg-secondary bg-center-center bg-blend-multiply bg-cover bg-no-repeat relative flex flex-col justify-center items-center px-4 h-[90%] text-gray-400"
@@ -74,6 +75,7 @@ import AudioBook from "../../components/AudioBook.vue";
 import VueGreetings from "../../components/uiBlocks/VueGreetings.vue";
 import { createNewBook } from "../../composibles/book.ts";
 import { useAudioBookLibrary } from "../../stores/library.ts";
+const showSideNav = ref(false);
 const audiobooks = ref([
   {
     id: 1,

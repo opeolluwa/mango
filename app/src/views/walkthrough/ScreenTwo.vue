@@ -2,10 +2,10 @@
   <div
     class="px-8 py-2 relative flex flex-col h-screen justify-center items-center w-screen layout"
   >
-    <img src="/hero.svg" alt="" class="w-[250px]" />
+    <img src="/hero.svg" alt="" class="h-[50vh]" />
     <h1
       class="text-2xl mt-8 font-extrabold leading-loose text-center dark:text-white/70 w-[90%]"
-      style="line-height: 50px; font-weight: 800"
+      style="line-height: 20px; font-weight: 800"
     >
       Listen offline or online
     </h1>
@@ -13,7 +13,7 @@
       Listen to audio equivalent of your documents offline or online
     </p>
 
-    <SensationalTint />
+     <SensationalTint class="absolute inset-x-2 bottom-1 -z-10 transform-gpu overflow-hidden blur-3xl opacity-30 " />
 
     <div class="flex justify-between w-full mt-8 absolute px-8 bottom-7">
       <RouterLink

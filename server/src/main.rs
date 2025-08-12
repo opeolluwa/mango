@@ -42,7 +42,8 @@ async fn main() -> Result<(), AppError> {
         .await
         .map_err(|err| AppError::StartupError(err.to_string()))?;
 
-    let app = load_routes(pool)
+    let db  = std::sync::Arc::new(pool);
+    let app = load_routes(db.clone())
         .layer(DefaultBodyLimit::disable())
         .layer(RequestBodyLimitLayer::new(25 * 1024 * 1024)) // 25mb
         .layer(tower_http::trace::TraceLayer::new_for_http())
@@ -62,8 +63,8 @@ async fn main() -> Result<(), AppError> {
         .map_err(|err| AppError::OperationFailed(err.to_string()))?;
 
     // Spawn Redis listener
-    tokio::spawn(async {
-        if let Err(err) = EventSubscriber::start_redis_listener().await {
+    tokio::spawn(async  {
+        if let Err(err) = EventSubscriber::start_redis_listener(db).await {
             log::error!("Redis listener failed: {err}");
         }
     });
