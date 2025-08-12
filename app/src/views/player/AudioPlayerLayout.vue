@@ -7,14 +7,14 @@
         </Transition>
       </RouterView>
     </main>
-    <SensationalTint
+    <!-- <SensationalTint
       class="absolute inset-x-2 top-24 -z-10 transform-gpu overflow-hidden blur-3xl opacity-70"
-    />
+    /> -->
   </div>
 </template>
 
 <script lang="ts" setup>
-import SensationalTint from "@/components/uiBlocks/SensationalTint.vue";
+// import SensationalTint from "@/components/uiBlocks/SensationalTint.vue";
 </script>
 
 <style scoped>
