@@ -125,6 +125,7 @@
   import AppFormLabel from '../../components/form/AppFormLabel.vue';
   import ErrorOutlet from '../../components/form/ErrorOutlet.vue';
   import SubmitButton from '../../components/form/SubmitButton.vue';
+  import useToken from '../../composibles/useToken.ts';
 
   const validationSchema = yup.object({
     email: yup.string().required().email(),
@@ -135,12 +136,14 @@
     validationSchema,
   });
 
+  const router = useRouter();
+
   const [email, emailProps] = defineField('email');
   const [password, passwordProps] = defineField('password');
-  const formSubmitError = ref('');
-  const router = useRouter();
+
   const checkboxOne = ref(true);
   const processingRequest = ref(false);
+  const formSubmitError = ref('');
 
   const submitForm = handleSubmit(async (values) => {
     processingRequest.value = true;
@@ -151,8 +154,10 @@
         email: values.email,
         password: values.password,
       });
+
       if (response.status === 201) {
-        router.push({ name: 'ConfirmOtp' });
+        const token = response.data.data.token;
+        useToken('ConfirmOtp', token, router);
       } else {
         console.error('Failed to create user:', response.data);
         formSubmitError.value =
@@ -160,8 +165,8 @@
       }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.log(error.response.data);
-      formSubmitError.value = error.response.data.message;
+      console.log(error);
+      // formSubmitError.value = error.response.data.message;
     } finally {
       processingRequest.value = false;
     }
