@@ -20,7 +20,7 @@
     </div>
   </template>
   <template v-else>
-    <div class="flex flex-col overflow-scroll pb-48">
+    <div class="flex flex-col overflow-x-hidden pb-48">
       <div class="flex justify-between">
         <div>
           <h2 class="text-2xl font-black text-app-dark/90 dark:text-gray-200">
@@ -28,10 +28,28 @@
           </h2>
           <VueGreetings class="leading-5 text-gray-600 dark:text-gray-400" />
         </div>
+
+        <div class="col-span-4 flex gap-x-3 items-center">
+          <AvatarRoot
+            class="bg-blackA3 inline-flex size-8 select-none items-center justify-center overflow-hidden rounded-full align-middle"
+          >
+            <AvatarImage
+              class="h-full w-full rounded-[inherit] object-cover"
+              src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
+              alt="Colm Tuite"
+            />
+            <AvatarFallback
+              class="text-grass11 dark:text-stone-300 leading-1 flex h-full w-full items-center justify-center bg-white dark:bg-stone-800 text-sm font-medium"
+              :delay-ms="600"
+            >
+              CT
+            </AvatarFallback>
+          </AvatarRoot>
+        </div>
       </div>
 
-      <dic class="mt-12 hidden">
-        <h3 class="text-stone-400 text mb-2 dark:text-gray-400/60">
+      <div class="mt-12">
+        <h3 class="font-3xl text-gray-400 font-medium mb-3">
           Continue listening
         </h3>
         <div
@@ -43,15 +61,13 @@
             :key="index"
             :src="image.src"
             :alt="image.alt"
-            class="contain h-[200px] shadow-md rounded-lg hover:scale-95 transition-all duration-300"
+            class="contain h-[120px] shadow-md rounded-lg hover:scale-95 transition-all duration-300"
           />
         </div>
-      </dic>
+      </div>
 
-      <section class="hidde\n mt-12">
-        <h3 class="text-stone-400 text mb-2 dark:text-gray-400/60">
-          Your books
-        </h3>
+      <section class="mt-8">
+        <h3 class="font-3xl text-gray-400 font-medium mb-2">Recently added</h3>
 
         <div class="hiden">
           <AudioBook
@@ -75,6 +91,8 @@ import AudioBook from "../../components/AudioBook.vue";
 import VueGreetings from "../../components/uiBlocks/VueGreetings.vue";
 import { createNewBook } from "../../composibles/book.ts";
 import { useAudioBookLibrary } from "../../stores/library.ts";
+import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
+
 const showSideNav = ref(false);
 const audiobooks = ref([
   {
