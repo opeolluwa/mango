@@ -87,7 +87,8 @@ const submitForm = async () => {
       }
     );
     if (response.status === 200) {
-      router.push({ name: "SetNewPassword" });
+      const token = response.data.data.token;
+      router.push({ name: "SetNewPassword", query: { token } });
     } else {
       formSubmitError.value = response.data.message || "Failed to create user";
     }

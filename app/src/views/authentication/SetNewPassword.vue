@@ -5,14 +5,11 @@
       @click="router.back"
     />
 
+    {{ password }} {{ confirmPassword }}
     <AuthScreenHeaderText>Set new Password</AuthScreenHeaderText>
     <p class="small text-gray-400">There you go! Set new password</p>
 
-    <form
-      action=""
-      class="mt-8 flex flex-col gap-y-8"
-      @submit.prevent="submitForm"
-    >
+    <form action="" class="mt-8 flex flex-col gap-y-8" @submit="submitForm">
       <ErrorOutlet v-if="formSubmitError">{{ formSubmitError }}</ErrorOutlet>
 
       <div class="flex flex-col w-full">
@@ -42,7 +39,7 @@
           errors.confirmpassword
         }}</ErrorOutlet>
       </div>
-      <SubmitButton :loading="processingRequest" />
+      <SubmitButton :loading="processingRequest" class="text-white" />
     </form>
   </div>
 </template>
@@ -55,10 +52,12 @@ import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 import * as yup from "yup";
 import { useForm } from "vee-validate";
+import SubmitButton from "../../components/form/SubmitButton.vue";
+import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
 import axios from "axios";
 
 const validationSchema = yup.object({
-  email: yup.string().required().email(),
+  confirmPassword: yup.string().required(),
   password: yup.string().required(),
 });
 
@@ -67,21 +66,21 @@ const { defineField, errors, handleSubmit } = useForm({
 });
 
 const [password, passwordProps] = defineField("password");
-const [confirmPassword, confirmPasswordProps] = defineField("confimrPassword");
+const [confirmPassword, confirmPasswordProps] = defineField("confirmPassword");
 
 const router = useRouter();
-const processingRequest = ref(true);
+const processingRequest = ref(false);
 const formSubmitError = ref<string | null>(null);
 const route = useRoute();
 
 const submitForm = handleSubmit(async (values) => {
   processingRequest.value = true;
   try {
-    const { password, confimrPassword } = values;
+    const { password, confirmPassword } = values;
     processingRequest.value = true;
     const response = await axios.post(
       "/auth/reset-password",
-      { confimrPassword, password },
+      { confirmPassword, password },
       {
         headers: {
           "Content-Type": "application/json",
