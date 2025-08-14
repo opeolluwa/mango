@@ -8,6 +8,9 @@
     "notification:allow-is-permission-granted",
     "notification:default",
     "sql:default",
-    "sql:allow-execute"
+    "sql:allow-execute",
+    "dialog:default",
+    "dialog:allow-message",
+    "fs:default"
   ]
 }
