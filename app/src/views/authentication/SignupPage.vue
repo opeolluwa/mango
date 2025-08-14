@@ -121,11 +121,6 @@ const submitForm = handleSubmit(async (values) => {
       formSubmitError.value = response.data.message || "Failed to create user";
     }
   } catch (error) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // await message((error as any).response.data.message, {
-    //   title: "Failed to create user!",
-    //   kind: "error",
-    // });
     console.log(error);
   } finally {
     processingRequest.value = false;

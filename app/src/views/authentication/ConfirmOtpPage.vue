@@ -60,7 +60,6 @@ import { useRoute, useRouter } from "vue-router";
 import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
 import FormLoader from "../../components/form/FormLoader.vue";
-import { useSetToken } from "../../composibles/useToken";
 
 const router = useRouter();
 const route = useRoute();
@@ -94,7 +93,7 @@ const submitForm = async () => {
     console.log(response);
     if (response.status === 200) {
       const { token } = response.data.data;
-      useSetToken("Onboarding", token);
+      router.push({ name: "Onboarding", query: { token } });
     } else {
       console.error("Failed to create user:", response.data);
       formSubmitError.value = response.data.message || "Failed to create user";
@@ -102,8 +101,7 @@ const submitForm = async () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.log(error);
-    // formSubmitError.value = error.response.data.message;
+    formSubmitError.value = error.response.data.message;
   } finally {
     processingRequest.value = false;
   }
