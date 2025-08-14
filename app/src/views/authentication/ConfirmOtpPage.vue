@@ -103,7 +103,7 @@ const submitForm = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.log(error);
-    formSubmitError.value = error.response.data.message;
+    // formSubmitError.value = error.response.data.message;
   } finally {
     processingRequest.value = false;
   }
