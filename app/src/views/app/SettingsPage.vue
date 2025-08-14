@@ -1,13 +1,8 @@
 <template>
-  <div class="flex justify-between min-h-20">
-    <Icon
-      icon="fluent:chevron-left-32-filled"
-      :class="['icon size-5 dark:text-white/90']"
-      @click="useGoBack"
-    />
+  <ScreenLayout>
 
-    <Icon icon="tabler:dots" :class="['icon size-5 dark:text-white/90']" />
-  </div>
+
+
   <div class="flex items-center gap-x-4">
     <AvatarRoot
       class="bg-blackA3 inline-flex size-16 select-none items-center justify-center overflow-hidden rounded-full align-middle"
@@ -58,12 +53,13 @@
       </div>
     </div>
   </div>
+    </ScreenLayout>
 </template>
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
-import { useGoBack } from "../../composibles/router.ts";
 import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
+import ScreenLayout from "./ScreenLayout.vue";
 interface Section {
   icon: string;
   title: string;
