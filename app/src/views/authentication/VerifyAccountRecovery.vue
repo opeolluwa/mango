@@ -14,9 +14,8 @@
       @click="router.back"
     />
 
-    <AuthScreenHeaderText>Verify account</AuthScreenHeaderText>
+    <AuthScreenHeaderText>Confirm Reset OTP</AuthScreenHeaderText>
     <p class="small text-gray-400">Return the reset OTP back to us</p>
-
     <ErrorOutlet v-if="formSubmitError">
       {{ formSubmitError }}
     </ErrorOutlet>
@@ -28,11 +27,11 @@
       <div class="flex flex-col w-full">
         <PinInputRoot
           id="otp"
-          v-model="value"
+          v-model="token"
           :otp="true"
           type="number"
           class="flex gap-x-[5px] items-center justify-center mt-1"
-          @complete="handleComplete"
+          @complete="submitForm"
         >
           <PinInputInput
             v-for="(id, index) in 6"
@@ -52,13 +51,13 @@
 
 <script lang="ts" setup>
 import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
-import { useRouter } from "vue-router";
+import { useCountdown } from "@vueuse/core";
 import { PinInputInput, PinInputRoot } from "reka-ui";
 import { onMounted, ref } from "vue";
-import FormLoader from "../../components/form/FormLoader.vue";
-import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
-import { useCountdown } from "@vueuse/core";
+import { useRoute, useRouter } from "vue-router";
 import axios from "../../axios.config";
+import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
+import FormLoader from "../../components/form/FormLoader.vue";
 
 const countdownSecs = 30;
 
@@ -66,30 +65,36 @@ const { remaining, start } = useCountdown(countdownSecs, {
   onComplete() {},
   onTick() {},
 });
-const value = ref<number[]>([]);
-function handleComplete(otp: number[]) {
-  console.log(otp);
-  submitForm();
-}
-
+const token = ref<number[]>([]);
 const formSubmitError = ref("");
 
 const router = useRouter();
+const route = useRoute();
+
 const processingRequest = ref(false);
 const submitForm = async () => {
   processingRequest.value = true;
-
+  const otp = token.value.join("");
   try {
-    const response = await axios.post("/auth/verify-account", {});
-    if (response.status === 201) {
-      router.push({ name: "Onboarding" });
+    const response = await axios.post(
+      "/auth/verify",
+      { otp },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${route.query.token}`,
+        },
+      }
+    );
+    if (response.status === 200) {
+      router.push({ name: "SetNewPassword" });
     } else {
-      console.error("Failed to create user:", response.data);
       formSubmitError.value = response.data.message || "Failed to create user";
     }
-  } catch (error: unknown) {
+  } catch (error) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     formSubmitError.value = (error as any).response.data.message;
+    console.log(error);
   } finally {
     processingRequest.value = false;
   }

@@ -55,7 +55,6 @@ import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue
 import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
 import SubmitButton from "../../components/form/SubmitButton.vue";
-import { useSetToken } from "../../composibles/useToken";
 
 const validationSchema = yup.object({
   email: yup.string().required().email(),
@@ -65,10 +64,12 @@ const { defineField, errors, handleSubmit } = useForm({
   validationSchema,
 });
 
+const router = useRouter();
+
 const [email, emailProps] = defineField("email");
 const formSubmitError = ref("");
-const router = useRouter();
 const processingRequest = ref(false);
+
 const submitForm = handleSubmit(async (values) => {
   processingRequest.value = true;
 
@@ -80,9 +81,8 @@ const submitForm = handleSubmit(async (values) => {
 
     if (response.status === 200) {
       const token = response.data.data.token;
-      useSetToken("ConfirmOtp", token);
+      router.push({ name: "VerifyAccountRecovery", query: { token } });
     } else {
-      console.error("Failed to create user:", response.data);
       formSubmitError.value = response.data.message || "Failed to create user";
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -3,7 +3,7 @@
     <div
       class="overflow-hidden bg-cover bg-no-repeat relative flex flex-col justify-center items-center px-4 h-[90%] text-gray-400"
     >
-      <h2 class="text-xl font-bold leading-10 prose-xl">
+      <h2 class="text-xl font-bold prose-xl text-center">
         No audio book has been created
       </h2>
       <small class="text-center mb-2"

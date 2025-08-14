@@ -79,7 +79,7 @@ const submitForm = async () => {
   const otp = token.value.join("");
 
   try {
-    console.log(otp);
+
     const response = await axios.post(
       "/auth/verify-account",
       { otp },
@@ -95,7 +95,6 @@ const submitForm = async () => {
       const { token } = response.data.data;
       router.push({ name: "Onboarding", query: { token } });
     } else {
-      console.error("Failed to create user:", response.data);
       formSubmitError.value = response.data.message || "Failed to create user";
     }
 

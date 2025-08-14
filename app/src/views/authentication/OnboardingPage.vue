@@ -75,7 +75,6 @@ const onSubmit = handleSubmit(async (values) => {
   processingRequest.value = true;
   try {
     const { firstname: firstName, lastname: lastName } = values;
-    // const token = useGetToken();
     const token = route.query["token"];
     const response = await axios.post(
       "/auth/onboard",
@@ -92,7 +91,13 @@ const onSubmit = handleSubmit(async (values) => {
       router.replace({ name: "Home" });
       const userProfile: UserInformation =
         await cachedUserStore.fetchUserInformation(token as string);
-        
+      cachedUserStore.cacheUserData({
+        firstName: userProfile.firstName,
+        lastName: lastName.lastname,
+        email: userProfile.email,
+        avatarUrl: userProfile.profilePicture,
+        // identifier: userProfile.identifier //TODO:
+      });
       console.log({ userProfile });
     } else {
       formSubmitError.value = response.data.error || "Failed to onboard user";

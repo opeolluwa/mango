@@ -87,6 +87,7 @@ const router = useRouter();
 
 const [email, emailAttr] = defineField("email");
 const [password, passwordAttr] = defineField("password");
+
 const appPersonalization = ref<AppPersonalization>();
 const processingRequest = ref(false);
 const formSubmitError = ref<string | null>(null);
@@ -123,6 +124,5 @@ const submitForm = handleSubmit(async (values) => {
 
 onMounted(async () => {
   appPersonalization.value = await invoke("fetch_app_personalization");
-  console.log("appPersonalization", appPersonalization.value);
 });
 </script>

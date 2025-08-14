@@ -115,7 +115,6 @@ const submitForm = handleSubmit(async (values) => {
 
     if (response.status === 201) {
       const token = response.data.data.token;
-
       router.push({ name: "ConfirmOtp", query: { token } });
     } else {
       formSubmitError.value = response.data.message || "Failed to create user";
