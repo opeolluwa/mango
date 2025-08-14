@@ -15,9 +15,12 @@
     </button>
   </nav>
   <main
-    class="pt-28 bg-blend-multiply backdrop-grayscale-100 bg-linear-to-br rounded-t-xl shadow-current from-app-orange/10 via-app-dark to-app-orange/20 bg-center h-screen mt-20"
+    class="pt-28 bg-blend-multiply backdrop-grayscale-100 bg-linear-to-br rounded-t-xl shadow-current from-app-orange/10 via-app-dark to-app-orange/20 bg-center"
   >
-    <div id="hero" class="flex justify-center flex-col items-center mx-auto">
+    <div
+      id="hero"
+      class="flex justify-center flex-col items-center mx-auto h-screen"
+    >
       <h1 class="text-7xl w-[85%] font-bold text-center text-balance">
         Supercharge your text documents
       </h1>
@@ -37,6 +40,22 @@
         </button>
       </div>
     </div>
+    <div id="features">
+      <div class="text-center mb-5 border-2 py-3 w-fit rounded-full mx-auto px-4">how it works</div>
+      <div class="flex justify-center items-center">
+        <div>
+          <h1 class="text-7xl w-[85%] font-bold  text-balance">
+            Supercharge your text documents
+          </h1>
+          <p class="text-stone-400 mt-2 font-larger text-150">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure
+            temporibus deserunt q.
+          </p>
+        </div>
+        <NuxtImg src="/feed.png" />
+      </div>
+    </div>
+    <div id="pricing"></div>
   </main>
   <footer></footer>
 </template>
@@ -49,3 +68,11 @@ const routes: Array<{ label: string; path: string }> = [
   { label: "news", path: "/" },
 ];
 </script>
+
+<style>
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 15rem;
+}
+</style>
