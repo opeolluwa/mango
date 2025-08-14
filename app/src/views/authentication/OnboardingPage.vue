@@ -7,7 +7,7 @@
       <ErrorOutlet v-if="formSubmitError">{{ formSubmitError }}</ErrorOutlet>
 
       <div class="flex flex-col w-full">
-        <AppFormLabel for="firstname" text="Firstname" />
+        <AppFormLabel for="firstname" text="First name" />
         <input
           id="firstname"
           v-model="firstname"
@@ -22,7 +22,7 @@
       </div>
 
       <div class="flex flex-col w-full">
-        <AppFormLabel for="lastname" text="lastname" />
+        <AppFormLabel for="lastname" text="Last name" />
         <input
           id="lastname"
           v-model="lastname"
