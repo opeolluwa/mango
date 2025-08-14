@@ -3,10 +3,10 @@
     <div
       class="overflow-hidden bg-cover bg-no-repeat relative flex flex-col justify-center items-center px-4 h-[90%] text-gray-400"
     >
-      <h2 class="text-xl font-bold prose-xl text-center">
+      <h2 class="text-xl font-bold prose-xl text-center ">
         No audio book has been created
       </h2>
-      <small class="text-center mb-2"
+      <small class="text-center my-2"
         >Your audio books will appear as soon as you begin to add them</small
       >
       <button
@@ -23,7 +23,7 @@
       <div class="flex justify-between">
         <div>
           <h2 class="text-2xl font-black text-app-dark/90 dark:text-gray-200">
-            Hey, Olatunde! 👋
+            Hey, {{ firstName }}! 👋
           </h2>
           <VueGreetings class="leading-5 text-gray-600 dark:text-gray-400" />
         </div>
@@ -47,7 +47,7 @@
         </div>
       </div>
 
-      <div class="mt-12">
+      <div v-if="!emptyLibrary" class="mt-12">
         <h3 class="font-3xl text-gray-400 font-medium mb-3">
           Continue listening
         </h3>
@@ -57,7 +57,7 @@
         ></div>
       </div>
 
-      <section class="mt-8">
+      <section v-if="!emptyLibrary" class="mt-8">
         <h3 class="font-3xl text-gray-400 font-medium mb-2">Recently added</h3>
 
         <div class="hiden">
@@ -82,7 +82,10 @@ import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
 // import AudioBook from "../../components/AudioBook.vue";
 import VueGreetings from "../../components/uiBlocks/VueGreetings.vue";
 import { createNewBook } from "../../composibles/book.ts";
-
+import { useCachedUserStore } from "../../stores/cachedUser.ts";
+import { computed } from "vue";
+const store = useCachedUserStore();
+const firstName = computed(() => store.firstName);
 // const audiobooks = ref([]);
 
 // const images = ref([]);
