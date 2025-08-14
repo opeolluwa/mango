@@ -29,7 +29,6 @@
 import { Icon } from "@iconify/vue";
 
 import { ref } from "vue";
-import { goBack } from "../../composibles/router";
 import AudioBook from "../../components/AudioBook.vue";
 
 const audiobooks = ref([
