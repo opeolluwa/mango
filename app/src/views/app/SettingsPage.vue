@@ -33,13 +33,13 @@
       :key="index"
       class="my-2 py-3 first:mt-0 last:mb-0"
     >
-      <div class="grid gap-x-4 grid-cols-12">
+      <div class="grid gap-x-4 grid-cols-12 items-center">
         <Icon
           :icon="section.icon"
-          :class="[' size-6 dark:text-white/90 col-span-2']"
+          :class="['size-6 dark:text-white/90 col-span-2']"
         />
         <div class="col-span-8">
-          <h2 class="font-3xl font-medium capitalize leading-loose">
+          <h2 class="font-3xl font-medium capitalize">
             {{ section.title }}
           </h2>
           <small class="text-gray-400 first-letter:capitalize">{{

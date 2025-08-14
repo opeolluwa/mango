@@ -17,7 +17,7 @@ impl EmailClient {
     pub fn new() -> Self {
         let smtp_host: String = extract_env("SMTP_HOST")
             .unwrap_or_else(|_| panic!("SMTP_HOST environment variable not set"));
-        let smtp_port: u16 = extract_env("SMTP_PORT")
+        let _smtp_port: u16 = extract_env("SMTP_PORT")
             .unwrap_or_else(|_| panic!("SMTP_PORT environment variable not set"));
         let smtp_username: String = extract_env("SMTP_AUTH_USERNAME")
             .unwrap_or_else(|_| panic!("SMTP_AUTH_USERNAME environment variable not set"));

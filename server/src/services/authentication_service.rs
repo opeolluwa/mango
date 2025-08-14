@@ -9,7 +9,6 @@ use crate::adapters::authentication::VerifyAccountRequest;
 use crate::adapters::jwt::Claims;
 use crate::adapters::jwt::TWENTY_FIVE_MINUTES;
 use crate::adapters::repository::DatabaseInsertResult;
-use crate::entities::user::UserEntity;
 
 use crate::errors::repository_error::RepositoryError;
 use crate::errors::service_error::ServiceError;
@@ -58,7 +57,6 @@ pub trait AuthenticationServiceTrait {
 
     fn forgotten_password(
         &self,
-
         request: &ForgottenPasswordRequest,
     ) -> impl std::future::Future<Output = Result<ForgottenPasswordResponse, ServiceError>> + Send;
 
@@ -73,6 +71,12 @@ pub trait AuthenticationServiceTrait {
         claims: &Claims,
         request: &VerifyAccountRequest,
     ) -> impl std::future::Future<Output = Result<VerifyAccountResponse, ServiceError>> + Send;
+
+    fn validate_otp(
+        &self,
+        claims: &Claims,
+        request: &VerifyAccountRequest,
+    ) -> impl std::future::Future<Output = Result<String, ServiceError>> + Send;
 
     fn request_refresh_token(
         &self,
@@ -90,6 +94,12 @@ pub trait AuthenticationServiceTrait {
         claims: &Claims,
         request: &OnboardingRequest,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
+
+    fn verify_reset_otp(
+        &self,
+        claims: &Claims,
+        request: &VerifyAccountRequest,
+    ) -> impl std::future::Future<Output = Result<VerifyAccountResponse, ServiceError>> + Send;
 }
 
 impl AuthenticationServiceTrait for AuthenticationService {
@@ -188,34 +198,33 @@ impl AuthenticationServiceTrait for AuthenticationService {
         &self,
         request: &ForgottenPasswordRequest,
     ) -> Result<ForgottenPasswordResponse, ServiceError> {
-        let user = self.user_repository.find_by_email(&request.email).await;
-        if user.is_none() {
-            return Err(AuthenticationError::WrongCredentials.into());
+        let Some(user) = self.user_repository.find_by_email(&request.email).await else {
+            return Err(ServiceError::RepositoryError(
+                RepositoryError::RecordNotFound,
+            ));
         };
 
-        tokio::task::spawn(async move {
-            // let service_helper = ServiceHelpers::init();
-            // // let otp = service_helper.generate_otp(&user_email);
-            // let otp = service_helper.generate_otp(&request.email).unwrap();
-            // match service_helper
-            //     .send_forgotten_password_email(&user.unwrap().email, &otp)
-            //     .await
-            // {
-            //     Ok(_) => log::info!("Forgotten password email sent successfully"),
-            //     Err(err) => log::error!("Failed to send forgotten password email: {}", err),
-            // }
-        });
-
-        let UserEntity {
-            email, identifier, ..
-        } = user.unwrap();
-
         let token = Claims::builder()
-            .subject("forgotten_password")
-            .email(&email)
-            .user_identifier(&identifier)
-            .validity(Duration::from_secs(15 * 60 /*15 minutes */))
-            .build_and_sign()?;
+            .email(&user.email)
+            .user_identifier(&user.identifier)
+            .validity(TWENTY_FIVE_MINUTES)
+            .build()?
+            .generate_token()?;
+
+        let otp = self
+            .otp_service
+            .new_otp_for_user(&user.identifier.to_string())
+            .await?;
+
+        tokio::task::spawn(async move {
+            let service_helpers = ServiceHelpers::init();
+            service_helpers
+                .send_forgotten_password_email(&user.email, &otp)
+                .await
+                .unwrap_or_else(|err| {
+                    log::error!("Failed to send confirmation email: {err}");
+                });
+        });
 
         Ok(ForgottenPasswordResponse { token })
     }
@@ -248,38 +257,11 @@ impl AuthenticationServiceTrait for AuthenticationService {
         claims: &Claims,
         request: &VerifyAccountRequest,
     ) -> Result<VerifyAccountResponse, ServiceError> {
-        let Some(user) = self
-            .user_repository
-            .find_by_identifier(&claims.user_identifier)
-            .await
-        else {
-            return Err(ServiceError::AuthenticationError(
-                AuthenticationError::InvalidToken,
-            ));
-        };
-
-        let valid_otp = self
-            .otp_service
-            .validate_otp_for_user(&claims.user_identifier, &request.otp)
-            .await?;
-
-        if !valid_otp {
-            return Err(ServiceError::AuthenticationError(
-                AuthenticationError::InvalidOtp,
-            ));
-        }
-
-        let token = Claims::builder()
-            .email(&user.email)
-            .user_identifier(&user.identifier)
-            .validity(TWENTY_FIVE_MINUTES)
-            .build()?
-            .generate_token()?;
-
+        let token = self.verify_reset_otp(claims, request).await?;
         self.user_repository
             .activate_account(&claims.user_identifier)
             .await?;
-        Ok(VerifyAccountResponse { token })
+        Ok(token)
     }
 
     async fn request_refresh_token(
@@ -330,19 +312,63 @@ impl AuthenticationServiceTrait for AuthenticationService {
         claims: &Claims,
         request: &OnboardingRequest,
     ) -> Result<(), ServiceError> {
-        let Some(user)= self
+        let Some(_) = self
             .user_repository
             .find_by_identifier(&claims.user_identifier)
             .await
-            else
-        {
+        else {
             return Err(RepositoryError::RecordNotFound.into());
         };
 
-        println!("user {user:#?}" );
         self.user_repository
             .onboard_user(&claims.user_identifier, request)
             .await?;
         Ok(())
+    }
+
+    async fn validate_otp(
+        &self,
+        claims: &Claims,
+        request: &VerifyAccountRequest,
+    ) -> Result<String, ServiceError> {
+        let Some(user) = self
+            .user_repository
+            .find_by_identifier(&claims.user_identifier)
+            .await
+        else {
+            return Err(ServiceError::AuthenticationError(
+                AuthenticationError::InvalidToken,
+            ));
+        };
+
+        let valid_otp = self
+            .otp_service
+            .validate_otp_for_user(&claims.user_identifier, &request.otp)
+            .await?;
+
+        if !valid_otp {
+            return Err(ServiceError::AuthenticationError(
+                AuthenticationError::InvalidOtp,
+            ));
+        }
+
+        let token = Claims::builder()
+            .email(&user.email)
+            .user_identifier(&user.identifier)
+            .validity(TWENTY_FIVE_MINUTES)
+            .build()?
+            .generate_token()?;
+
+        Ok(token)
+    }
+
+    async fn verify_reset_otp(
+        &self,
+        claims: &Claims,
+        request: &VerifyAccountRequest,
+    ) -> Result<VerifyAccountResponse, ServiceError> {
+        let token = self.validate_otp(claims, request).await?;
+
+        Ok(VerifyAccountResponse { token })
     }
 }

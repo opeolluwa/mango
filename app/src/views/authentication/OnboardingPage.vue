@@ -40,17 +40,17 @@
 </template>
 
 <script setup lang="ts">
+import axios from "axios";
 import { useForm } from "vee-validate";
+import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import * as yup from "yup";
 import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 import AppFormLabel from "../../components/form/AppFormLabel.vue";
-import SubmitButton from "../../components/form/SubmitButton.vue";
-
-import * as yup from "yup";
 import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
-
-import axios from "axios";
-import { useRoute, useRouter } from "vue-router";
-import { ref } from "vue";
+import SubmitButton from "../../components/form/SubmitButton.vue";
+import { useCachedUserStore } from "../../stores/cachedUser";
+import { UserInformation } from "../../types/userProfile";
 
 const formSchema = yup.object({
   firstname: yup.string().required(),
@@ -61,8 +61,9 @@ const { defineField, errors, handleSubmit } = useForm({
   validationSchema: formSchema,
 });
 
-const route = useRoute();
 const router = useRouter();
+const route = useRoute();
+const cachedUserStore = useCachedUserStore();
 
 const [firstname, firstnameAttr] = defineField("firstname");
 const [lastname, lastnameAttr] = defineField("lastname");
@@ -74,27 +75,35 @@ const onSubmit = handleSubmit(async (values) => {
   processingRequest.value = true;
   try {
     const { firstname: firstName, lastname: lastName } = values;
-
+    const token = route.query["token"];
     const response = await axios.post(
       "/auth/onboard",
       { firstName, lastName },
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${route.query.token}`,
+          Authorization: `Bearer ${token}`,
         },
       }
     );
 
     if (response.status === 200) {
       router.replace({ name: "Home" });
+      const userProfile: UserInformation =
+        await cachedUserStore.fetchUserInformation(token as string);
+      cachedUserStore.cacheUserData({
+        firstName: userProfile.firstName,
+        lastName: lastName.lastname,
+        email: userProfile.email,
+        avatarUrl: userProfile.profilePicture,
+        // identifier: userProfile.identifier //TODO:
+      });
+      console.log({ userProfile });
     } else {
-      formSubmitError.value = response.data.error || "Failed";
+      formSubmitError.value = response.data.error || "Failed to onboard user";
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+  } catch (error) {
     console.log(error);
-    // formSubmitError.value = error.response.data.message;
   } finally {
     processingRequest.value = false;
   }

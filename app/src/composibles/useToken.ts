@@ -8,5 +8,6 @@ export const useSetToken = (routeName: string, token: string | number) => {
 };
 
 export const useGetToken = () => {
-  return route.query["token"];
+  const token = route.query["token"] as string;
+  return token;
 };

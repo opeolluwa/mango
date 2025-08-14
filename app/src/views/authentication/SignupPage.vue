@@ -91,9 +91,10 @@ const { defineField, errors, handleSubmit } = useForm({
 const [email, emailProps] = defineField("email");
 const [password, passwordProps] = defineField("password");
 
-const acceptTerms = ref(false);
+const acceptTerms = ref(true);
 const processingRequest = ref(false);
 const formSubmitError = ref("");
+const router = useRouter();
 
 const submitForm = handleSubmit(async (values) => {
   processingRequest.value = true;
@@ -114,17 +115,11 @@ const submitForm = handleSubmit(async (values) => {
 
     if (response.status === 201) {
       const token = response.data.data.token;
-      const router = useRouter();
       router.push({ name: "ConfirmOtp", query: { token } });
     } else {
       formSubmitError.value = response.data.message || "Failed to create user";
     }
   } catch (error) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // await message((error as any).response.data.message, {
-    //   title: "Failed to create user!",
-    //   kind: "error",
-    // });
     console.log(error);
   } finally {
     processingRequest.value = false;

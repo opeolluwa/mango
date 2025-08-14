@@ -2,6 +2,8 @@ import { defineStore } from "pinia";
 import { type CachedUser } from "../../src-tauri/bindings/CachedUser";
 import { type CreateCachedUser } from "../../src-tauri/bindings/CreateCachedUser";
 import { invoke } from "@tauri-apps/api/core";
+import axios from "axios";
+import { UserInformation } from "../types/userProfile";
 
 type Store = CachedUser;
 export type UserCache = CreateCachedUser;
@@ -37,6 +39,17 @@ export const useCachedUserStore = defineStore("cached_user", {
       await invoke("set_cached_user", { user }).catch((error) => {
         console.log("failed to set user data cache", error);
       });
+    },
+    async fetchUserInformation(token: string): Promise<UserInformation> {
+      try {
+        const authorizationHeader = `Bearer ${token}`;
+        const response = await axios.get("/user/profile", {
+          headers: { Authorization: authorizationHeader },
+        });
+        return response.data.data as UserInformation;
+      } catch (error) {
+        throw new Error(`Failed to fetch user information due to ${error}`);
+      }
     },
   },
 });
