@@ -7,7 +7,7 @@
 
     <AuthScreenHeaderText>Login to continue!</AuthScreenHeaderText>
     <p class="small text-gray-400">
-      Get crank up where you stopped your last audio book!
+      Let&apos; cranked up where you stopped your last audio book!
     </p>
 
     <form
@@ -41,18 +41,25 @@
         />
         <ErrorOutlet v-if="errors.password">{{ errors.password }}</ErrorOutlet>
       </div>
+  
       <SubmitButton type="submit" :loading="processingRequest" />
-      <RouterLink
+     
+    </form>
+         <RouterLink
         :to="{ name: 'ForgottenPassword' }"
-        class="text-stone-500 flex justify-end -mt-4"
+        class="text-stone-500 flex justify-end mt-2"
         >Forgotten password?</RouterLink
       >
-    </form>
-    <div class="w-full text-center px-8 mt-28">
+    <div class="w-full text-center px-8 mt-8">
       <RouterLink
         :to="{ name: 'SignUp' }"
+
         class="text-stone-500 mt-20 text-center"
         >Don&apos;t have an account
+
+        class="text-stone-500 text-center"
+        >Don&apos;t have an account?
+
         <span class="accent font-medium">Sign up</span>
       </RouterLink>
     </div>
@@ -73,6 +80,7 @@ import * as yup from "yup";
 import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
 import axios from "axios";
 
+
 const loginSchema = yup.object({
   email: yup.string().required().email(),
   password: yup.string().required(),
@@ -90,6 +98,27 @@ const [password, passwordAttr] = defineField("password");
 const appPersonalization = ref<AppPersonalization>();
 const processingRequest = ref(false);
 const formSubmitError = ref<string | null>(null);
+
+
+
+const loginSchema = yup.object({
+  email: yup.string().required().email(),
+  password: yup.string().required(),
+});
+
+const { defineField, errors, handleSubmit } = useForm({
+  validationSchema: loginSchema,
+});
+
+const router = useRouter();
+
+const [email, emailAttr] = defineField("email");
+const [password, passwordAttr] = defineField("password");
+
+const appPersonalization = ref<AppPersonalization>();
+const processingRequest = ref(false);
+const formSubmitError = ref<string | null>(null);
+
 
 const submitForm = handleSubmit(async (values) => {
   try {

@@ -1,10 +1,12 @@
 <template>
   <div class="w-full">
-    <router-view v-slot="{ Component }">
-      <transition name="fade">
-        <component :is="Component" />
-      </transition>
-    </router-view>
+    <UApp>
+      <router-view v-slot="{ Component }">
+        <transition name="fade">
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </UApp>
   </div>
 </template>
 
