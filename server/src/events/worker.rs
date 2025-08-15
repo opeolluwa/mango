@@ -1,30 +1,39 @@
-use std::path::{Path, PathBuf};
+use std::{
+    path::{Path, PathBuf},
+    sync::Arc,
+};
 
 use aers_audify::Audify;
 use aers_imagekit_client::ImagekitClient;
 use aers_wav_mp3_converter::WavToMp3Converter;
+use sqlx::{Pool, Postgres};
 
 use crate::{
+    adapters::notification::CreateNotification,
     errors::service_error::ServiceError,
     events::{
         channels::EventChannel,
         message::{ConvertDocument, DocumentConverted, Event},
         producer::EventPrducer,
     },
+    services::{
+        audio_book_service::{AudioBooksService, AudioBooksServiceExt},
+        notification_service::{NotifiactionService, NotifiactionServiceExt},
+    },
     shared::extract_env::extract_env,
 };
 
-pub struct EventWorker {}
-
-impl Default for EventWorker {
-    fn default() -> Self {
-        Self::new()
-    }
+pub struct EventWorker {
+    notification_service: NotifiactionService,
+    audio_book_service: AudioBooksService,
 }
 
 impl EventWorker {
-    pub fn new() -> Self {
-        Self {}
+    pub fn new(pool: Arc<Pool<Postgres>>) -> Self {
+        Self {
+            notification_service: NotifiactionService::init(&pool),
+            audio_book_service: AudioBooksService::init(&pool),
+        }
     }
 
     fn build_paths(&self, file_path: &Path) -> Result<(String, String), ServiceError> {
@@ -116,6 +125,11 @@ pub trait EventWorkerExt {
     ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 
     fn log_message(&self, message: &str);
+
+    fn process_document_converted(
+        &self,
+        message: &Event<DocumentConverted>,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 }
 
 impl EventWorkerExt for EventWorker {
@@ -159,5 +173,41 @@ impl EventWorkerExt for EventWorker {
 
     fn log_message(&self, message: &str) {
         log::debug!("got message {message}");
+    }
+    async fn process_document_converted(
+        &self,
+        message: &Event<DocumentConverted>,
+    ) -> Result<(), ServiceError> {
+        let converted_file = DocumentConverted {
+            playlist_identifier: message.payload.playlist_identifier,
+            file_name: message.payload.file_name.to_string(),
+            user_identifier: message.payload.user_identifier,
+            url: message.payload.url.to_string(),
+        };
+
+        let audio_book_service = self.audio_book_service.clone();
+        tokio::task::spawn(async move {
+            if let Err(err) = audio_book_service
+                .processs_file_converted(&converted_file)
+                .await
+            {
+                log::error!("failed to send notification due to {err}")
+            }
+        });
+
+        let notification_service = self.notification_service.clone();
+        let request = CreateNotification {
+            user_identifier: message.payload.user_identifier,
+            subject: "File converted".to_string(),
+            description: format!("Your file has been convetred {}", message.payload.url),
+        };
+
+        tokio::task::spawn(async move {
+            if let Err(err) = notification_service.create_new_notification(&request).await {
+                log::error!("failed to send notification due to {err}")
+            }
+        });
+
+        Ok(())
     }
 }

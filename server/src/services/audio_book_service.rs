@@ -1,5 +1,6 @@
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
+use crate::AERS_FILE_UPLOAD_PATH;
 use crate::adapters::audio_books::{
     AddBookToPlaylistRequest, UpdateBookRequest, UploadAssetRequest,
 };
@@ -10,11 +11,9 @@ use crate::entities::audio_book::AudioBookEntity;
 use crate::errors::repository_error::RepositoryError;
 use crate::errors::service_error::ServiceError;
 use crate::events::channels::EventChannel;
-use crate::events::message::{ConvertDocument, ConvertDocumentMessage, Event};
+use crate::events::message::{ConvertDocument, DocumentConverted};
 use crate::events::producer::EventPrducer;
-use crate::events::redis::{RedisClient, RedisClientExt};
 use crate::repositories::audio_book_repository::{AudioBookRepository, AudioBookRepositoryExt};
-use crate::{AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH};
 use aers_utils::generate_file_name;
 use axum_typed_multipart::{FieldData, TypedMultipart};
 use regex::Regex;
@@ -90,6 +89,11 @@ pub trait AudioBooksServiceExt {
         &self,
         document: FieldData<NamedTempFile>,
     ) -> Result<SaveFile, ServiceError>;
+
+    fn processs_file_converted(
+        &self,
+        message: &DocumentConverted,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 }
 
 impl AudioBooksService {
@@ -270,5 +274,12 @@ impl AudioBooksServiceExt for AudioBooksService {
             file_name: sanitized_file_name,
             file_path: pdf_path,
         })
+    }
+
+    async fn processs_file_converted(
+        &self,
+        message: &DocumentConverted,
+    ) -> Result<(), ServiceError> {
+        todo!()
     }
 }

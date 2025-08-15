@@ -34,8 +34,11 @@ pub trait EventSubscriberExt {
     fn consume_message(
         channel: &str,
         message: &str,
+        pool: Arc<Pool<Postgres>>,
     ) -> impl std::future::Future<Output = Result<(), AppError>>;
-    fn start_redis_listener(pool: Arc<Pool<Postgres>>) -> impl std::future::Future<Output = Result<(), AppError>>;
+    fn start_redis_listener(
+        pool: Arc<Pool<Postgres>>,
+    ) -> impl std::future::Future<Output = Result<(), AppError>>;
     fn parse_message<T: Debug + Serialize + DeserializeOwned>(
         message: &str,
     ) -> Result<Event<T>, AppError>;
@@ -54,9 +57,13 @@ impl EventSubscriberExt for EventSubscriber {
 
         Ok(Event::new(message))
     }
-    async fn consume_message(channel: &str, message: &str) -> Result<(), AppError> {
+    async fn consume_message(
+        channel: &str,
+        message: &str,
+        pool: Arc<Pool<Postgres>>,
+    ) -> Result<(), AppError> {
         let channel = EventChannel::from(channel.to_string());
-        let worker = EventWorker::new();
+        let worker = EventWorker::new(pool);
 
         match channel {
             EventChannel::DocumentConvertedToAudio => {
@@ -109,7 +116,7 @@ impl EventSubscriberExt for EventSubscriber {
                 .get_payload()
                 .unwrap_or_else(|_| "<Invalid Payload>".to_string());
 
-            Self::consume_message(&channel, &message).await?;
+            Self::consume_message(&channel, &message, pool.clone()).await?;
         }
 
         Ok(())
