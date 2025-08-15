@@ -67,7 +67,15 @@ impl EventSubscriberExt for EventSubscriber {
 
         match channel {
             EventChannel::DocumentConvertedToAudio => {
-                let _message = Self::parse_message::<DocumentConverted>(message)?;
+                let message = Self::parse_message::<DocumentConverted>(message)?;
+
+                if let Err(err) = worker.process_document_converted(&message).await {
+                    log::error!(
+                        "failed to process event {} due to {}",
+                        message.identifier,
+                        err
+                    );
+                }
             }
 
             EventChannel::ConvertDocumentToAudio => {
