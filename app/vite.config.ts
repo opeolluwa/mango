@@ -1,12 +1,20 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import tailwindcss from "@tailwindcss/vite";
+import ui from '@nuxt/ui/vite'
 import { fileURLToPath, URL } from "url";
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
 export default defineConfig(async () => ({
-  plugins: [vue(), tailwindcss()],
+  plugins: [vue(), tailwindcss(),     ui({
+      ui: {
+        colors: {
+          primary: '#FF6500',
+          // neutral: 'zinc'
+        }
+      }
+    })],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

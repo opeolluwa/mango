@@ -3,7 +3,7 @@
     <Icon
       icon="fluent:chevron-left-32-filled"
       :class="['icon size-5 dark:text-white/90']"
-      @click="goBack"
+      @click="useGoBack"
     />
 
     <Icon icon="tabler:dots" :class="['icon size-5 dark:text-white/90']" />
@@ -27,8 +27,8 @@
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
+
 import { ref } from "vue";
-import { goBack } from "../../composibles/router";
 import AudioBook from "../../components/AudioBook.vue";
 
 const audiobooks = ref([
@@ -66,6 +66,9 @@ const audiobooks = ref([
     cover: "/06.jpg",
   },
 ]);
+
+import { useGoBack } from "../../composibles/router.ts";
+
 </script>
 
 <style scoped></style>

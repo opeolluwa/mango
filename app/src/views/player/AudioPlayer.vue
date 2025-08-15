@@ -12,7 +12,7 @@
       <Icon
         icon="fluent:chevron-left-32-filled"
         :class="['icon size-5 dark:text-white/90']"
-        @click="goBack"
+        @click="useGoBack"
       />
 
       <Icon
@@ -109,7 +109,7 @@ import { Icon } from "@iconify/vue";
 import { SliderRange, SliderRoot, SliderThumb, SliderTrack } from "reka-ui";
 import { ref } from "vue";
 import { playThePreviousBook } from "../../composibles/book.ts";
-import { goBack } from "../../composibles/router.ts";
+import { useGoBack } from "../../composibles/router.ts";
 const player = ref(new Audio());
 const isPlaying = ref(false);
 

@@ -1,13 +1,8 @@
 <template>
-  <div class="flex justify-between min-h-20">
-    <Icon
-      icon="fluent:chevron-left-32-filled"
-      :class="['icon size-5 dark:text-white/90']"
-      @click="goBack"
-    />
+  <ScreenLayout>
 
-    <Icon icon="tabler:dots" :class="['icon size-5 dark:text-white/90']" />
-  </div>
+
+
   <div class="flex items-center gap-x-4">
     <AvatarRoot
       class="bg-blackA3 inline-flex size-16 select-none items-center justify-center overflow-hidden rounded-full align-middle"
@@ -38,13 +33,13 @@
       :key="index"
       class="my-2 py-3 first:mt-0 last:mb-0"
     >
-      <div class="grid gap-x-4 grid-cols-12">
+      <div class="grid gap-x-4 grid-cols-12 items-center">
         <Icon
           :icon="section.icon"
-          :class="[' size-6 dark:text-white/90 col-span-2']"
+          :class="['size-6 dark:text-white/90 col-span-2']"
         />
         <div class="col-span-8">
-          <h2 class="font-3xl font-medium capitalize leading-loose">
+          <h2 class="font-3xl font-medium capitalize">
             {{ section.title }}
           </h2>
           <small class="text-gray-400 first-letter:capitalize">{{
@@ -58,12 +53,13 @@
       </div>
     </div>
   </div>
+    </ScreenLayout>
 </template>
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
-import { goBack } from "../../composibles/router.ts";
 import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
+import ScreenLayout from "./ScreenLayout.vue";
 interface Section {
   icon: string;
   title: string;

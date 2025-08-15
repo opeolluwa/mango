@@ -7,6 +7,6 @@ pub fn generate_file_name() -> String {
 
 pub fn generate_otp() -> String {
     let mut rng = rand::rng();
-    let otp: u32 = rng.random_range(000000..=999999);
-    otp.to_string()
+    let otp: u32 = rng.random_range(0..=999_999);
+    format!("{:06}", otp) // Always 6 digits, leading zeros preserved
 }

@@ -84,7 +84,7 @@ const routes = [
       {
         path: "verify-account",
         component: VerifyAccountRecovery,
-        name: "verifyAccountRecovery",
+        name: "VerifyAccountRecovery",
       },
       {
         path: "set-new-password",

@@ -1,4 +1,4 @@
 import router from "../routes";
 
-export const goBack = () => router.go(-1);
-export const goForward = () => router.go(+1);
+export const useGoBack = () => router.go(-1);
+export const useGoForward = () => router.go(+1);

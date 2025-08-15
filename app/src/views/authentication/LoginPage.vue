@@ -7,7 +7,7 @@
 
     <AuthScreenHeaderText>Login to continue!</AuthScreenHeaderText>
     <p class="small text-gray-400">
-      Get crank up where you stopped your last audio book!
+      Let&apos; cranked up where you stopped your last audio book!
     </p>
 
     <form
@@ -41,14 +41,15 @@
         />
         <ErrorOutlet v-if="errors.password">{{ errors.password }}</ErrorOutlet>
       </div>
+
       <SubmitButton type="submit" :loading="processingRequest" />
-      <RouterLink
-        :to="{ name: 'ForgottenPassword' }"
-        class="text-stone-500 flex justify-end -mt-4"
-        >Forgotten password?</RouterLink
-      >
     </form>
-    <div class="w-full text-center px-8 mt-28">
+    <RouterLink
+      :to="{ name: 'ForgottenPassword' }"
+      class="text-stone-500 flex justify-end mt-2"
+      >Forgotten password?</RouterLink
+    >
+    <div class="w-full text-center px-8 mt-8">
       <RouterLink
         :to="{ name: 'SignUp' }"
         class="text-stone-500 mt-20 text-center"
@@ -123,6 +124,5 @@ const submitForm = handleSubmit(async (values) => {
 
 onMounted(async () => {
   appPersonalization.value = await invoke("fetch_app_personalization");
-  console.log("appPersonalization", appPersonalization.value);
 });
 </script>

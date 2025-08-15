@@ -1,6 +1,6 @@
 use std::{fs, io, path::Path};
 
-use crate::errors::service_error::ServiceError;
+use crate::errors::{auth_error::AuthenticationError, service_error::ServiceError};
 use aers_email_client::{
     ConfirmEmailTemplate, Email, EmailClient, ForgottenPasswordTemplate, PasswordUpdatedTemplate,
 };
@@ -44,6 +44,7 @@ pub trait ServiceHelpersTrait {
     ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 
     fn generate_otp(&self, user_email: &str) -> Result<String, ServiceError>;
+
 }
 
 impl ServiceHelpersTrait for ServiceHelpers {
@@ -95,18 +96,15 @@ impl ServiceHelpersTrait for ServiceHelpers {
         user_email: &str,
         otp: &str,
     ) -> Result<(), ServiceError> {
-        let template = ForgottenPasswordTemplate::new(otp);
+        let template = ForgottenPasswordTemplate::new(otp, user_email);
 
         let email = Email::builder()
             .subject("Forgotten Password")
             .to(user_email)
             .template(template)
+            .from("admin@eckko.app")
             .build();
         let email_client = EmailClient::new();
-        email_client.send_email(&email).map_err(|err| {
-            log::error!("Failed to send forgotten password email due to: {err}");
-            ServiceError::OperationFailed
-        })?;
 
         email_client.send_email(&email).map_err(|err| {
             log::error!("Failed to send forgotten password email due to: {err}");
@@ -161,9 +159,9 @@ impl ServiceHelpersTrait for ServiceHelpers {
 
     fn generate_otp(&self, user_email: &str) -> Result<String, ServiceError> {
         let otp = aers_utils::generate_otp();
-        //TODO: save the OTP in the database or cache for verification later
-
         log::info!("Generated OTP for {user_email}: {otp}");
         Ok(otp)
     }
+
+  
 }

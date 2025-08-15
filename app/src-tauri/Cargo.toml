@@ -31,6 +31,7 @@ sqlx = { version = "0.8.6", features = ["sqlite", "tls-rustls", "uuid"] }
 
 tauri = { version = "2", features = ["tracing"] }
 tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
 tauri-plugin-notification = "2"
 tauri-plugin-opener = "2"
 tauri-plugin-sql = { version = "2", features = ["sqlite"] }
