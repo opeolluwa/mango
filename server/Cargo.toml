@@ -30,7 +30,7 @@ aers_email_client = { version = "0.1.0", path = "crates/aers_email_client" }
 aers_imagekit_client = { version = "0.1.0", path = "crates/aers_imagekit_client" }
 aers_utils = { version = "0.1.0", path = "crates/aers_utils" }
 aers_wav_mp3_converter = { version = "0.1.0", path = "crates/aers_wav_mp3_converter" }
-axum = { version = "0.8.3", features = ["multipart", "tracing"] }
+axum = { version = "0.8.3", features = ["multipart", "tracing", "ws"] }
 axum-extra = { version = "0.10.1", features = ["typed-header"] }
 axum_typed_multipart = { version = "0.16.3", features = ["tempfile_3"] }
 bcrypt = "0.17.0"
