@@ -4,6 +4,7 @@ import 'scripts/package.just'
 import 'scripts/clean.just'
 import 'scripts/server.just'
 import 'scripts/lint.just'
+import 'scripts/android.just'
 
 
 
