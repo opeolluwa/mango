@@ -18,7 +18,7 @@ use crate::{
     },
     services::{
         audio_book_service::{AudioBooksService, AudioBooksServiceExt},
-        notification_service::{NotifiactionService, NotifiactionServiceExt},
+        notification_service::{NotifiactionService, NotificationServiceExt},
     },
     shared::extract_env::extract_env,
 };

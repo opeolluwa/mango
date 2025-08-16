@@ -90,28 +90,8 @@ pub fn run() {
             kind: MigrationKind::Up,
             sql: include_str!("../migrations/20250812182430_create_app_settings_if_not_exist.sql"),
         },
-        // Migration {
-        //     version: 9,
-        //     description: "add-user-id-tocache",
-        //     kind: MigrationKind::Up,
-        //     sql: include_str!(
-        //         "../migrations/20250816090328_add_user_identifier_to_cached_user_data.sql"
-        //     ),
-        // },
-        // Migration {
-        //     version: 10,
-        //     description: "drop-user-id-from-cache",
-        //     kind: MigrationKind::Up,
-        //     sql: include_str!(
-        //         "../migrations/20250816093517_remove_user_identifier_to_cached_user_data.sql"
-        //     ),
-        // },
-        // Migration {
-        //     version: 11,
-        //     description: "drop-user-id-from-cache",
-        //     kind: MigrationKind::Down,
-        //     sql: include_str!("../migrations/20250816094536_reinvent_user_cache_table_.sql"),
-        // },
+       
+       
     ];
 
     tauri::Builder::default()

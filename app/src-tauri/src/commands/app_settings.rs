@@ -2,7 +2,6 @@ use tauri::{Runtime, State};
 
 use crate::database::ModelTrait;
 use crate::error::CommandError;
-use crate::error::DbError;
 use crate::models::app_personaliation::AppPersonalization;
 use crate::models::app_settings::AppSettings;
 use crate::state::AppState;

@@ -21,15 +21,7 @@ impl NotifiactionService {
             repository: NotificationRepository::init(pool),
         }
     }
-    async fn handle_web_socket_connection(&self, mut socket: WebSocket) {
-        // while let Some(msg) = socket.recv().await {
-        //     let msg = if let Ok(msg) = msg {
-        //         msg
-        //     } else {
-        //         // client disconnected
-        //         return;
-        //     };
-
+    pub async fn handle_web_socket_connection(&self, mut socket: WebSocket) {
         let msg = Message::text(
             r#"
         {
@@ -44,9 +36,12 @@ impl NotifiactionService {
             return;
         }
     }
+
+    //push message to client
+    pub async fn notify() {}
 }
 
-pub trait NotifiactionServiceExt {
+pub trait NotificationServiceExt {
     fn create_new_notification(
         &self,
         request: &CreateNotification,
@@ -55,7 +50,7 @@ pub trait NotifiactionServiceExt {
     fn listen_for_new_notifications(&self) -> impl std::future::Future<Output = Response> + Send;
 }
 
-impl NotifiactionServiceExt for NotifiactionService {
+impl NotificationServiceExt for NotifiactionService {
     async fn create_new_notification(
         &self,
         request: &CreateNotification,
