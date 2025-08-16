@@ -102,3 +102,12 @@ where
         (self.status_code, body).into_response()
     }
 }
+
+impl<T> ApiResponse<T>
+where
+    T: Serialize,
+{
+    pub fn builder() -> ApiResponseBuilder<T> {
+        ApiResponseBuilder::new()
+    }
+}

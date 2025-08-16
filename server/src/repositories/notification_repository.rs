@@ -41,7 +41,13 @@ pub trait NotificationRepositoryExt {
 impl NotificationRepositoryExt for NotificationRepository {
     async fn create(&self, notification: &CreateNotification) -> Result<Uuid, RepositoryError> {
         let identifier = Uuid::new_v4();
-        sqlx::query("INSERT INTO notification(identifier, subject, body, user_identifier) VALUES($1, $2, $3, $4, $5)").bind(identifier).bind(&notification.subject).bind(&notification.description).bind(notification.user_identifier).execute(self.pool.as_ref()).await.map_err(RepositoryError::from)?;
+        sqlx::query("INSERT INTO notifications (identifier, subject, body, user_identifier) VALUES($1, $2, $3, $4)")
+        .bind(identifier)
+        .bind(&notification.subject)
+        .bind(&notification.description)
+        .bind(notification.user_identifier)
+        .execute(self.pool.as_ref())
+        .await.map_err(RepositoryError::from)?;
 
         Ok(identifier)
     }

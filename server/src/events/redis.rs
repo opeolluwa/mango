@@ -135,9 +135,7 @@ impl RedisClientExt for RedisClient {
         T: Serialize + std::fmt::Debug,
     {
         let message_as_str = serde_json::to_string(message).map_err(|err| {
-            log::error!(
-                "failed to serialize {message:#?} as string due to {err}"
-            );
+            log::error!("failed to serialize {message:#?} as string due to {err}");
             ServiceError::SerdeJsonError(err)
         })?;
 

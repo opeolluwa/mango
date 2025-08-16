@@ -32,6 +32,7 @@
 
 [working-directory: 'app']
 @android-watch:
+	#!/usr/bin/env sh
 	export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 	export ANDROID_HOME="$HOME/Library/Android/sdk"
 	export NDK_VERSION=$(ls -1 "$ANDROID_HOME/ndk" | tail -n 1)

@@ -43,4 +43,6 @@ const initializeAppSettings = async () => {
     console.error("Failed to initialize app settings:", error);
   }
 };
+
+
 </script>

@@ -102,8 +102,6 @@ impl UserRepositoryTrait for UserRepository {
     }
 
     async fn find_by_email(&self, email: &str) -> Option<UserEntity> {
-        
-
         sqlx::query_as::<_, UserEntity>("SELECT * FROM users WHERE email = $1")
             .bind(email)
             .fetch_one(self.pool.as_ref())
@@ -182,8 +180,24 @@ impl UserRepositoryTrait for UserRepository {
             .ok_or(RepositoryError::RecordNotFound)
             .map_err(ServiceError::from)?;
 
-        //FIXME: Update the query to handle optional fields
-        // sqlx::query(r#"UPDATE users SET email =$1, first_name = $2, last_name =$3 WHERE user_identifier =$4"#).bind(email.clone().unwrap_or(user.email)).bind(first_name.clone(). unwrap_or(user.first_name)).bind(last_name.clone().unwrap_or(user.last_name)).bind(user_identifier).execute(self.pool.as_ref()).await.map_err(UserServiceError::from)?;
+        sqlx::query(
+            r#"UPDATE users SET email = $1, first_name = $2, last_name = $3 WHERE identifier = $4"#,
+        )
+        .bind(email.clone().unwrap_or_else(|| user.email.clone()))
+        .bind(
+            first_name
+                .clone()
+                .unwrap_or_else(|| user.first_name.clone().unwrap()),
+        )
+        .bind(
+            last_name
+                .clone()
+                .unwrap_or_else(|| user.last_name.clone().unwrap()),
+        )
+        .bind(user_identifier)
+        .execute(self.pool.as_ref())
+        .await
+        .map_err(ServiceError::from)?;
 
         Ok(())
     }

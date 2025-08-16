@@ -51,6 +51,7 @@ import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
 import SubmitButton from "../../components/form/SubmitButton.vue";
 import { useCachedUserStore } from "../../stores/cachedUser";
 import { UserInformation } from "../../types/userProfile";
+import { useUserInformation } from "../../stores/user";
 
 const formSchema = yup.object({
   firstname: yup.string().required(),
@@ -63,7 +64,9 @@ const { defineField, errors, handleSubmit } = useForm({
 
 const router = useRouter();
 const route = useRoute();
+
 const cachedUserStore = useCachedUserStore();
+const userStore = useUserInformation();
 
 const [firstname, firstnameAttr] = defineField("firstname");
 const [lastname, lastnameAttr] = defineField("lastname");
@@ -88,9 +91,9 @@ const onSubmit = handleSubmit(async (values) => {
     );
 
     if (response.status === 200) {
-      router.replace({ name: "Home" });
-      const userProfile: UserInformation =
-        await cachedUserStore.fetchUserInformation(token as string);
+      const userProfile: UserInformation = await userStore.fetchUserInformation(
+        token as string
+      );
       cachedUserStore.cacheUserData({
         firstName: userProfile.firstName,
         lastName: lastName.lastname,
@@ -98,7 +101,7 @@ const onSubmit = handleSubmit(async (values) => {
         avatarUrl: userProfile.profilePicture,
         // identifier: userProfile.identifier //TODO:
       });
-      console.log({ userProfile });
+      router.replace({ name: "Home" });
     } else {
       formSubmitError.value = response.data.error || "Failed to onboard user";
     }

@@ -90,6 +90,8 @@ pub fn run() {
             kind: MigrationKind::Up,
             sql: include_str!("../migrations/20250812182430_create_app_settings_if_not_exist.sql"),
         },
+       
+       
     ];
 
     tauri::Builder::default()
@@ -104,7 +106,7 @@ pub fn run() {
             std::fs::create_dir_all(&app_data_dir)?;
 
             let db_path = app_data_dir.join(DATABASE_PATH);
-
+            println!("db is here {:#?}", db_path);
             let app_state_result = tauri::async_runtime::block_on(async {
                 let connection_options = SqliteConnectOptions::new()
                     .filename(db_path)

@@ -28,8 +28,8 @@ impl From<String> for EventChannel {
             .unwrap_or(&channel_string);
 
         match clean_channel {
-            "document-converted" => EventChannel::DocumentConvertedToAudio,
-            "convert-document" => EventChannel::ConvertDocumentToAudio,
+            "document-converted-to-audio" => EventChannel::DocumentConvertedToAudio,
+            "convert-document-to-audio" => EventChannel::ConvertDocumentToAudio,
             _ => EventChannel::Default,
         }
     }

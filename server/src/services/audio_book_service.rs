@@ -2,7 +2,7 @@ use std::path::Path;
 
 use crate::AERS_FILE_UPLOAD_PATH;
 use crate::adapters::audio_books::{
-    AddBookToPlaylistRequest, UpdateBookRequest, UploadAssetRequest,
+    AddBookToPlaylistRequest, CreateAudioBookRequest, UpdateBookRequest, UploadAssetRequest,
 };
 use crate::adapters::file::SaveFile;
 use crate::adapters::jwt::Claims;
@@ -280,6 +280,16 @@ impl AudioBooksServiceExt for AudioBooksService {
         &self,
         message: &DocumentConverted,
     ) -> Result<(), ServiceError> {
-        todo!()
+        self.audio_book_repository
+            .create(
+                &CreateAudioBookRequest {
+                    file_name: message.file_name.to_string(),
+                    src: message.url.to_string(),
+                    playlist_identifier: message.playlist_identifier,
+                },
+                &message.user_identifier,
+            )
+            .await?;
+        Ok(())
     }
 }
