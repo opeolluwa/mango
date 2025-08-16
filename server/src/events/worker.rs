@@ -124,28 +124,29 @@ impl EventWorker {
 pub trait EventWorkerExt {
     fn convert_document_to_audio(
         &self,
-        message: &Event<ConvertDocument>,
+        message: &ConvertDocument,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 
     fn log_message(&self, message: &str);
 
     fn process_document_converted(
         &self,
-        message: &Event<DocumentConverted>,
+        message: &DocumentConverted,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 }
 
 impl EventWorkerExt for EventWorker {
     async fn convert_document_to_audio(
         &self,
-        message: &Event<ConvertDocument>,
+        message: &ConvertDocument,
     ) -> Result<(), ServiceError> {
+        log::info!("conversion started");
         let ConvertDocument {
             playlist_identifier,
             file_name,
             user_identifier,
             file_path,
-        } = &message.payload;
+        } = &message;
 
         if !file_path.exists() {
             log::error!("File {:?} does not exist", file_path);
@@ -153,9 +154,11 @@ impl EventWorkerExt for EventWorker {
         }
 
         let (pdf_path, wav_path) = self.build_paths(file_path)?;
+        log::info!("generating wav file");
         self.synthesize_pdf_to_wav(Self::CONFIG_PATH, &pdf_path, &wav_path)?;
         self.ensure_file_exists(&wav_path)?;
 
+        log::info!("generating mp3");
         let mp3_path = self.convert_wav_to_mp3(&wav_path)?;
         let imagekit_client = self.imagekit_client()?;
         let url = self
@@ -178,9 +181,9 @@ impl EventWorkerExt for EventWorker {
 
     async fn process_document_converted(
         &self,
-        message: &Event<DocumentConverted>,
+        message: &DocumentConverted,
     ) -> Result<(), ServiceError> {
-        let converted_file = message.payload.clone();
+        let converted_file = message.clone();
 
         let audio_service = self.audio_book_service.clone();
         tokio::task::spawn(async move {
@@ -191,9 +194,9 @@ impl EventWorkerExt for EventWorker {
 
         let notification_service = self.notification_service.clone();
         let request = CreateNotification {
-            user_identifier: message.payload.user_identifier,
+            user_identifier: message.user_identifier,
             subject: "File converted".to_string(),
-            description: format!("Your file has been converted: {}", message.payload.url),
+            description: format!("Your file has been converted: {}", message.url),
         };
 
         tokio::task::spawn(async move {

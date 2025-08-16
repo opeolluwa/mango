@@ -1,4 +1,4 @@
-use aers_audify::{Audify, AudifyError};
+use aers_audify::Audify;
 
 fn main() {
     let config_path = "./resources/models/en_US-libritts_r-medium.onnx.json";

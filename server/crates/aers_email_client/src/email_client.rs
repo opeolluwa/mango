@@ -43,7 +43,8 @@ impl EmailClient {
             template,
             subject,
             from,
-            reply_to,
+            ..
+            // _reply_to,
         } = email;
 
         let email_content = template

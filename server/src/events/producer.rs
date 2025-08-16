@@ -13,7 +13,7 @@ where
     T: Serialize + DeserializeOwned + Debug,
 {
     channel: EventChannel,
-    message: Event<T>,
+    message: T,
 }
 
 impl<T> EventPrducer<T>
@@ -23,7 +23,7 @@ where
     pub fn new(channel: &EventChannel, message: T) -> Self {
         Self {
             channel: EventChannel::from(channel.to_string()),
-            message: Event::new(message),
+            message: message,
         }
     }
     pub async fn send(&self) -> Result<(), ServiceError> {
@@ -38,10 +38,10 @@ where
             ServiceError::SerdeJsonError(err)
         })?;
 
+        log::info!("sending message {}", message_as_str);
         redis_client
             .get_connection()
             .publish(self.channel.to_string(), message_as_str)
-            // .publish(self.channel.to_string(), message_as_str)
             .await
             .map_err(ServiceError::from)?;
 
