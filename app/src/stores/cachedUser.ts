@@ -1,9 +1,7 @@
+import { invoke } from "@tauri-apps/api/core";
 import { defineStore } from "pinia";
 import { type CachedUser } from "../../src-tauri/bindings/CachedUser";
 import { type CreateCachedUser } from "../../src-tauri/bindings/CreateCachedUser";
-import { invoke } from "@tauri-apps/api/core";
-import axios from "axios";
-import { UserInformation } from "../types/userProfile";
 
 type Store = CachedUser;
 export type UserCache = CreateCachedUser;
@@ -11,21 +9,21 @@ export type UserCache = CreateCachedUser;
 export const useCachedUserStore = defineStore("cached_user", {
   state: (): Store => ({
     identifier: "",
-    firstName: null,
-    lastName: null,
-    email: null,
-    avatarUrl: null,
+    firstName: "",
+    lastName: "",
+    email: "",
+    avatarUrl: "",
   }),
+
   getters: {
     firstName: (state) => state.firstName,
     lastName: (state) => state.lastName,
     email: (state) => state.email,
     storeIsNull: (state): boolean => {
-      const entryIsFalsy = (currentEntry: string) =>
-        Boolean(currentEntry) == false;
+      const entryIsFalsy = (entry: unknown) => !entry;
       return Object.values(state).every(entryIsFalsy);
     },
-    user: (state) => ({
+    user: (state): CachedUser => ({
       identifier: state.identifier,
       firstName: state.firstName,
       lastName: state.lastName,
@@ -36,19 +34,30 @@ export const useCachedUserStore = defineStore("cached_user", {
 
   actions: {
     async cacheUserData(user: UserCache) {
-      await invoke("set_cached_user", { user }).catch((error) => {
-        console.log("failed to set user data cache", error);
-      });
-    },
-    async fetchUserInformation(token: string): Promise<UserInformation> {
       try {
-        const authorizationHeader = `Bearer ${token}`;
-        const response = await axios.get("/user/profile", {
-          headers: { Authorization: authorizationHeader },
-        });
-        return response.data.data as UserInformation;
+        await invoke("set_cached_user", { user });
       } catch (error) {
-        throw new Error(`Failed to fetch user information due to ${error}`);
+        console.error("failed to set user data cache", error);
+      }
+    },
+
+    async fetchCachedUser(): Promise<CachedUser | null> {
+      try {
+        const cachedUser = await invoke<CachedUser>("fetch_cached_user");
+        console.log({ cachedUser });
+        if (cachedUser) {
+          this.$patch({
+            identifier: cachedUser.identifier,
+            firstName: cachedUser.firstName,
+            lastName: cachedUser.lastName,
+            email: cachedUser.email,
+            avatarUrl: cachedUser.avatarUrl,
+          });
+        }
+        return cachedUser;
+      } catch (error) {
+        console.error("failed to fetch user data cache", error);
+        return null;
       }
     },
   },

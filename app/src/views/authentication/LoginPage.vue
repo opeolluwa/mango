@@ -4,7 +4,6 @@
       class="size-12 text-app-orange mb-4"
       @click="router.back"
     />
-
     <AuthScreenHeaderText>Login to continue!</AuthScreenHeaderText>
     <p class="small text-gray-400">
       Let&apos; cranked up where you stopped your last audio book!
@@ -59,20 +58,22 @@
     </div>
   </div>
 </template>
-
 <script lang="ts" setup>
-import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
-import { onMounted, ref } from "vue";
+import axios from "axios";
+import { useForm } from "vee-validate";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { AppPersonalization } from "../../../src-tauri/bindings/AppPersonalization";
+import * as yup from "yup";
+
+import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
+
 import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 import AppFormLabel from "../../components/form/AppFormLabel.vue";
-import SubmitButton from "../../components/form/SubmitButton.vue";
-import { invoke } from "@tauri-apps/api/core";
-import { useForm } from "vee-validate";
-import * as yup from "yup";
 import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
-import axios from "axios";
+import SubmitButton from "../../components/form/SubmitButton.vue";
+
+import { useCachedUserStore } from "../../stores/cachedUser";
+import { useUserInformation } from "../../stores/user";
 
 const loginSchema = yup.object({
   email: yup.string().required().email(),
@@ -83,12 +84,14 @@ const { defineField, errors, handleSubmit } = useForm({
   validationSchema: loginSchema,
 });
 
-const router = useRouter();
-
 const [email, emailAttr] = defineField("email");
 const [password, passwordAttr] = defineField("password");
 
-const appPersonalization = ref<AppPersonalization>();
+const router = useRouter();
+
+const cachedUserStore = useCachedUserStore();
+const userStore = useUserInformation();
+
 const processingRequest = ref(false);
 const formSubmitError = ref<string | null>(null);
 
@@ -96,6 +99,7 @@ const submitForm = handleSubmit(async (values) => {
   try {
     const { email, password } = values;
     processingRequest.value = true;
+
     const response = await axios.post(
       "/auth/login",
       { email, password },
@@ -106,23 +110,30 @@ const submitForm = handleSubmit(async (values) => {
       }
     );
 
-    console.log(response);
-    if (response.status === 200) {
-      router.replace({ name: "Home" });
-    } else {
-      throw new Error("Login failed");
+    if (response.status !== 200) {
+      formSubmitError.value = "Failed to login. Please try again";
     }
-  } catch (error) {
-    console.log(error);
-    if (error) {
-      formSubmitError.value = "Invalid credentials";
-    }
+    const token = response.data.data.accessToken;
+    const userInformation = await userStore.fetchUserInformation(token);
+
+    await cachedUserStore.cacheUserData({
+      email: userInformation.email,
+      firstName: userInformation.firstName,
+      lastName: userInformation.lastName,
+      avatarUrl: userInformation.profilePicture,
+    });
+    router.push({ name: "Home" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    formSubmitError.value = error.response.data.message;
   } finally {
     processingRequest.value = false;
   }
 });
 
-onMounted(async () => {
-  appPersonalization.value = await invoke("fetch_app_personalization");
-});
+// onBeforeMount(() => {
+//   if (userExists.value) {
+//     router.push({ name: "ExistingUserLogin" });
+//   }
+// });
 </script>
