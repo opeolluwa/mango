@@ -1,6 +1,6 @@
 use axum::{
     Router,
-    routing::{delete, get, post, put},
+    routing::{any, get},
 };
 
 use crate::{
@@ -10,6 +10,6 @@ use crate::{
 
 pub(super) fn notification_routes(state: ServicesState) -> Router {
     Router::new()
-        .route("/listen", get(listen_for_new_notifications))
+        .route("/listen", any(listen_for_new_notifications))
         .with_state(state)
 }

@@ -34,7 +34,7 @@ pub fn load_routes(pool: Arc<Pool<Postgres>>) -> Router {
         .nest("/user", user_routes(state.clone()))
         .nest("/books", audio_book_routes(state.clone()))
         .nest("/playlist", playlist_routes(state.clone()))
-        .nest("/notification", notification_routes(state.clone()))
+        .nest("/notifications", notification_routes(state.clone()))
         .fallback(async || {
             ApiResponseBuilder::<()>::new()
                 .message(
