@@ -73,7 +73,7 @@ pub struct ConvertDocument {
     pub file_path: PathBuf,
 }
 
-#[derive(Serialize, Debug, Deserialize)]
+#[derive(Serialize, Debug, Deserialize, Clone)]
 pub struct DocumentConverted {
     pub playlist_identifier: Option<Uuid>,
     pub file_name: String,

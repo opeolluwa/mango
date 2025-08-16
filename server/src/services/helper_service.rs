@@ -1,6 +1,6 @@
 use std::{fs, io, path::Path};
 
-use crate::errors::{auth_error::AuthenticationError, service_error::ServiceError};
+use crate::errors::service_error::ServiceError;
 use aers_email_client::{
     ConfirmEmailTemplate, Email, EmailClient, ForgottenPasswordTemplate, PasswordUpdatedTemplate,
 };
@@ -44,7 +44,6 @@ pub trait ServiceHelpersTrait {
     ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 
     fn generate_otp(&self, user_email: &str) -> Result<String, ServiceError>;
-
 }
 
 impl ServiceHelpersTrait for ServiceHelpers {
@@ -162,6 +161,4 @@ impl ServiceHelpersTrait for ServiceHelpers {
         log::info!("Generated OTP for {user_email}: {otp}");
         Ok(otp)
     }
-
-  
 }

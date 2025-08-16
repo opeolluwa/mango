@@ -29,6 +29,8 @@ pub struct EventWorker {
 }
 
 impl EventWorker {
+    const CONFIG_PATH: &'static str = "resources/models/en_US-libritts_r-medium.onnx.json";
+
     pub fn new(pool: Arc<Pool<Postgres>>) -> Self {
         Self {
             notification_service: NotifiactionService::init(&pool),
@@ -36,16 +38,19 @@ impl EventWorker {
         }
     }
 
+    /// Returns `(pdf_path, wav_path)` as strings.
     fn build_paths(&self, file_path: &Path) -> Result<(String, String), ServiceError> {
-        let wav_path_buf = file_path.with_extension("wav");
-        let wav_path = wav_path_buf
-            .to_str()
-            .ok_or(ServiceError::OperationFailed)?
-            .to_string();
         let pdf_path = file_path
             .to_str()
             .ok_or(ServiceError::OperationFailed)?
             .to_string();
+
+        let wav_path = file_path
+            .with_extension("wav")
+            .to_str()
+            .ok_or(ServiceError::OperationFailed)?
+            .to_string();
+
         Ok((pdf_path, wav_path))
     }
 
@@ -55,35 +60,32 @@ impl EventWorker {
         pdf_path: &str,
         wav_path: &str,
     ) -> Result<(), ServiceError> {
-        let audify_client = Audify::new(config_path);
-        audify_client
+        Audify::new(config_path)
             .synthesize_pdf(pdf_path, wav_path)
             .map_err(|err| {
                 log::error!("Audify synthesis failed: {err}");
                 ServiceError::OperationFailed
-            })?;
-        Ok(())
+            })
     }
 
     fn ensure_file_exists(&self, path_str: &str) -> Result<(), ServiceError> {
         if !Path::new(path_str).exists() {
-            log::error!("WAV file does not exist: {}", path_str);
+            log::error!("File not found: {}", path_str);
             return Err(ServiceError::OperationFailed);
         }
-        log::info!("WAV file generated: {}", path_str);
         Ok(())
     }
 
-    fn convert_wav_to_mp3_path(&self, wav_path: &str) -> Result<PathBuf, ServiceError> {
+    fn convert_wav_to_mp3(&self, wav_path: &str) -> Result<PathBuf, ServiceError> {
         WavToMp3Converter::new()
-            .convert_file(&wav_path)
+            .convert_file(wav_path)
             .map_err(|err| {
                 log::error!("WAV to MP3 conversion failed: {err}");
                 ServiceError::OperationFailed
             })
     }
 
-    fn build_imagekit_client(&self) -> Result<ImagekitClient, ServiceError> {
+    fn imagekit_client(&self) -> Result<ImagekitClient, ServiceError> {
         let private_key: String =
             extract_env("IMAGEKIT_PRIVATE_KEY").map_err(ServiceError::from)?;
         let public_key: String = extract_env("IMAGEKIT_PUBLIC_KEY").map_err(ServiceError::from)?;
@@ -96,28 +98,29 @@ impl EventWorker {
     async fn upload_mp3(
         &self,
         client: &ImagekitClient,
-        mp3_export: &PathBuf,
+        mp3_path: &Path,
         file_name: &str,
     ) -> Result<String, ServiceError> {
-        let upload_response = client
-            .upload_file(mp3_export, file_name)
+        client
+            .upload_file(mp3_path, file_name)
             .await
             .map_err(|err| {
                 log::error!("MP3 upload failed: {}", err);
                 ServiceError::OperationFailed
-            })?;
-        Ok(upload_response.url)
+            })
+            .map(|res| res.url)
     }
 
     fn publish_document_converted(&self, payload: DocumentConverted) {
         tokio::task::spawn(async move {
             let channel = EventChannel::DocumentConvertedToAudio;
             if let Err(err) = EventPrducer::new(&channel, payload).send().await {
-                log::error!("failed to publish message to {channel} due to {err}");
+                log::error!("Failed to publish message to {channel}: {err}");
             }
         });
     }
 }
+
 pub trait EventWorkerExt {
     fn convert_document_to_audio(
         &self,
@@ -145,53 +148,44 @@ impl EventWorkerExt for EventWorker {
         } = &message.payload;
 
         if !file_path.exists() {
-            log::error!("file {:?} does not exist", file_path);
+            log::error!("File {:?} does not exist", file_path);
+            return Err(ServiceError::OperationFailed);
         }
 
         let (pdf_path, wav_path) = self.build_paths(file_path)?;
-        let config_path = "resources/models/en_US-libritts_r-medium.onnx.json";
-
-        self.synthesize_pdf_to_wav(config_path, &pdf_path, &wav_path)?;
+        self.synthesize_pdf_to_wav(Self::CONFIG_PATH, &pdf_path, &wav_path)?;
         self.ensure_file_exists(&wav_path)?;
 
-        let mp3_export = self.convert_wav_to_mp3_path(&wav_path)?;
-        let imagekit_client = self.build_imagekit_client()?;
+        let mp3_path = self.convert_wav_to_mp3(&wav_path)?;
+        let imagekit_client = self.imagekit_client()?;
         let url = self
-            .upload_mp3(&imagekit_client, &mp3_export, file_name)
+            .upload_mp3(&imagekit_client, &mp3_path, file_name)
             .await?;
 
-        let payload = DocumentConverted {
+        self.publish_document_converted(DocumentConverted {
             playlist_identifier: *playlist_identifier,
-            file_name: file_name.to_string(),
+            file_name: file_name.clone(),
             user_identifier: *user_identifier,
             url,
-        };
+        });
 
-        self.publish_document_converted(payload);
         Ok(())
     }
 
     fn log_message(&self, message: &str) {
-        log::debug!("got message {message}");
+        log::debug!("Got message: {message}");
     }
+
     async fn process_document_converted(
         &self,
         message: &Event<DocumentConverted>,
     ) -> Result<(), ServiceError> {
-        let converted_file = DocumentConverted {
-            playlist_identifier: message.payload.playlist_identifier,
-            file_name: message.payload.file_name.to_string(),
-            user_identifier: message.payload.user_identifier,
-            url: message.payload.url.to_string(),
-        };
+        let converted_file = message.payload.clone();
 
-        let audio_book_service = self.audio_book_service.clone();
+        let audio_service = self.audio_book_service.clone();
         tokio::task::spawn(async move {
-            if let Err(err) = audio_book_service
-                .processs_file_converted(&converted_file)
-                .await
-            {
-                log::error!("failed to send notification due to {err}")
+            if let Err(err) = audio_service.processs_file_converted(&converted_file).await {
+                log::error!("Failed to process converted file: {err}");
             }
         });
 
@@ -199,12 +193,12 @@ impl EventWorkerExt for EventWorker {
         let request = CreateNotification {
             user_identifier: message.payload.user_identifier,
             subject: "File converted".to_string(),
-            description: format!("Your file has been convetred {}", message.payload.url),
+            description: format!("Your file has been converted: {}", message.payload.url),
         };
 
         tokio::task::spawn(async move {
             if let Err(err) = notification_service.create_new_notification(&request).await {
-                log::error!("failed to send notification due to {err}")
+                log::error!("Failed to send notification: {err}");
             }
         });
 
