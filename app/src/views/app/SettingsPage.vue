@@ -30,7 +30,7 @@
         :key="index"
         class="my-2 py-3 first:mt-0 last:mb-0"
       >
-        <template v-if="index == sections.length">
+        <template v-if="index + 1 == sections.length">
           <div class="grid gap-x-4 grid-cols-12 items-center" @click="logOut">
             <Icon
               :icon="section.icon"
