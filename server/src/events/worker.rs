@@ -13,7 +13,7 @@ use crate::{
     errors::service_error::ServiceError,
     events::{
         channels::EventChannel,
-        message::{ConvertDocument, DocumentConverted, Event},
+        message::{ConvertDocument, DocumentConverted},
         producer::EventPrducer,
     },
     services::{

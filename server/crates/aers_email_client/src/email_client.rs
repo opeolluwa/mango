@@ -1,11 +1,12 @@
-use aers_utils::extract_env;
 use askama::Template;
 use lettre::{
-    SmtpTransport, Transport,
-    message::{Mailbox, MultiPart, SinglePart, header},
+    message::{header, Mailbox, MultiPart, SinglePart},
     transport::smtp::authentication::Credentials,
+    SmtpTransport, Transport,
 };
 use serde::Serialize;
+
+use aers_utils::extract_env;
 
 use crate::{email::Email, errors::EmailError};
 

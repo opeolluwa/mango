@@ -2,7 +2,8 @@ use axum::extract::FromRef;
 
 use crate::services::{
     audio_book_service::AudioBooksService, authentication_service::AuthenticationService,
-    playlist_service::PlaylistService, root_serice::RootService, user_service::UserService,
+    notification_service::NotifiactionService, playlist_service::PlaylistService,
+    root_serice::RootService, user_service::UserService,
 };
 
 #[derive(Clone)]
@@ -12,34 +13,41 @@ pub struct ServicesState {
     pub auth_service: AuthenticationService,
     pub playlist_service: PlaylistService,
     pub audio_book_service: AudioBooksService,
+    pub notification_service: NotifiactionService,
 }
 
 impl FromRef<ServicesState> for UserService {
-    fn from_ref(input: &ServicesState) -> UserService {
-        input.user_service.clone()
+    fn from_ref(services: &ServicesState) -> UserService {
+        services.user_service.clone()
     }
 }
 
 impl FromRef<ServicesState> for RootService {
-    fn from_ref(input: &ServicesState) -> RootService {
-        input.root_service.clone()
+    fn from_ref(services: &ServicesState) -> RootService {
+        services.root_service.clone()
     }
 }
 
 impl FromRef<ServicesState> for AuthenticationService {
-    fn from_ref(input: &ServicesState) -> AuthenticationService {
-        input.auth_service.clone()
+    fn from_ref(services: &ServicesState) -> AuthenticationService {
+        services.auth_service.clone()
     }
 }
 
 impl FromRef<ServicesState> for PlaylistService {
-    fn from_ref(input: &ServicesState) -> PlaylistService {
-        input.playlist_service.clone()
+    fn from_ref(services: &ServicesState) -> PlaylistService {
+        services.playlist_service.clone()
     }
 }
 
 impl FromRef<ServicesState> for AudioBooksService {
-    fn from_ref(input: &ServicesState) -> AudioBooksService {
-        input.audio_book_service.clone()
+    fn from_ref(services: &ServicesState) -> AudioBooksService {
+        services.audio_book_service.clone()
+    }
+}
+
+impl FromRef<ServicesState> for NotifiactionService {
+    fn from_ref(services: &ServicesState) -> NotifiactionService {
+        services.notification_service.clone()
     }
 }

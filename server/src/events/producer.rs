@@ -5,7 +5,7 @@ use serde::{Serialize, de::DeserializeOwned};
 
 use crate::{
     errors::service_error::ServiceError,
-    events::{channels::EventChannel, message::Event, redis::RedisClient},
+    events::{channels::EventChannel, redis::RedisClient},
 };
 
 pub struct EventPrducer<T>
@@ -47,6 +47,4 @@ where
 
         Ok(())
     }
-
-   
 }
