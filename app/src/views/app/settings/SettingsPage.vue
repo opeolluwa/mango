@@ -1,5 +1,5 @@
 <template>
-  <ScreenLayout>
+
     <div class="flex items-center gap-x-4">
       <AvatarRoot
         class="bg-blackA3 inline-flex size-16 select-none items-center justify-center overflow-hidden rounded-full align-middle"
@@ -51,7 +51,10 @@
           </div>
         </template>
         <template v-else>
-          <div class="grid gap-x-4 grid-cols-12 items-center">
+          <RouterLink
+            :to="{ name: section.routeName }"
+            class="grid gap-x-4 grid-cols-12 items-center"
+          >
             <Icon
               :icon="section.icon"
               :class="['size-6 dark:text-white/90 col-span-2']"
@@ -68,22 +71,22 @@
               icon="fluent:chevron-right-32-filled"
               :class="['icon size-5 dark:text-white/90 col-span-2']"
             />
-          </div>
+          </RouterLink>
         </template>
       </div>
     </div>
-  </ScreenLayout>
+
 </template>
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
-import ScreenLayout from "./ScreenLayout.vue";
 import { useRouter } from "vue-router";
 interface Section {
   icon: string;
   title: string;
   description: string;
+  routeName?: string;
 }
 
 const sections: Section[] = [
@@ -91,22 +94,26 @@ const sections: Section[] = [
     title: "user profile",
     description: "email, name, phone",
     icon: "mi:user",
+    routeName: "UserProfile",
   },
   {
     title: "security and privacy",
     description: "password, 2FA, sharing and privacy",
     icon: "mingcute:safe-lock-line",
+    routeName: "SecurityAndPrivacy",
   },
 
   {
     title: "payment",
     description: "subscription, billing, cards",
     icon: "wpf:bank-cards",
+    routeName: "PaymentAndSubscription",
   },
   {
     title: "help and support",
     description: "for any question, contact us",
     icon: "famicons:help-circle-outline",
+    routeName: "HelpAndSupport",
   },
   {
     title: "log out",

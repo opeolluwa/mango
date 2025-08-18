@@ -4,7 +4,7 @@ use lazy_static::lazy_static;
 use sqlx::sqlite::SqliteConnectOptions;
 use sqlx::SqlitePool;
 use std::sync::{Arc, Mutex};
-use tauri::{AppHandle, Manager, State};
+use tauri::{ Manager, State};
 use tauri_plugin_sql::{Migration, MigrationKind};
 
 mod adapters;
@@ -93,6 +93,7 @@ pub fn run() {
     ];
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_websocket::init())
         .plugin(tauri_plugin_fs::init())
         // .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_sql::Builder::new().build())
@@ -114,10 +115,11 @@ pub fn run() {
                     .await
                     .map_err(|e| e.to_string())?;
 
-                Ok(Mutex::new(AppState {
+                    let state = Arc::new(Mutex::new(AppState {
                     db: Arc::new(pool),
                     setup: SetupState::default(),
-                }))
+                })); 
+                Ok(state)
             });
 
             match app_state_result {
@@ -148,4 +150,3 @@ pub fn run() {
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
-

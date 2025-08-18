@@ -38,6 +38,7 @@ tauri-plugin-sql = { version = "2", features = ["sqlite"] }
 tauri-plugin-store = "2"
 tauri-plugin-stronghold = "2"
 tauri-plugin-upload = "2"
+tauri-plugin-websocket = "2"
 thiserror = "2.0.12"
 tokio = { version = "1.45.1", features = ["full"] }
 ts-rs = "10.1.0"
