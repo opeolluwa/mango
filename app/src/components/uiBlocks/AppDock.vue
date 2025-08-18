@@ -34,23 +34,23 @@ const routes: Array<{ default: string; active: string; route: string }> = [
     active: "mage:home-fill",
     route: "Home",
   },
-  // {
-  //   default: "fluent:clock-16-regular",
-  //   active: "fluent:clock-16-filled",
-  //   route: "Recent",
-  // },
+  {
+    default: "fluent:clock-16-regular",
+    active: "fluent:clock-16-filled",
+    route: "Recent",
+  },
 
     {
     default: "mage:heart",
     active: "mage:heart-fill",
-    route: "Recent",
+    route: "Favourites",
   },
 
-  {
-    default: "mage:notification-bell",
-    active: "mage:notification-bell-fill",
-    route: "Notification",
-  },
+  // {
+  //   default: "mage:notification-bell",
+  //   active: "mage:notification-bell-fill",
+  //   route: "Notification",
+  // },
   {
     active: "mage:settings-fill",
     default: "mage:settings",
