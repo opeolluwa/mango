@@ -9,7 +9,7 @@ use crate::state::AppState;
 use std::sync::Arc;
 
 #[tauri::command]
-pub async fn initalize_app_settings(state: State<'_, AppState>) -> Result<(), CommandError> {
+pub async fn initalize_app_settings(state: State<'_, Arc<AppState>>) -> Result<(), CommandError> {
     let pool = state.db.clone();
 
     sqlx::query(r"INSERT INTO app_settings (app_initialized) VALUES (1)")

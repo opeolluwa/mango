@@ -1,10 +1,10 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-use crate::state::{AppState};
+use crate::state::AppState;
 use lazy_static::lazy_static;
 use sqlx::sqlite::SqliteConnectOptions;
 use sqlx::SqlitePool;
-use std::sync::{Arc, Mutex};
-use tauri::{ Manager, State};
+use std::sync::Arc;
+use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
 
 mod adapters;
@@ -90,10 +90,12 @@ pub fn run() {
             kind: MigrationKind::Up,
             sql: include_str!("../migrations/20250812182430_create_app_settings_if_not_exist.sql"),
         },
+       
+       
     ];
 
     tauri::Builder::default()
-        .plugin(tauri_plugin_websocket::init())
+     .plugin(tauri_plugin_websocket::init())
         .plugin(tauri_plugin_fs::init())
         // .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_sql::Builder::new().build())
@@ -115,16 +117,12 @@ pub fn run() {
                     .await
                     .map_err(|e| e.to_string())?;
 
-                    let state = AppState {
-                    db: Arc::new(pool),
-                  
-                }; 
-                Ok(state)
+                Ok(AppState { db: Arc::new(pool) })
             });
 
             match app_state_result {
                 Ok(app_state) => {
-                    app.manage(app_state);
+                    app.manage(Arc::new(app_state));
                     Ok(())
                 }
                 Err(e) => {
