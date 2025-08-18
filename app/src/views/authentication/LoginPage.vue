@@ -1,13 +1,12 @@
 <template>
-  <div class="layout h-screen overflow-y-hidden">
+  <div class="layout h-screen overflow-y-hidden relative">
     <ArrowLongLeftIcon
       class="size-12 text-app-orange mb-4"
       @click="router.back"
     />
-
     <AuthScreenHeaderText>Login to continue!</AuthScreenHeaderText>
     <p class="small text-gray-400">
-      Get crank up where you stopped your last audio book!
+      Let&apos; cranked up where you stopped your last audio book!
     </p>
 
     <form
@@ -20,10 +19,10 @@
         <AppFormLabel text="Email" for="email" />
         <input
           id="email"
+          v-model="email"
           class="app-form-input"
           type="text"
           placeholder="jane@mailer.com"
-          v-model="email"
           v-bind="emailAttr"
         />
         <ErrorOutlet v-if="errors.email">{{ errors.email }}</ErrorOutlet>
@@ -33,88 +32,108 @@
         <AppFormLabel text="password" for="password" />
         <input
           id="password"
+          v-model="password"
           class="app-form-input"
           type="password"
           placeholder="********"
-          v-model="password"
           v-bind="passwordAttr"
         />
         <ErrorOutlet v-if="errors.password">{{ errors.password }}</ErrorOutlet>
       </div>
+
       <SubmitButton type="submit" :loading="processingRequest" />
-      <RouterLink
-        :to="{ name: 'ForgottenPassword' }"
-        class="text-stone-500 flex justify-end -mt-4"
-        >Forgotten password?</RouterLink
-      >
     </form>
+    <RouterLink
+      :to="{ name: 'ForgottenPassword' }"
+      class="text-stone-500 flex justify-end mt-2"
+      >Forgotten password?</RouterLink
+    >
+    <div class="w-full text-center px-8 mt-8">
+      <RouterLink
+        :to="{ name: 'SignUp' }"
+        class="text-stone-500 mt-20 text-center"
+        >Don&apos;t have an account
+        <span class="accent font-medium">Sign up</span>
+      </RouterLink>
+    </div>
   </div>
 </template>
-
 <script lang="ts" setup>
-  import { ArrowLongLeftIcon } from '@heroicons/vue/24/solid';
-  import { onMounted, ref } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { AppPersonalization } from '../../../src-tauri/bindings/AppPersonalization';
-  import AuthScreenHeaderText from '../../components/auth/AuthScreenHeaderText.vue';
-  import AppFormLabel from '../../components/form/AppFormLabel.vue';
-  import SubmitButton from '../../components/form/SubmitButton.vue';
-  import { invoke } from '@tauri-apps/api/core';
-  import { useForm } from 'vee-validate';
-  import * as yup from 'yup';
-  import ErrorOutlet from '../../components/form/ErrorOutlet.vue';
-  import axios from 'axios';
+import axios from "axios";
+import { useForm } from "vee-validate";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import * as yup from "yup";
 
-  const loginSchema = yup.object({
-    email: yup.string().required().email(),
-    password: yup.string().required(),
-  });
+import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
 
-  const { defineField, errors, handleSubmit } = useForm({
-    validationSchema: loginSchema,
-  });
+import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
+import AppFormLabel from "../../components/form/AppFormLabel.vue";
+import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
+import SubmitButton from "../../components/form/SubmitButton.vue";
 
-  const router = useRouter();
+import { useCachedUserStore } from "../../stores/cachedUser";
+import { useUserInformation } from "../../stores/user";
 
-  const [email, emailAttr] = defineField('email');
-  const [password, passwordAttr] = defineField('password');
+const loginSchema = yup.object({
+  email: yup.string().required().email(),
+  password: yup.string().required(),
+});
 
-  const appPersonalization = ref<AppPersonalization>();
-  const processingRequest = ref(false);
-  const formSubmitError = ref<string | null>(null);
+const { defineField, errors, handleSubmit } = useForm({
+  validationSchema: loginSchema,
+});
 
-  const submitForm = handleSubmit(async (values: any) => {
-    try {
-      const { email, password } = values;
-      processingRequest.value = true;
-      const response = await axios.post(
-        '/auth/login',
-        { email, password },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+const [email, emailAttr] = defineField("email");
+const [password, passwordAttr] = defineField("password");
 
-      console.log(response);
-      if (response.status === 200) {
-        router.replace({ name: 'Home' });
-      } else {
-        throw new Error('Login failed');
+const router = useRouter();
+
+const cachedUserStore = useCachedUserStore();
+const userStore = useUserInformation();
+
+const processingRequest = ref(false);
+const formSubmitError = ref<string | null>(null);
+
+const submitForm = handleSubmit(async (values) => {
+  try {
+    const { email, password } = values;
+    processingRequest.value = true;
+
+    const response = await axios.post(
+      "/auth/login",
+      { email, password },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    } catch (error) {
-      console.log(error);
-      if (error) {
-        formSubmitError.value = 'Invalid credentials';
-      }
-    } finally {
-      processingRequest.value = false;
+    );
+
+    if (response.status !== 200) {
+      formSubmitError.value = "Failed to login. Please try again";
     }
-  });
+    const token = response.data.data.accessToken;
+    const userInformation = await userStore.fetchUserInformation(token);
 
-  onMounted(async () => {
-    appPersonalization.value = await invoke('fetch_app_personalization');
-    console.log('appPersonalization', appPersonalization.value);
-  });
+    await cachedUserStore.cacheUserData({
+      email: userInformation.email,
+      firstName: userInformation.firstName,
+      lastName: userInformation.lastName,
+      avatarUrl: userInformation.profilePicture,
+    });
+    router.push({ name: "Home" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    formSubmitError.value = error.response.data.message;
+  } finally {
+    processingRequest.value = false;
+  }
+});
+
+// onBeforeMount(() => {
+//   if (userExists.value) {
+//     router.push({ name: "ExistingUserLogin" });
+//   }
+// });
 </script>

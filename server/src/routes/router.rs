@@ -7,11 +7,13 @@ use crate::{
     adapters::api_response::ApiResponseBuilder,
     routes::{
         audio_books_router::audio_book_routes, authentication_router::authentication_routes,
-        playlist_router::playlist_routes, public_router::public_routes, users_router::user_routes,
+        notification_routers::notification_routes, playlist_router::playlist_routes,
+        public_router::public_routes, users_router::user_routes,
     },
     services::{
         audio_book_service::AudioBooksService, authentication_service::AuthenticationService,
-        playlist_service::PlaylistService, root_serice::RootService, user_service::UserService,
+        notification_service::NotifiactionService, playlist_service::PlaylistService,
+        root_serice::RootService, user_service::UserService,
     },
     states::services_state::ServicesState,
 };
@@ -23,14 +25,16 @@ pub fn load_routes(pool: Arc<Pool<Postgres>>) -> Router {
         auth_service: AuthenticationService::init(&pool),
         playlist_service: PlaylistService::init(&pool),
         audio_book_service: AudioBooksService::init(&pool),
+        notification_service: NotifiactionService::init(&pool),
     };
 
     Router::new()
         .merge(public_routes(state.clone()))
         .nest("/auth", authentication_routes(state.clone()))
-        .nest("/users", user_routes(state.clone()))
+        .nest("/user", user_routes(state.clone()))
         .nest("/books", audio_book_routes(state.clone()))
         .nest("/playlist", playlist_routes(state.clone()))
+        .nest("/notifications", notification_routes(state.clone()))
         .fallback(async || {
             ApiResponseBuilder::<()>::new()
                 .message(

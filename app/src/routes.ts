@@ -71,7 +71,7 @@ const routes = [
       { path: "signup", component: SignupPage, name: "SignUp" },
       { path: "login", component: LoginPage, name: "Login" },
       {
-        path: "login2",
+        path: "login-existing",
         component: LoginExistingPage,
         name: "ExistingUserLogin",
       },
@@ -84,7 +84,7 @@ const routes = [
       {
         path: "verify-account",
         component: VerifyAccountRecovery,
-        name: "verifyAccountRecovery",
+        name: "VerifyAccountRecovery",
       },
       {
         path: "set-new-password",

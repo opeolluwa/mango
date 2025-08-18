@@ -5,7 +5,6 @@ mod errors;
 mod forgotten_password;
 mod password_updated;
 mod welcome;
-
 pub use confirm_email::ConfirmEmailTemplate;
 pub use email::Email;
 pub use email_client::EmailClient;

@@ -102,3 +102,15 @@ pub async fn onboard_user(
         .message("profile updated successfully")
         .build())
 }
+
+pub async fn verify_reset_otp(
+    State(auth_service): State<AuthenticationService>,
+    AuthenticatedRequest { data, claims }: AuthenticatedRequest<VerifyAccountRequest>,
+) -> Result<ApiResponse<VerifyAccountResponse>, ServiceError> {
+    let verify_account_response = auth_service.verify_reset_otp(&claims, &data).await?;
+    Ok(ApiResponseBuilder::new()
+        .status_code(StatusCode::OK)
+        .data(verify_account_response)
+        .message("OTP verified successfully")
+        .build())
+}

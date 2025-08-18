@@ -12,7 +12,6 @@ pub struct AppPersonalization {
     pub preferred_voice: Option<String>,
 }
 
-
 impl AppPersonalization {
     pub fn new(
         theme: Option<String>,
@@ -41,7 +40,4 @@ impl ModelTrait for AppPersonalization {
             })?;
         Ok(())
     }
-
-
 }
-

@@ -7,7 +7,7 @@
       <ErrorOutlet v-if="formSubmitError">{{ formSubmitError }}</ErrorOutlet>
 
       <div class="flex flex-col w-full">
-        <AppFormLabel for="firstname" text="Firstname" />
+        <AppFormLabel for="firstname" text="First name" />
         <input
           id="firstname"
           v-model="firstname"
@@ -22,7 +22,7 @@
       </div>
 
       <div class="flex flex-col w-full">
-        <AppFormLabel for="lastname" text="lastname" />
+        <AppFormLabel for="lastname" text="Last name" />
         <input
           id="lastname"
           v-model="lastname"
@@ -40,63 +40,75 @@
 </template>
 
 <script setup lang="ts">
-  import { useForm } from 'vee-validate';
-  import AuthScreenHeaderText from '../../components/auth/AuthScreenHeaderText.vue';
-  import AppFormLabel from '../../components/form/AppFormLabel.vue';
-  import SubmitButton from '../../components/form/SubmitButton.vue';
+import axios from "axios";
+import { useForm } from "vee-validate";
+import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import * as yup from "yup";
+import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
+import AppFormLabel from "../../components/form/AppFormLabel.vue";
+import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
+import SubmitButton from "../../components/form/SubmitButton.vue";
+import { useCachedUserStore } from "../../stores/cachedUser";
+import { UserInformation } from "../../types/userProfile";
+import { useUserInformation } from "../../stores/user";
 
-  import * as yup from 'yup';
-  import ErrorOutlet from '../../components/form/ErrorOutlet.vue';
+const formSchema = yup.object({
+  firstname: yup.string().required(),
+  lastname: yup.string().required(),
+});
 
-  import axios from 'axios';
-  import { useRoute, useRouter } from 'vue-router';
-  import { ref } from 'vue';
+const { defineField, errors, handleSubmit } = useForm({
+  validationSchema: formSchema,
+});
 
-  const formSchema = yup.object({
-    firstname: yup.string().required(),
-    lastname: yup.string().required(),
-  });
+const router = useRouter();
+const route = useRoute();
 
-  const { defineField, errors, handleSubmit } = useForm({
-    validationSchema: formSchema,
-  });
+const cachedUserStore = useCachedUserStore();
+const userStore = useUserInformation();
 
-  const route = useRoute();
-  const router = useRouter();
+const [firstname, firstnameAttr] = defineField("firstname");
+const [lastname, lastnameAttr] = defineField("lastname");
 
-  const [firstname, firstnameAttr] = defineField('firstname');
-  const [lastname, lastnameAttr] = defineField('lastname');
+const processingRequest = ref(false);
+const formSubmitError = ref("");
 
-  const processingRequest = ref(false);
-  const formSubmitError = ref('');
-
-  const onSubmit = handleSubmit(async (values) => {
-    processingRequest.value = true;
-    try {
-      const { firstname: firstName, lastname: lastName } = values;
-
-      const response = await axios.post(
-        '/auth/onboard',
-        { firstName, lastName },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${route.query.token}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        router.replace({ name: 'Home' });
-      } else {
-        formSubmitError.value = response.data.error || 'Failed';
+const onSubmit = handleSubmit(async (values) => {
+  processingRequest.value = true;
+  try {
+    const { firstname: firstName, lastname: lastName } = values;
+    const token = route.query["token"];
+    const response = await axios.post(
+      "/auth/onboard",
+      { firstName, lastName },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      console.log(error);
-      // formSubmitError.value = error.response.data.message;
-    } finally {
-      processingRequest.value = false;
+    );
+
+    if (response.status === 200) {
+      const userProfile: UserInformation = await userStore.fetchUserInformation(
+        token as string
+      );
+      cachedUserStore.cacheUserData({
+        firstName: userProfile.firstName,
+        lastName: lastName.lastname,
+        email: userProfile.email,
+        avatarUrl: userProfile.profilePicture,
+        // identifier: userProfile.identifier //TODO:
+      });
+      router.replace({ name: "Home" });
+    } else {
+      formSubmitError.value = response.data.error || "Failed to onboard user";
     }
-  });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    processingRequest.value = false;
+  }
+});
 </script>

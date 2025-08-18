@@ -22,10 +22,11 @@ pub async fn set_cached_user<R: Runtime>(
         .save(&pool)
         .await
         .map_err(|err| {
-            log::error!("{err}");
-            DbError::QueryFailed
+                   log::error!("{err}");
+                DbError::Database(err.to_string())
         })?;
 
+        println!("user cached");
     Ok(())
 }
 
@@ -33,26 +34,26 @@ pub async fn set_cached_user<R: Runtime>(
 #[tauri::command]
 pub async fn fetch_cached_user<R: Runtime>(
     state: State<'_, Arc<AppState>>,
-    user_identifier: String,
+    // user_identifier: String,
     _: tauri::Window<R>,
 ) -> Result<Option<CachedUser>, CommandError> {
     let pool = state.db.clone();
 
-    if user_identifier.is_empty() {
-        return Err(CommandError::from("User identifier cannot be empty"));
-    }
+    // if user_identifier.is_empty() {
+    //     return Err(CommandError::from("User identifier cannot be empty"));
+    // }
 
-    let user_identifier = uuid::Uuid::parse_str(&user_identifier)
-        .map_err(|_| CommandError::from("Invalid UUID format"))?;
+    // let user_identifier = uuid::Uuid::parse_str(&user_identifier)
+    //     .map_err(|_| CommandError::from("Invalid UUID format"))?;
 
     let result =
-        sqlx::query_as::<_, CachedUser>(r#"SELECT * FROM cached_user WHERE identifier = ?"#)
-            .bind(user_identifier)
+        sqlx::query_as::<_, CachedUser>(r#"SELECT * FROM cached_user LIMIT 1"#)
+            // .bind(user_identifier)
             .fetch_optional(&*pool)
             .await
             .map_err(|err| {
                 log::error!("{err}");
-                DbError::QueryFailed
+                DbError::Database(err.to_string())
             })?;
 
     Ok(result)

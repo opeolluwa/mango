@@ -1,7 +1,9 @@
 #![warn(unused_extern_crates)]
 
 use aers_lib::{
-    errors, events::subscriber::{EventSubscriber, EventSubscriberExt}, routes, shared, AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH
+    AERS_EXPORT_PATH, AERS_FILE_UPLOAD_PATH, errors,
+    events::subscriber::{EventSubscriber, EventSubscriberExt},
+    routes, shared,
 };
 use axum::extract::DefaultBodyLimit;
 use errors::app_error::AppError;
@@ -42,7 +44,7 @@ async fn main() -> Result<(), AppError> {
         .await
         .map_err(|err| AppError::StartupError(err.to_string()))?;
 
-    let db  = std::sync::Arc::new(pool);
+    let db = std::sync::Arc::new(pool);
     let app = load_routes(db.clone())
         .layer(DefaultBodyLimit::disable())
         .layer(RequestBodyLimitLayer::new(25 * 1024 * 1024)) // 25mb
@@ -63,7 +65,7 @@ async fn main() -> Result<(), AppError> {
         .map_err(|err| AppError::OperationFailed(err.to_string()))?;
 
     // Spawn Redis listener
-    tokio::spawn(async  {
+    tokio::spawn(async {
         if let Err(err) = EventSubscriber::start_redis_listener(db).await {
             log::error!("Redis listener failed: {err}");
         }

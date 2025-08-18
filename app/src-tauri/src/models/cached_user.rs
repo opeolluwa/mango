@@ -8,11 +8,13 @@ use uuid::Uuid;
 #[ts(export)]
 #[serde(rename_all = "camelCase")]
 pub struct CachedUser {
-    pub identifier: String,
+    #[ts(type="string")]
+    pub identifier: Uuid,
     pub first_name: Option<String>,
     pub last_name: Option<String>,
     pub email: Option<String>,
     pub avatar_url: Option<String>,
+    // pub user_identifier: Option<String>
 }
 
 impl CachedUser {
@@ -27,7 +29,7 @@ impl CachedUser {
             last_name,
             email,
             avatar_url,
-            identifier: Uuid::new_v4().to_string(),
+            identifier: Uuid::new_v4(),
         }
     }
 
@@ -45,7 +47,8 @@ impl CachedUser {
 
 impl ModelTrait for CachedUser {
     async fn save(&self, db_conn: &Pool<Sqlite>) -> Result<(), DbError> {
-        sqlx::query(r#"INSERT INTO cached_user (first_name, last_name, email, avatar_url) VALUES (?, ?, ?, ?)"#)
+        sqlx::query(r#"INSERT INTO cached_user (identifier, first_name, last_name, email, avatar_url) VALUES (?, ?, ?, ?, ?)"#)
+        .bind(self.identifier)
             .bind(self.first_name.to_owned())
             .bind(self.last_name.to_owned())
             .bind(self.email.to_owned())
@@ -53,8 +56,8 @@ impl ModelTrait for CachedUser {
             .execute(db_conn)
             .await
             .map_err(|err| {
-                log::error!("{err}");
-                DbError::QueryFailed
+                        log::error!("{err}");
+                DbError::Database(err.to_string())
             })?;
         Ok(())
     }

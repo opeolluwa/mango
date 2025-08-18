@@ -34,47 +34,59 @@ pub trait EventSubscriberExt {
     fn consume_message(
         channel: &str,
         message: &str,
+        pool: Arc<Pool<Postgres>>,
     ) -> impl std::future::Future<Output = Result<(), AppError>>;
-    fn start_redis_listener(pool: Arc<Pool<Postgres>>) -> impl std::future::Future<Output = Result<(), AppError>>;
-    fn parse_message<T: Debug + Serialize + DeserializeOwned>(
-        message: &str,
-    ) -> Result<Event<T>, AppError>;
+    fn start_redis_listener(
+        pool: Arc<Pool<Postgres>>,
+    ) -> impl std::future::Future<Output = Result<(), AppError>>;
+    fn parse_message<T: Debug + Serialize + DeserializeOwned>(message: &str)
+    -> Result<T, AppError>;
 }
 
 // Implementation ofEventSubscriberExt forEventSubscriber
 impl EventSubscriberExt for EventSubscriber {
-    fn parse_message<T>(message: &str) -> Result<Event<T>, AppError>
+    fn parse_message<T>(message: &str) -> Result<T, AppError>
     where
         T: Debug + Serialize + DeserializeOwned,
     {
         let message: T = serde_json::from_str(message).map_err(|err| {
-            log::error!("failed to extract event data from due to {err}");
+            log::error!("failed to extract event data from due to: {err}");
             AppError::OperationFailed(err.to_string())
         })?;
 
-        Ok(Event::new(message))
+        Ok(message)
     }
-    async fn consume_message(channel: &str, message: &str) -> Result<(), AppError> {
+    async fn consume_message(
+        channel: &str,
+        message: &str,
+        pool: Arc<Pool<Postgres>>,
+    ) -> Result<(), AppError> {
         let channel = EventChannel::from(channel.to_string());
-        let worker = EventWorker::new();
+        let worker = EventWorker::new(pool);
 
         match channel {
             EventChannel::DocumentConvertedToAudio => {
-                let _message = Self::parse_message::<DocumentConverted>(message)?;
+                let message = Self::parse_message::<DocumentConverted>(message)?;
+
+                if let Err(err) = worker.process_document_converted(&message).await {
+                    log::error!("failed to process event due to {}", err);
+                }
             }
 
             EventChannel::ConvertDocumentToAudio => {
                 let message = Self::parse_message::<ConvertDocument>(message)?;
                 if let Err(err) = worker.convert_document_to_audio(&message).await {
-                    log::error!(
-                        "failed to process event {} due to {}",
-                        message.identifier,
-                        err
-                    );
+                    log::error!("failed to process event due to err {}", err);
                 };
             }
 
-            _ => worker.log_message(message),
+            _ => {
+                log::warn!(
+                    "worker for channel {} not found, discarding message {:#?}",
+                    channel,
+                    message
+                )
+            }
         }
 
         Ok(())
@@ -109,7 +121,7 @@ impl EventSubscriberExt for EventSubscriber {
                 .get_payload()
                 .unwrap_or_else(|_| "<Invalid Payload>".to_string());
 
-            Self::consume_message(&channel, &message).await?;
+            Self::consume_message(&channel, &message, pool.clone()).await?;
         }
 
         Ok(())

@@ -34,3 +34,15 @@ https://dribbble.com/shots/24055579-Smart-Home-Welcome-Screen
 
 app settings
 https://dribbble.com/shots/12187754-DailyUi-007-App-Settings
+
+
+notification 
+https://dribbble.com/shots/21695163-Notifications-modal-Untitled-UI
+
+
+app
+https://dribbble.com/shots/17511240-Audiobook-app
+https://dribbble.com/shots/23602003-AudioBook-App-Design
+
+
+https://dribbble.com/shots/23169812-Ebook-and-Audio-Book-App-UI-Design-UIUX-Figma-Design
