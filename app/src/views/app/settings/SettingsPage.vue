@@ -1,5 +1,5 @@
 <template>
-  <UserCard :editable="true" :show-text="true"  />
+  <UserCard :editable="false" :show-text="true"  />
 
   <div class="mt-12">
     <h2 class="font-3xl text-gray-400 font-medium">Preferences</h2>
@@ -88,8 +88,14 @@ const sections: Section[] = [
   },
   {
     title: "help & support",
-    description: "for any question, contact us",
+    description: "AI actor, customer support",
     icon: "famicons:help-circle-outline",
+    routeName: "HelpAndSupport",
+  },
+    {
+    title: "Language & Internatiolization",
+    description: "App language, AI agent language",
+    icon: "heroicons:language-16-solid",
     routeName: "HelpAndSupport",
   },
   {

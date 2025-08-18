@@ -17,7 +17,7 @@
         CT
       </AvatarFallback>
 
-      <span
+      <span v-if="editable"
         class="text-xs absolute -bottom-1.5 -right-1.5 bg-white/80 p-1 rounded-full text-app-orange-500"
       >
         <Icon icon="tabler:edit" class="size-4 text-app" />
