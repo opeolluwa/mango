@@ -1,5 +1,5 @@
 <template>
-  <div class="grid gap-x-4 grid-cols-12 items-center" @click="logOut">
+  <div class="grid gap-x-4 grid-cols-12 items-center">
     <Icon :icon="icon" :class="['size-6 dark:text-white/90 col-span-2']" />
     <div class="col-span-8">
       <h2 class="font-3xl font-medium capitalize">

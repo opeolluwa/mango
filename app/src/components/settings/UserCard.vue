@@ -43,5 +43,5 @@ const props = defineProps({
   editable: { type: Boolean, default: false },
 });
 
-const { showText, avatarSize, editable } = toRefs(props);
+const { showText, editable } = toRefs(props);
 </script>
