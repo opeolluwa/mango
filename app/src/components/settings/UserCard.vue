@@ -1,7 +1,9 @@
 <template>
-  <div class="flex items-center gap-x-4">
+  <div class="flex items-center gap-x-4 relative">
     <AvatarRoot
-      class="bg-blackA3 inline-flex size-16 select-none items-center justify-center overflow-hidden rounded-full align-middle"
+      :class="[
+        'bg-blackA3 inline-flex size-16 select-none items-center justify-center overflow-hidden rounded-full align-middle',
+      ]"
     >
       <AvatarImage
         class="h-full w-full rounded-[inherit] object-cover"
@@ -14,15 +16,32 @@
       >
         CT
       </AvatarFallback>
+
+      <span v-if="editable"
+        class="text-xs absolute -bottom-1.5 -right-1.5 bg-white/80 p-1 rounded-full text-app-orange-500"
+      >
+        <Icon icon="tabler:edit" class="size-4 text-app" />
+      </span>
     </AvatarRoot>
-    <div class="flex flex-col">
+
+    <div v-if="showText" class="flex flex-col">
       <div class="text-2xl font-bold">Adeoye Adefemi</div>
       <p>adefemiadeoye@yahoo.com</p>
-      <span class="text-sm text-bold">Basic plan </span>
+      <span class="text-sm font-bold">Basic plan</span>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { Icon } from "@iconify/vue";
 import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
+import { toRefs } from "vue";
+
+const props = defineProps({
+  showText: { type: Boolean, default: true },
+  avatarSize: { type: Number, default: 16 },
+  editable: { type: Boolean, default: false },
+});
+
+const { showText, editable } = toRefs(props);
 </script>

@@ -1,5 +1,6 @@
 import "./assets/styles.css";
 import "./axios.config";
+// import "./revenueCat"
 
 import { createPinia } from "pinia";
 import { createApp } from "vue";

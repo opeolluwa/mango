@@ -3,6 +3,9 @@ import { UserInformation } from "../types/userProfile";
 import axios from "axios";
 
 export const useUserInformation = defineStore("user_information", {
+  state: () => ({
+    identifier: "",
+  }),
   actions: {
     async fetchUserInformation(token: string): Promise<UserInformation> {
       try {
