@@ -1,5 +1,5 @@
 <template>
-  <UserCard />
+  <UserCard :editable="true" :show-text="true"  />
 
   <div class="mt-12">
     <h2 class="font-3xl text-gray-400 font-medium">Preferences</h2>

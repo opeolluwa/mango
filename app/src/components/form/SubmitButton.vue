@@ -11,14 +11,18 @@
     type="submit"
     class="text-app-dark rounded-lg font-medium bg-app-orange/90 dark:text-white"
   >
-    Continue
+    {{ text || "Continue" }}
   </AppButton>
 </template>
 
 <script setup lang="ts">
-  import AppButton from '../button/AppButton.vue';
-  import FormLoader from './FormLoader.vue';
-  defineProps({
-    loading: Boolean,
-  });
+import AppButton from "../button/AppButton.vue";
+import FormLoader from "./FormLoader.vue";
+defineProps({
+  loading: Boolean,
+  text: {
+    type: String,
+    default: "Continue",
+  },
+});
 </script>
