@@ -12,7 +12,7 @@ use std::sync::Arc;
 // set cached user
 #[tauri::command]
 pub async fn set_cached_user<R: Runtime>(
-    state: State<'_, Arc<AppState>>,
+   state: State<'_, Arc<AppState>>,
     user: CreateCachedUser,
     _: tauri::Window<R>,
 ) -> Result<(), CommandError> {
@@ -22,18 +22,18 @@ pub async fn set_cached_user<R: Runtime>(
         .save(&pool)
         .await
         .map_err(|err| {
-                   log::error!("{err}");
-                DbError::Database(err.to_string())
+            log::error!("{err}");
+            DbError::Database(err.to_string())
         })?;
 
-        println!("user cached");
+    println!("user cached");
     Ok(())
 }
 
 // fetch cached user
 #[tauri::command]
 pub async fn fetch_cached_user<R: Runtime>(
-    state: State<'_, Arc<AppState>>,
+   state: State<'_, Arc<AppState>>,
     // user_identifier: String,
     _: tauri::Window<R>,
 ) -> Result<Option<CachedUser>, CommandError> {
@@ -46,15 +46,14 @@ pub async fn fetch_cached_user<R: Runtime>(
     // let user_identifier = uuid::Uuid::parse_str(&user_identifier)
     //     .map_err(|_| CommandError::from("Invalid UUID format"))?;
 
-    let result =
-        sqlx::query_as::<_, CachedUser>(r#"SELECT * FROM cached_user LIMIT 1"#)
-            // .bind(user_identifier)
-            .fetch_optional(&*pool)
-            .await
-            .map_err(|err| {
-                log::error!("{err}");
-                DbError::Database(err.to_string())
-            })?;
+    let result = sqlx::query_as::<_, CachedUser>(r#"SELECT * FROM cached_user LIMIT 1"#)
+        // .bind(user_identifier)
+        .fetch_optional(&*pool)
+        .await
+        .map_err(|err| {
+            log::error!("{err}");
+            DbError::Database(err.to_string())
+        })?;
 
     Ok(result)
 }

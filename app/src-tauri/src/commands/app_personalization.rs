@@ -31,7 +31,7 @@ pub async fn fetch_app_personalization<R: Runtime>(
 // update app personalization
 #[tauri::command]
 pub async fn update_app_personalization<R: Runtime>(
-    state: State<'_, Arc<AppState>>,
+   state: State<'_, Arc<AppState>>,
     _: tauri::Window<R>,
 ) -> Result<AppPersonalization, CommandError> {
     let pool = state.db.clone();
@@ -50,7 +50,7 @@ pub async fn update_app_personalization<R: Runtime>(
 // set the theme
 #[tauri::command]
 pub async fn set_theme<R: Runtime>(
-    state: State<'_, Arc<AppState>>,
+   state: State<'_, Arc<AppState>>,
     theme: Theme,
     _: tauri::Window<R>,
 ) -> Result<AppPersonalization, CommandError> {

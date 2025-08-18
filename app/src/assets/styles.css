@@ -72,7 +72,9 @@
 
     html,
     body {
-        @apply bg-app-dark text-white/90;
+        /* @apply bg-app-dark text-white/90;
+         */
+           @apply text-app-dark bg-white;
         overscroll-behavior: none;
         margin: 0;
         padding: 0;

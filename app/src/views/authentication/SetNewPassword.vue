@@ -5,7 +5,7 @@
       @click="router.back"
     />
 
-    {{ password }} {{ confirmPassword }}
+
     <AuthScreenHeaderText>Set new Password</AuthScreenHeaderText>
     <p class="small text-gray-400">There you go! Set new password</p>
 

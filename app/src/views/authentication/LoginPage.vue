@@ -50,7 +50,7 @@
     >
     <div class="w-full text-center px-8 mt-8">
       <RouterLink
-        :to="{ name: 'SignUp' }"
+        :to="{ name: 'Home' }"
         class="text-stone-500 mt-20 text-center"
         >Don&apos;t have an account
         <span class="accent font-medium">Sign up</span>
@@ -112,6 +112,7 @@ const submitForm = handleSubmit(async (values) => {
 
     if (response.status !== 200) {
       formSubmitError.value = "Failed to login. Please try again";
+      return;
     }
     const token = response.data.data.accessToken;
     const userInformation = await userStore.fetchUserInformation(token);

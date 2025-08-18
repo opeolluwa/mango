@@ -1,3 +1,5 @@
-<template></template>
+<template>
+    help
+</template>
 
 <script lang="ts" setup></script>
