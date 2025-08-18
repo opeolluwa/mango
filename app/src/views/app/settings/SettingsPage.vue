@@ -103,4 +103,6 @@ const router = useRouter();
 const logOut = () => {
   router.push({ name: "Login" });
 };
+
+
 </script>
