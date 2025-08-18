@@ -1,5 +1,5 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-use crate::state::{AppState, SetupState};
+use crate::state::{AppState};
 use lazy_static::lazy_static;
 use sqlx::sqlite::SqliteConnectOptions;
 use sqlx::SqlitePool;
@@ -115,16 +115,16 @@ pub fn run() {
                     .await
                     .map_err(|e| e.to_string())?;
 
-                    let state = Arc::new(Mutex::new(AppState {
+                    let state = AppState {
                     db: Arc::new(pool),
-                    setup: SetupState::default(),
-                })); 
+                  
+                }; 
                 Ok(state)
             });
 
             match app_state_result {
                 Ok(app_state) => {
-                    app.manage(Arc::new(app_state));
+                    app.manage(app_state);
                     Ok(())
                 }
                 Err(e) => {

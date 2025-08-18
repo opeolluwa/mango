@@ -6,17 +6,17 @@ use crate::error::CommandError;
 use crate::error::DbError;
 use crate::models::cached_user::CachedUser;
 use crate::state::AppState;
- use std::sync::Mutex;
+
 use std::sync::Arc;
 
 // set cached user
 #[tauri::command]
 pub async fn set_cached_user<R: Runtime>(
-   state: State<'_, Arc<Mutex<AppState>>>,
+   state: State<'_, Arc<AppState>>,
     user: CreateCachedUser,
     _: tauri::Window<R>,
 ) -> Result<(), CommandError> {
-    let pool = state.clone().lock().unwrap().db.clone();
+    let pool = state.db.clone();
 
     CachedUser::from_adapter(user)
         .save(&pool)
@@ -33,11 +33,11 @@ pub async fn set_cached_user<R: Runtime>(
 // fetch cached user
 #[tauri::command]
 pub async fn fetch_cached_user<R: Runtime>(
-   state: State<'_, Arc<Mutex<AppState>>>,
+   state: State<'_, Arc<AppState>>,
     // user_identifier: String,
     _: tauri::Window<R>,
 ) -> Result<Option<CachedUser>, CommandError> {
-    let pool = state.clone().lock().unwrap().db.clone();
+    let pool = state.db.clone();
 
     // if user_identifier.is_empty() {
     //     return Err(CommandError::from("User identifier cannot be empty"));
