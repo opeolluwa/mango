@@ -11,6 +11,7 @@
     "dialog:default",
     "dialog:allow-message",
     "fs:default",
-    "core:app:allow-version"
+    "core:app:allow-version",
+    "websocket:default"
   ]
 }

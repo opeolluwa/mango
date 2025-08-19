@@ -1,5 +1,6 @@
 import "./assets/styles.css";
 import "./axios.config";
+import "./notification";
 // import "./revenueCat"
 
 import { createPinia } from "pinia";
