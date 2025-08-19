@@ -27,24 +27,24 @@ impl NotifiactionService {
         }
     }
     pub async fn handle_web_socket_connection(&self, mut socket: WebSocket) {
-        let (mut sender, mut receiver) = socket.split();
+        // let (mut sender, mut receiver) = socket.split();
 
-        //         let msg = Message::text(
-        //             r#"
-        //         {
-        //   "playlist_identifier": null,
-        //   "file_name": "nccf-letter-draft-2.docx",
-        //   "user_identifier": "a2d4eb25-5b46-44ed-8bb7-281e568be7a5",
-        //   "file_path": "/tmp/1755344187_nccf-letter-draft-2.docx.pdf"
-        // }"#,
-        //         );
-        //         if socket.send(msg).await.is_err() {
-        //             // client disconnected
-        //             return;
-        //         }
+                let msg = Message::text(
+                    r#"
+                {
+          "playlist_identifier": null,
+          "file_name": "nccf-letter-draft-2.docx",
+          "user_identifier": "a2d4eb25-5b46-44ed-8bb7-281e568be7a5",
+          "file_path": "/tmp/1755344187_nccf-letter-draft-2.docx.pdf"
+        }"#,
+                );
+                if socket.send(msg).await.is_err() {
+                    // client disconnected
+                    return;
+                }
 
-        tokio::spawn(Self::read_message_from_worker(receiver));
-        tokio::spawn(Self::send_mesage_to_client(sender));
+        // tokio::spawn(Self::read_message_from_worker(receiver));
+        // tokio::spawn(Self::send_mesage_to_client(sender));
     }
     pub async fn read_message_from_worker(receiver: SplitStream<WebSocket>) {}
     pub async fn send_mesage_to_client(sender: SplitSink<WebSocket, Message>) {}

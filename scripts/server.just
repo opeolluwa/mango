@@ -27,7 +27,7 @@ DOCKER_CMD := "docker compose -f server/docker-compose.yaml"
     cargo fmt && cargo fix 
 
 @server-watch: 
-    {{DOCKER_CMD}} up -d 
+    {{DOCKER_CMD}} up -d
     @just sl
 
 @server-logs:

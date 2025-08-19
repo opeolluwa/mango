@@ -1,7 +1,7 @@
 <template>
   <RouterView />
   <SensationalTint
-    class="absolute inset-x-2 bottom-1 -z-10 transform-gpu overflow-hidden blur-3xl opacity-30"
+    class="absolute inset-x-2 bottom-1 -z-10 transform-gpu overflow-hidden blur-3xl opacity-30 dark:opacity-0"
   />
 </template>
 

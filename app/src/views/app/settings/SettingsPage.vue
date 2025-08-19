@@ -12,18 +12,18 @@
       <component
         :is="section.routeName ? 'RouterLink' : 'div'"
         :to="section.routeName ? { name: section.routeName } : null"
-        class="grid grid-cols-12 items-center gap-x-4 cursor-pointer"
+        class="grid grid-cols-12 justify-between  items-center gap-x-4 cursor-pointer"
         @click="section.isLogout ? logOut() : null"
       >
         <Icon
           :icon="section.icon"
-          class="size-6 dark:text-white/90 col-span-2"
+          class="size-6 dark:text-gray-400 col-span-2"
         />
-        <div class="col-span-8">
-          <h2 class="font-medium capitalize">
+        <div class="col-span-8 ">
+          <h2 class="font-medium dark:text-gray-400 capitalize">
             {{ section.title }}
           </h2>
-          <small class="text-gray-400 first-letter:capitalize">
+          <small class="text-gray-500 first-letter:capitalize">
             {{ section.description }}
           </small>
         </div>

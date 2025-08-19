@@ -31,7 +31,6 @@ RUN cargo install cargo-watch
 RUN cargo build 
 
 VOLUME ["/app", "/cargo-target", "/usr/local/cargo/registry"]
-ENV PATH="/usr/local/cargo/bin:${PATH}"
 CMD ["cargo", "watch", \
      "--why", \
      "--ignore", ".git/", \

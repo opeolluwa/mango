@@ -1,20 +1,19 @@
 <template>
-
-  <div class="flex justify-between min-h-20 absolute top-0 w-screen py-3 pr-12">
-    <Icon
-      icon="fluent:chevron-left-32-filled"
-      :class="['icon size-5 dark:text-white/90']"
-      @click="useGoBack"
-    />
-    {{ label }}
-    <Icon
-      icon="tabler:dots"
-      :class="['icon size-5 dark:text-white/90']"
-      @click="showSideNav != showSideNav"
-    />
+  <div
+    class="flex gap-4 min-h-12 items-center justify-between absolute top-0 w-screen py-3 pr-12 bg-white z-500 dark:bg-app-dark"
+  >
+    <div class="flex gap-x-2 align-center">
+      <Icon
+        icon="fluent:chevron-left-32-filled"
+        :class="['icon size-5 dark:text-white/90']"
+        @click="useGoBack"
+      />
+      <span class="font-medium"> {{ label }}</span>
+    </div>
+    <slot name="headerIcon" />
   </div>
 
-  <div class="mt-12">
+  <div class="mt-12 min-h-screen">
     <slot />
   </div>
 </template>
@@ -35,5 +34,4 @@ watch(
   },
   { immediate: true }
 );
-const showSideNav = ref(false);
 </script>
