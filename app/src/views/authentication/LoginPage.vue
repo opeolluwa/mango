@@ -50,7 +50,7 @@
     >
     <div class="w-full text-center px-8 mt-8">
       <RouterLink
-        :to="{ name: 'Home' }"
+        :to="{ name: 'SignUp' }"
         class="text-stone-500 mt-20 text-center"
         >Don&apos;t have an account
         <span class="accent font-medium">Sign up</span>

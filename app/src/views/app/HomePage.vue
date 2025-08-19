@@ -1,19 +1,19 @@
 <template>
   <template v-if="emptyLibrary">
     <div
-      class="overflow-hidden bg-cover bg-no-repeat relative flex flex-col justify-center items-center px-4 h-[90%] text-app-dark-400"
+      class="overflow-hidden bg-cover bg-no-repeat relative flex flex-col justify-center items-center px-4 h-[90%]  "
     >
-      <h2 class="text-xl font-medium text-center">
+      <h2 class="text-xl font-medium text-center dark:text-gray-400">
         No audio book has been created
       </h2>
-      <p class="text-center my-2 text-gray-400">
+      <p class="text-center mt-1 mb-3 text-gray-500">
         Your audio books will appear as soon as you begin to add them
       </p>
       <button
-        class="bg-app-orange text-white btn-lg inline-flex gap-x-2 items-center px-8 py-2 mt-2 cursor-pointer shadow-md transition-colors duration-200 ease-linear hover:opacity-95 hover:scale-95 control rounded"
+        class="bg-app-orange text-app-dark btn-lg inline-flex gap-x-2 items-center px-8 py-2 mt-2 cursor-pointer shadow-md transition-colors duration-200 ease-linear hover:opacity-95 hover:scale-95 control rounded"
         @click="createNewBook"
       >
-        <Icon icon="ic:round-plus" class="size-8" />
+        <Icon icon="cuida:plus-circle-outline" class="size-5" />
         Create
       </button>
     </div>

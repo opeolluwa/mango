@@ -27,9 +27,11 @@ import AudioPlayerLayout from "./views/player/AudioPlayerLayout.vue";
 import UserProfile from "./views/app/settings/UserProfile.vue";
 import AppSettingsLayout from "./views/app/settings/AppSettingsLayout.vue";
 import SettingsPage from "./views/app/settings/SettingsPage.vue";
-import SecurityPage from "./views/app/settings/SecurityPage.vue";
+import SecurityPage from "./views/app/settings/security/SecurityPage.vue";
 import HelpPage from "./views/app/settings/HelpPage.vue";
 import PaymentPage from "./views/app/settings/PaymentPage.vue";
+import AppSecurityLayout from "./views/app/settings/security/AppSecurityLayout.vue";
+import UpdatePassword from "./views/app/settings/security/UpdatePassword.vue";
 
 const routes = [
   {
@@ -102,9 +104,18 @@ const routes = [
           },
           {
             path: "security-and-privacy",
-            component: SecurityPage,
-            name: "SecurityAndPrivacy",
+            component: AppSecurityLayout,
+            name: "AppSecurity",
             meta: { label: "Security & Privacy" },
+            children: [
+              { path: "", component: SecurityPage, name: "SecurityAndPrivacy" },
+              {
+                path: "update-accout-password",
+                component: UpdatePassword,
+                name: "UpdatePassword",
+                meta: { label: "Update password" },
+              },
+            ],
           },
           {
             path: "help-and-support",

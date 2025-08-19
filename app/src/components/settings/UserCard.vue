@@ -17,7 +17,8 @@
         CT
       </AvatarFallback>
 
-      <span v-if="editable"
+      <span
+        v-if="editable"
         class="text-xs absolute -bottom-1.5 -right-1.5 bg-white/80 p-1 rounded-full text-app-orange-500"
       >
         <Icon icon="tabler:edit" class="size-4 text-app" />
@@ -25,9 +26,9 @@
     </AvatarRoot>
 
     <div v-if="showText" class="flex flex-col">
-      <div class="text-2xl font-bold">Adeoye Adefemi</div>
-      <p>adefemiadeoye@yahoo.com</p>
-      <span class="text-sm font-bold">Basic plan</span>
+      <div class="text-2xl font-bold dark:text-white/70">Adeoye Adefemi</div>
+      <p class="text-gray-400 font-medium">adefemiadeoye@yahoo.com</p>
+      <span class="text-sm font-semibold text-gray-600">Basic plan</span>
     </div>
   </div>
 </template>

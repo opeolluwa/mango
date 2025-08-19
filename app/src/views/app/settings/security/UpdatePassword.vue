@@ -4,6 +4,21 @@
     <ErrorOutlet v-if="formSubmitError">{{ formSubmitError }}</ErrorOutlet>
 
     <div class="flex flex-col w-full">
+      <AppFormLabel text="Current Password" for="password" />
+      <input
+        id="password"
+        v-model="currentPassword"
+        class="app-form-input"
+        type="password"
+        placeholder="********"
+        v-bind="currentPasswordProps"
+      />
+      <ErrorOutlet v-if="errors.currentPassword">{{
+        errors.currentPassword
+      }}</ErrorOutlet>
+    </div>
+
+    <div class="flex flex-col w-full">
       <AppFormLabel text="New password" for="password" />
       <input
         id="password"
@@ -40,9 +55,9 @@ import { useForm } from "vee-validate";
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import * as yup from "yup";
-import SubmitButton from "../../../components/form/SubmitButton.vue";
-import AppFormLabel from "../../../components/form/AppFormLabel.vue";
-import ErrorOutlet from "../../../components/form/ErrorOutlet.vue";
+import SubmitButton from "../../../../components/form/SubmitButton.vue";
+import AppFormLabel from "../../../../components/form/AppFormLabel.vue";
+import ErrorOutlet from "../../../../components/form/ErrorOutlet.vue";
 
 const validationSchema = yup.object({
   confirmPassword: yup.string().required(),
@@ -55,6 +70,7 @@ const { defineField, errors, handleSubmit } = useForm({
 
 const [password, passwordProps] = defineField("password");
 const [confirmPassword, confirmPasswordProps] = defineField("confirmPassword");
+const [currentPassword, currentPasswordProps] = defineField("currentPassword");
 
 const router = useRouter();
 const processingRequest = ref(false);
@@ -68,7 +84,7 @@ const submitForm = handleSubmit(async (values) => {
     processingRequest.value = true;
     const response = await axios.post(
       "/auth/reset-password",
-      { confirmPassword, password },
+      { confirmPassword, password, currentPassword },
       {
         headers: {
           "Content-Type": "application/json",
