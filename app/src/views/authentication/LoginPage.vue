@@ -59,7 +59,6 @@
   </div>
 </template>
 <script lang="ts" setup>
-import axios from "axios";
 import { useForm } from "vee-validate";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -72,8 +71,7 @@ import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
 import SubmitButton from "../../components/form/SubmitButton.vue";
 
-import { useCachedUserStore } from "../../stores/cachedUser";
-import { useUserInformation } from "../../stores/user";
+import { useLogin } from "../../composibles/useLogin";
 
 const loginSchema = yup.object({
   email: yup.string().required().email(),
@@ -89,52 +87,13 @@ const [password, passwordAttr] = defineField("password");
 
 const router = useRouter();
 
-const cachedUserStore = useCachedUserStore();
-const userStore = useUserInformation();
 
 const processingRequest = ref(false);
 const formSubmitError = ref<string | null>(null);
 
 const submitForm = handleSubmit(async (values) => {
-  try {
-    const { email, password } = values;
-    processingRequest.value = true;
-
-    const response = await axios.post(
-      "/auth/login",
-      { email, password },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (response.status !== 200) {
-      formSubmitError.value = "Failed to login. Please try again";
-      return;
-    }
-    const token = response.data.data.accessToken;
-    const userInformation = await userStore.fetchUserInformation(token);
-
-    await cachedUserStore.cacheUserData({
-      email: userInformation.email,
-      firstName: userInformation.firstName,
-      lastName: userInformation.lastName,
-      avatarUrl: userInformation.profilePicture,
-    });
-    router.push({ name: "Home" });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    formSubmitError.value = error.response.data.message;
-  } finally {
-    processingRequest.value = false;
-  }
+  const { email, password } = values;
+  useLogin({ email, password });
 });
 
-// onBeforeMount(() => {
-//   if (userExists.value) {
-//     router.push({ name: "ExistingUserLogin" });
-//   }
-// });
 </script>

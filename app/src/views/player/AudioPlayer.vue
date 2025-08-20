@@ -109,7 +109,7 @@ import { Icon } from "@iconify/vue";
 import { SliderRange, SliderRoot, SliderThumb, SliderTrack } from "reka-ui";
 import { ref } from "vue";
 import { playThePreviousBook } from "../../composibles/book.ts";
-import { useGoBack } from "../../composibles/router.ts";
+import { useGoBack } from "../../composibles/useRouter.ts";
 const player = ref(new Audio());
 const isPlaying = ref(false);
 

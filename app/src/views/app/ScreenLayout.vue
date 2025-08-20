@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import { ref, watch } from "vue";
-import { useGoBack } from "../../composibles/router";
+import { useGoBack } from "../../composibles/useRouter";
 import { Icon } from "@iconify/vue";
 import { useRoute } from "vue-router";
 
