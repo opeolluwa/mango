@@ -15,7 +15,7 @@
         description="Pick a PDF document not less than 5 MiB"
       >
         <button
-          class="bg-app-orange text-app-dark btn-lg inline-flex gap-x-2 items-center px-8 py-2 mt-2 cursor-pointer shadow-md transition-colors duration-200 ease-linear hover:opacity-95 hover:scale-95 control rounded"
+          class="bg-app-orange text-app-dark btn-lg inline-flex gap-x-2 items-center px-8 py-3 mt-2 cursor-pointer shadow-md transition-colors duration-200 ease-linear hover:opacity-95 hover:scale-95 control rounded"
         >
           <UIcon name="cuida:plus-circle-outline" class="size-5" />
           Create
@@ -32,13 +32,12 @@
           <div class="mt-4">
             <button
               :disabled="uploading"
-              class="bg-app-orange text-app-dark btn-lg inline-flex gap-x-2 items-center px-8 py-2 mt-2 cursor-pointer shadow-md transition-colors duration-200 ease-linear hover:opacity-95 hover:scale-95 control rounded"
+              class="bg-app-orange text-app-dark btn-lg inline-flex gap-x-2 items-center px-8 py-3 mt-2 cursor-pointer shadow-md transition-colors duration-200 ease-linear hover:opacity-95 hover:scale-95 control rounded w-full text-center justify-center"
               @click="handleUpload"
             >
               <span v-if="!uploading">Upload</span>
               <span v-else>Uploading...</span>
             </button>
-
 
             <ErrorOutlet v-if="uploadError" class="mt-2">
               {{ uploadError }}
@@ -53,7 +52,7 @@
       <div class="flex justify-between">
         <div>
           <h2 class="text-2xl font-black text-app-dark/90 dark:text-gray-200">
-            Hey, {{ firstName }}! 👋
+            Hey, {{ firstName || "there" }}! 👋
           </h2>
           <VueGreetings class="leading-5 text-gray-600 dark:text-gray-400" />
         </div>
@@ -116,12 +115,11 @@ import { useTokenStore } from "../../stores/token.ts";
 const store = useCachedUserStore();
 const firstName = computed(() => store.firstName);
 
-const emptyLibrary = true;
+const emptyLibrary = false;
 const file = ref(null);
 
 const uploading = ref(false);
 const uploadError = ref<string | null>(null);
-
 
 const handleUpload = async () => {
   if (!file.value) {
