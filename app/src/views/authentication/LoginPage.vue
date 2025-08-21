@@ -23,7 +23,7 @@
           class="app-form-input"
           type="text"
           placeholder="jane@mailer.com"
-          v-bind="emailAttr"
+          v-bind="emailProps"
         />
         <ErrorOutlet v-if="errors.email">{{ errors.email }}</ErrorOutlet>
       </div>
@@ -36,7 +36,7 @@
           class="app-form-input"
           type="password"
           placeholder="********"
-          v-bind="passwordAttr"
+          v-bind="passwordProps"
         />
         <ErrorOutlet v-if="errors.password">{{ errors.password }}</ErrorOutlet>
       </div>
@@ -82,18 +82,25 @@ const { defineField, errors, handleSubmit } = useForm({
   validationSchema: loginSchema,
 });
 
-const [email, emailAttr] = defineField("email");
-const [password, passwordAttr] = defineField("password");
+const [email, emailProps] = defineField("email");
+const [password, passwordProps] = defineField("password");
 
 const router = useRouter();
-
 
 const processingRequest = ref(false);
 const formSubmitError = ref<string | null>(null);
 
 const submitForm = handleSubmit(async (values) => {
-  const { email, password } = values;
-  useLogin({ email, password });
-});
+  formSubmitError.value = "";
+  processingRequest.value = true;
 
+  const { email, password } = values;
+  const { success, message } = await useLogin({ email, password });
+  if (!success) {
+    formSubmitError.value = message;
+    return;
+  }
+  router.push({ name: "Home" });
+  processingRequest.value = false;
+});
 </script>

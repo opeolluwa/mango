@@ -1,25 +1,27 @@
 // src/plugins/api.ts
 import axios from "axios";
+import { useTokenStore } from "../stores/token";
 
 // Create axios instance
 const api = axios.create({
   baseURL:
-    (import.meta.env.VITE_API_BASE_URL as string) ||
-    "https://eckko.koyeb.app" ||
-    "http://192.168.0.170:5006" ||
-    "http://10.0.2.2:5006" ||
-    "http://localhost:5006",
+    // (import.meta.env.VITE_API_BASE_URL as string) ||
+    // "https://eckko.koyeb.app" ||
+    "http://192.168.0.170:5006",
+  // "http://10.0.2.2:5006" ||
+  // "http://localhost:5006",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
   },
-  timeout: 10000, 
+  timeout: 10000,
 });
 
 // Request interceptor (e.g., attach auth token automatically)
 api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("accessToken"); // or use Pinia store
+  async (config) => {
+    const tokenStore = useTokenStore();
+    const token = await tokenStore.extractRequestToken;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -43,7 +45,6 @@ api.interceptors.response.use(
 );
 
 export default api;
-
 
 // import api from "../plugins/api"; // 👈 use your instance
 
