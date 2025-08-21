@@ -7,7 +7,7 @@
     >
       <AvatarImage
         class="h-full w-full rounded-[inherit] object-cover"
-        src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
+        :src="avatarUrl"
         alt="Colm Tuite"
       />
       <AvatarFallback
@@ -26,8 +26,8 @@
     </AvatarRoot>
 
     <div v-if="showText" class="flex flex-col">
-      <div class="text-2xl font-bold dark:text-white/70">Adeoye Adefemi</div>
-      <p class="text-gray-400 font-medium">adefemiadeoye@yahoo.com</p>
+      <div class="text-2xl font-bold dark:text-white/70">{{ fullName }}</div>
+      <p class="text-gray-400 font-medium">{{ email }}</p>
       <span class="text-sm font-semibold text-gray-600">Basic plan</span>
     </div>
   </div>
@@ -36,7 +36,8 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
-import { toRefs } from "vue";
+import { computed, toRefs } from "vue";
+import { useCachedUserStore } from "../../stores/cachedUser";
 
 const props = defineProps({
   showText: { type: Boolean, default: true },
@@ -45,4 +46,9 @@ const props = defineProps({
 });
 
 const { showText, editable } = toRefs(props);
+
+const store = useCachedUserStore();
+const fullName = computed(() => store.fullName);
+const email = computed(() => store.email);
+const avatarUrl = computed(() => store.avatarUrl);
 </script>
