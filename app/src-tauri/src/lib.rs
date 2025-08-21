@@ -90,14 +90,13 @@ pub fn run() {
             kind: MigrationKind::Up,
             sql: include_str!("../migrations/20250812182430_create_app_settings_if_not_exist.sql"),
         },
-       
-       
     ];
 
     tauri::Builder::default()
-     .plugin(tauri_plugin_websocket::init())
+        .plugin(tauri_plugin_store::Builder::new().build())
+        .plugin(tauri_plugin_upload::init())
+        .plugin(tauri_plugin_websocket::init())
         .plugin(tauri_plugin_fs::init())
-        // .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_sql::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_stronghold::Builder::new(|pass| todo!()).build())

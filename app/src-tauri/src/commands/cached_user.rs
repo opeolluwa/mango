@@ -12,7 +12,7 @@ use std::sync::Arc;
 // set cached user
 #[tauri::command]
 pub async fn set_cached_user<R: Runtime>(
-   state: State<'_, Arc<AppState>>,
+    state: State<'_, Arc<AppState>>,
     user: CreateCachedUser,
     _: tauri::Window<R>,
 ) -> Result<(), CommandError> {
@@ -33,7 +33,7 @@ pub async fn set_cached_user<R: Runtime>(
 // fetch cached user
 #[tauri::command]
 pub async fn fetch_cached_user<R: Runtime>(
-   state: State<'_, Arc<AppState>>,
+    state: State<'_, Arc<AppState>>,
     // user_identifier: String,
     _: tauri::Window<R>,
 ) -> Result<Option<CachedUser>, CommandError> {

@@ -12,5 +12,5 @@
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
-import { useGoBack } from "../../composibles/router.ts";
+import { useGoBack } from "../../composibles/useRouter.ts";
 </script>
