@@ -1,7 +1,6 @@
-import {invoke} from "@tauri-apps/api/core";
-import {defineStore} from "pinia";
-import {type AudioLibrary} from "../../src-tauri/bindings/AudioLibrary";
-import {AudioBook} from "../../src-tauri/bindings/AudioBook";
+import { defineStore } from "pinia";
+import { AudioBook } from "../../src-tauri/bindings/AudioBook";
+import { type AudioLibrary } from "../../src-tauri/bindings/AudioLibrary";
 
 
 interface State {
@@ -19,10 +18,10 @@ export const useAudioBookLibrary = defineStore("musicLibrary", {
     }),
     actions: {
         async loadMusicLibrary() {
-            const library: AudioLibrary = await invoke("read_library");
-            this.audioLibrary = library;
-            this.audioBooks = library.audioBooks
-            console.log({lib: this.audioLibrary});
+            // const library: AudioLibrary = await invoke("read_library");
+            // this.audioLibrary = library;
+            // this.audioBooks = library.audioBooks
+            // console.log({lib: this.audioLibrary});
         },
     },
     getters: {
