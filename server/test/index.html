@@ -1,2 +1,13 @@
 <a>Open the console to see stuff, then refresh to initiate exchange.</a>
-<script src='script.js'></script>
+<script>
+
+    const socket = new WebSocket("ws://localhost:5006/notifications/listen");
+
+    socket.addEventListener("open", function (event) {
+        socket.send("Hello Server!");
+    });
+
+    socket.addEventListener("message", function (event) {
+        console.log("Message from server ", event.data);
+    });
+</script>

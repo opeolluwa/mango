@@ -3,6 +3,7 @@ use axum::{
     response::Response,
 };
 use sqlx::{Pool, Postgres};
+use uuid::Uuid;
 
 use crate::{
     adapters::notification::CreateNotification,
@@ -10,10 +11,7 @@ use crate::{
     errors::service_error::ServiceError,
     repositories::notification_repository::{NotificationRepository, NotificationRepositoryExt},
 };
-use futures_util::{
-    sink::SinkExt,
-    stream::{SplitSink, SplitStream, StreamExt},
-};
+use futures_util::{sink::SinkExt, stream::StreamExt};
 
 #[derive(Clone)]
 pub struct NotifiactionService {
@@ -53,22 +51,26 @@ pub trait NotificationServiceExt {
     fn create_new_notification(
         &self,
         request: &CreateNotification,
-    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
+    ) -> impl std::future::Future<Output = Result<Uuid, ServiceError>> + Send;
 
     fn listen_for_new_notifications(&self) -> impl std::future::Future<Output = Response> + Send;
 
     fn get_latest_unread_notifications()
     -> impl std::future::Future<Output = Result<Vec<Notification>, ServiceError>> + Send;
+
+    fn fetch_one(
+        &self,
+        notification_identifier: &Uuid,
+    ) -> impl std::future::Future<Output = Option<Notification>> + Send;
 }
 
 impl NotificationServiceExt for NotifiactionService {
     async fn create_new_notification(
         &self,
         request: &CreateNotification,
-    ) -> Result<(), ServiceError> {
-        self.repository.create(request).await?;
-
-        Ok(())
+    ) -> Result<Uuid, ServiceError> {
+        let record_id = self.repository.create(request).await?;
+        Ok(record_id)
     }
     async fn listen_for_new_notifications(&self) -> Response {
         todo!()
@@ -77,5 +79,9 @@ impl NotificationServiceExt for NotifiactionService {
 
     async fn get_latest_unread_notifications() -> Result<Vec<Notification>, ServiceError> {
         todo!()
+    }
+
+    async fn fetch_one(&self, notification_identifier: &Uuid) -> Option<Notification> {
+        self.repository.fetch_one(notification_identifier).await
     }
 }

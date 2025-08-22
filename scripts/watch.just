@@ -20,3 +20,9 @@ watch target:
 [working-directory: 'app']
 @watch-frontend: 
     npm run dev 
+
+
+
+[working-directory: 'server']
+@watch-server: 
+   @just server-watch

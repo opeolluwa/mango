@@ -28,5 +28,6 @@ pub async fn fetch_notification(
     State(notification_service): State<NotifiactionService>,
     _claims: Claims,
 ) -> Result<ApiResponse<Vec<Notification>>, ServiceError> {
+    // notification_service.fe
     todo!()
 }

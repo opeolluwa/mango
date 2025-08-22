@@ -15,6 +15,7 @@ use crate::{
         channels::EventChannel,
         message::{ConvertDocument, DocumentConverted},
         producer::EventPrducer,
+        websocket::send_websocket_msg,
     },
     services::{
         audio_book_service::{AudioBooksService, AudioBooksServiceExt},
@@ -200,11 +201,19 @@ impl EventWorkerExt for EventWorker {
         };
 
         tokio::task::spawn(async move {
-            if let Err(err) = notification_service.create_new_notification(&request).await {
-                log::error!("Failed to send notification: {err}");
-            }
+            let Some(identifier) = notification_service
+                .create_new_notification(&request)
+                .await
+                .ok()
+            else {
+                log::error!("Failed to send notification");
+                return;
+            };
+
+            let notification = notification_service.fetch_one(&identifier).await.unwrap();
+
+            send_websocket_msg("ws://localhost:5006/notifications/listen", notification);
         });
-        
 
         Ok(())
     }
