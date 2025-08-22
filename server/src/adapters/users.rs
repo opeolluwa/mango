@@ -12,8 +12,8 @@ pub struct UserDto {
     #[ts(type = "string")]
     pub identifier: Uuid,
     pub email: String,
-    pub first_name: String,
-    pub last_name: String,
+    pub first_name: Option<String>,
+    pub last_name: Option<String>,
     pub profile_picture: Option<String>,
 }
 #[derive(Debug, Serialize, Deserialize, Validate, TS)]
