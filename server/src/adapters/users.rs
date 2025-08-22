@@ -5,7 +5,7 @@ use uuid::Uuid;
 use validator::Validate;
 
 #[derive(Debug, Serialize, Deserialize, FromRow, TS)]
-#[ts(export)]
+#[ts(export, export_to = "user.d.ts")]
 #[serde(rename_all = "camelCase")]
 #[ts(export, export_to = "UserInformation.ts")]
 pub struct UserDto {
@@ -16,10 +16,9 @@ pub struct UserDto {
     pub last_name: String,
     pub profile_picture: Option<String>,
 }
-#[derive(Debug, Serialize, Deserialize, Validate)]
+#[derive(Debug, Serialize, Deserialize, Validate, TS)]
 #[serde(rename_all = "camelCase")]
-#[derive(TS)]
-#[ts(export)]
+#[ts(export, export_to = "partialUserProfile.d.ts")]
 //TODO: impl validation if the field is not null
 pub struct PartialUserProfile {
     pub email: Option<String>,
