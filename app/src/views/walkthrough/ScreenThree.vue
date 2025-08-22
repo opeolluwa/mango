@@ -1,6 +1,6 @@
 <template>
   <div
-    class="px-8 py-2 relative flex flex-col h-screen justify-center items-center w-screen layout"
+    class="px-8 py-2 relative flex flex-col h-screen "
   >
     <img src="../../assets/illustrations/share.svg" alt="" class="h-[50vh]" />
     <h1
@@ -9,7 +9,7 @@
     >
       Share and collaborate
     </h1>
-    <p class="text-center text-150">
+    <p class="text-center text-gray-400 text-150">
       Share audio books with friends, socialize and interract
     </p>
 
@@ -24,7 +24,7 @@
     </RouterLink>
     <RouterLink
       :to="{ name: 'Login' }"
-      class="text-app-dark border-app-dark border-2 dark:border-gray-400/50 dark:text-gray-400 font-medium bg-transparent rounded-lg py-4 text-center hover:animate-pulse mt-8 w-full"
+      class="text-gray-400 border-app-dark border-2 dark:border-gray-400/50 dark:text-gray-400 font-medium bg-transparent rounded-lg py-4 text-center hover:animate-pulse mt-8 w-full"
       @click="initializeAppSettings"
     >
       Login
