@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-y-3.5 justify-center items-center">
-    <UserCard :editable="true" :show-text="false" :avatar-size="200" />
+    <UserCard :editable="true" :show-text="false"  />
     <h2 class="font-medium font-xl capitalize">{{ fullName }}</h2>
   </div>
 

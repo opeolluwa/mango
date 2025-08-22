@@ -44,7 +44,7 @@ import { useUserInformationStore } from "../../stores/user";
 
 const props = defineProps({
   showText: { type: Boolean, default: true },
-  avatarSize: { type: Number, default: 16 },
+  avatarSize: { type: Number, default: 75 },
   editable: { type: Boolean, default: false },
 });
 

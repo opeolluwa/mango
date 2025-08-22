@@ -5,16 +5,18 @@
   />
 
   <div
-    class="flex gap-4 min-h-12 items-center justify-between absolute top-0 w-screen py-3 pr-12 bg-white z-500 dark:bg-app-dark"
+    class="flex gap-4 min-h-12 items-center justify-between absolute top-0 left-0 px-4 w-screen py-3 bg-white z-500 shadow-sm dark:bg-app-dark border-gray-100/50 backdrop-blur-md"
   >
     <template v-if="route.meta.isHome">
-      <div class="flex gap-x-2 align-center">
+      <div
+        class="flex gap-x-2 justify-between items-center align-center w-full"
+      >
         <Icon
           icon="material-symbols:menu-rounded"
-          :class="['icon size-5 dark:text-white/90']"
+          :class="['size-6 dark:text-white/90']"
           @click="showSideNav != showSideNav"
         />
-        <UserCard :editable="false" :avatar-size="12" :show-text="false" />
+        <UserCard :editable="false" :avatar-size="35" :show-text="false" />
       </div>
     </template>
 

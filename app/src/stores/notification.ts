@@ -15,8 +15,8 @@ export const useNotificationStore = defineStore("app_notification", {
       state.notifications.filter((entry) => entry.isRead != true).length,
   },
   actions: {
-    async markRead(notificationIdentifier: string) {},
-    async listenForUpdates(userIdentifier: string) {},
+    async markRead() {},
+    async listenForUpdates() {},
     async initialize() {},
     async delete() {},
   },
