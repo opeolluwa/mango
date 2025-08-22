@@ -3,6 +3,7 @@ use axum::{
     response::Response,
 };
 use sqlx::{Pool, Postgres};
+use uuid::Uuid;
 
 use crate::{
     adapters::notification::CreateNotification,
@@ -10,10 +11,7 @@ use crate::{
     errors::service_error::ServiceError,
     repositories::notification_repository::{NotificationRepository, NotificationRepositoryExt},
 };
-use futures_util::{
-    sink::SinkExt,
-    stream::{SplitSink, SplitStream, StreamExt},
-};
+use futures_util::{sink::SinkExt, stream::StreamExt};
 
 #[derive(Clone)]
 pub struct NotifiactionService {
@@ -26,28 +24,24 @@ impl NotifiactionService {
             repository: NotificationRepository::init(pool),
         }
     }
-    pub async fn handle_web_socket_connection(&self, mut socket: WebSocket) {
-        // let (mut sender, mut receiver) = socket.split();
+    pub async fn handle_web_socket_connection(&self, socket: WebSocket) {
+        let (mut outgoing, mut incoming) = socket.split();
 
-                let msg = Message::text(
-                    r#"
-                {
-          "playlist_identifier": null,
-          "file_name": "nccf-letter-draft-2.docx",
-          "user_identifier": "a2d4eb25-5b46-44ed-8bb7-281e568be7a5",
-          "file_path": "/tmp/1755344187_nccf-letter-draft-2.docx.pdf"
-        }"#,
-                );
-                if socket.send(msg).await.is_err() {
-                    // client disconnected
-                    return;
-                }
+        // send messages to connected client
+        tokio::spawn(async move {
+            if let Err(err) = outgoing.send(Message::Text("sample essage".into())).await {
+                log::error!("{}", err);
+            }
+        });
 
-        // tokio::spawn(Self::read_message_from_worker(receiver));
-        // tokio::spawn(Self::send_mesage_to_client(sender));
+        // get message from worker
+        tokio::spawn(async move {
+            while let Some(message) = incoming.next().await {
+                // send the message
+                log::info!("got incoming message {:#?}", message);
+            }
+        });
     }
-    pub async fn read_message_from_worker(receiver: SplitStream<WebSocket>) {}
-    pub async fn send_mesage_to_client(sender: SplitSink<WebSocket, Message>) {}
 
     //push message to client
     pub async fn notify() {}
@@ -57,29 +51,37 @@ pub trait NotificationServiceExt {
     fn create_new_notification(
         &self,
         request: &CreateNotification,
-    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
+    ) -> impl std::future::Future<Output = Result<Uuid, ServiceError>> + Send;
 
     fn listen_for_new_notifications(&self) -> impl std::future::Future<Output = Response> + Send;
 
-    fn get_latest_unred_notifications()
+    fn get_latest_unread_notifications()
     -> impl std::future::Future<Output = Result<Vec<Notification>, ServiceError>> + Send;
+
+    fn fetch_one(
+        &self,
+        notification_identifier: &Uuid,
+    ) -> impl std::future::Future<Output = Option<Notification>> + Send;
 }
 
 impl NotificationServiceExt for NotifiactionService {
     async fn create_new_notification(
         &self,
         request: &CreateNotification,
-    ) -> Result<(), ServiceError> {
-        self.repository.create(request).await?;
-
-        Ok(())
+    ) -> Result<Uuid, ServiceError> {
+        let record_id = self.repository.create(request).await?;
+        Ok(record_id)
     }
     async fn listen_for_new_notifications(&self) -> Response {
         todo!()
         // self.handle_web_socket_connection(socket).await
     }
 
-    async fn get_latest_unred_notifications() -> Result<Vec<Notification>, ServiceError> {
+    async fn get_latest_unread_notifications() -> Result<Vec<Notification>, ServiceError> {
         todo!()
+    }
+
+    async fn fetch_one(&self, notification_identifier: &Uuid) -> Option<Notification> {
+        self.repository.fetch_one(notification_identifier).await
     }
 }
