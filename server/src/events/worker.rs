@@ -204,6 +204,7 @@ impl EventWorkerExt for EventWorker {
                 log::error!("Failed to send notification: {err}");
             }
         });
+        
 
         Ok(())
     }

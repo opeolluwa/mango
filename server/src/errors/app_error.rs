@@ -3,7 +3,7 @@ use axum::{http::StatusCode, response::IntoResponse};
 use crate::adapters::api_response::ApiResponseBuilder;
 use crate::adapters::api_response::EmptyResponseBody;
 
-#[derive(thiserror::Error, Debug, Clone)]
+#[derive(thiserror::Error, Debug)]
 pub enum AppError {
     #[error("App failed to start up due to {0}")]
     StartupError(String),
@@ -11,14 +11,16 @@ pub enum AppError {
     EnvError(String),
     #[error("{0}")]
     OperationFailed(String),
+    #[error(transparent)]
+    EnvExtractError(#[from] aers_utils::errors::Error),
+    #[error(transparent)]
+    FileSystemError(#[from] std::io::Error),
 }
 
 impl AppError {
     pub fn status_code(&self) -> StatusCode {
         match self {
-            AppError::StartupError(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            AppError::EnvError(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            AppError::OperationFailed(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            _ => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }

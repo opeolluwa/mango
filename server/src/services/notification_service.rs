@@ -26,28 +26,24 @@ impl NotifiactionService {
             repository: NotificationRepository::init(pool),
         }
     }
-    pub async fn handle_web_socket_connection(&self, mut socket: WebSocket) {
-        // let (mut sender, mut receiver) = socket.split();
+    pub async fn handle_web_socket_connection(&self, socket: WebSocket) {
+        let (mut outgoing, mut incoming) = socket.split();
 
-                let msg = Message::text(
-                    r#"
-                {
-          "playlist_identifier": null,
-          "file_name": "nccf-letter-draft-2.docx",
-          "user_identifier": "a2d4eb25-5b46-44ed-8bb7-281e568be7a5",
-          "file_path": "/tmp/1755344187_nccf-letter-draft-2.docx.pdf"
-        }"#,
-                );
-                if socket.send(msg).await.is_err() {
-                    // client disconnected
-                    return;
-                }
+        // send messages to connected client
+        tokio::spawn(async move {
+            if let Err(err) = outgoing.send(Message::Text("sample essage".into())).await {
+                log::error!("{}", err);
+            }
+        });
 
-        // tokio::spawn(Self::read_message_from_worker(receiver));
-        // tokio::spawn(Self::send_mesage_to_client(sender));
+        // get message from worker
+        tokio::spawn(async move {
+            while let Some(message) = incoming.next().await {
+                // send the message
+                log::info!("got incoming message {:#?}", message);
+            }
+        });
     }
-    pub async fn read_message_from_worker(receiver: SplitStream<WebSocket>) {}
-    pub async fn send_mesage_to_client(sender: SplitSink<WebSocket, Message>) {}
 
     //push message to client
     pub async fn notify() {}
@@ -61,7 +57,7 @@ pub trait NotificationServiceExt {
 
     fn listen_for_new_notifications(&self) -> impl std::future::Future<Output = Response> + Send;
 
-    fn get_latest_unred_notifications()
+    fn get_latest_unread_notifications()
     -> impl std::future::Future<Output = Result<Vec<Notification>, ServiceError>> + Send;
 }
 
@@ -79,7 +75,7 @@ impl NotificationServiceExt for NotifiactionService {
         // self.handle_web_socket_connection(socket).await
     }
 
-    async fn get_latest_unred_notifications() -> Result<Vec<Notification>, ServiceError> {
+    async fn get_latest_unread_notifications() -> Result<Vec<Notification>, ServiceError> {
         todo!()
     }
 }
