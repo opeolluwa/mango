@@ -23,7 +23,7 @@ pub async fn set_cached_user<R: Runtime>(
         .await
         .map_err(|err| {
             log::error!("{err}");
-            DbError::Database(err.to_string())
+            DbError::OperationFailed(err.to_string())
         })?;
 
     println!("user cached");
@@ -52,7 +52,7 @@ pub async fn fetch_cached_user<R: Runtime>(
         .await
         .map_err(|err| {
             log::error!("{err}");
-            DbError::Database(err.to_string())
+            DbError::OperationFailed(err.to_string())
         })?;
 
     Ok(result)

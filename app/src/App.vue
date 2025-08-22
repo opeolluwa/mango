@@ -1,4 +1,5 @@
 <template>
+
   <Transition name="fade">
     <UApp class="w-full"> <RouterView /> </UApp>
   </Transition>

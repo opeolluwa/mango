@@ -54,7 +54,7 @@ const routes = [
     name: "AppLayout",
     component: AppLayout,
     children: [
-      { path: "", component: Home, name: "Home" },
+      { path: "", component: Home, name: "Home", meta: { isHome: true } },
       {
         path: "favourites",
         component: Favourites,

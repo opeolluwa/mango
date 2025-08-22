@@ -55,10 +55,7 @@ impl ModelTrait for CachedUser {
             .bind(self.avatar_url.to_owned())
             .execute(db_conn)
             .await
-            .map_err(|err| {
-                        log::error!("{err}");
-                DbError::Database(err.to_string())
-            })?;
+           .map_err(DbError::from)?;
         Ok(())
     }
 }

@@ -1,7 +1,7 @@
-import { useUserInformation } from "./stores/user";
+import { useUserInformationStoreStore } from "./stores/user";
 import { Purchases } from "@revenuecat/purchases-js";
 
-const userInformationStore = useUserInformation();
+const userInformationStore = useUserInformationStore();
 
 const appUserId = userInformationStore.identifier;
 
