@@ -37,7 +37,7 @@
 	export ANDROID_HOME="$HOME/Library/Android/sdk"
 	export NDK_VERSION=$(ls -1 "$ANDROID_HOME/ndk" | tail -n 1)
 	export NDK_HOME="$ANDROID_HOME/ndk/$NDK_VERSION"
-
+	export NODE_ENV="development"
 	npm run tauri android dev
 
 

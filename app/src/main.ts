@@ -1,18 +1,24 @@
 import "./assets/styles.css";
 import "./axios.config";
 import "./notification";
-// import "./revenueCat"
+
+import "./plugins/devtools";
 
 import { createPinia } from "pinia";
 import { createApp } from "vue";
+
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+
+import ui from "@nuxt/ui/vue-plugin";
 import App from "./App.vue";
 import router from "./routes";
-import ui from "@nuxt/ui/vue-plugin";
 
-const store = createPinia();
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
+
 const app = createApp(App);
 
-app.use(store);
+app.use(pinia);
 app.use(router);
 app.use(ui);
 

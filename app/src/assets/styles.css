@@ -4,169 +4,165 @@
 @plugin "@tailwindcss/typography";
 /* @plugin "daisyui"; */
 
-
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-
 #app {
-    position: fixed;
-    height: 100% !important;
+  position: fixed;
+  height: 100% !important;
 }
 
 :root {
-    --accent-color: #FF6500;
+  --accent-color: #ff6500;
 }
 
 @theme static {
-    --wrapper-padding: @apply px-8;
+  --wrapper-padding: @apply px-8;
 
-    --color-app-dark: oklch(14.298% 0.01306 284.63);
-    --color-app-dark-50: oklch(44.806% 0.08425 282.46);
-    --color-app-dark-100: oklch(41.634% 0.07757 282.5);
-    --color-app-dark-200: oklch(35.476% 0.06361 282.67);
-    --color-app-dark-300: oklch(28.978% 0.0471 283.07);
-    --color-app-dark-400: oklch(21.796% 0.0331 283.31);
-    --color-app-dark-500: oklch(14.298% 0.01306 284.63);
-    --color-app-dark-600: oklch(0% 0 none);
-    --color-app-dark-700: oklch(0% 0 none);
-    --color-app-dark-800: oklch(0% 0 none);
-    --color-app-dark-900: oklch(0% 0 none);
-    --color-app-dark-950: oklch(0% 0 none);
+  --color-app-dark: oklch(14.298% 0.01306 284.63);
+  --color-app-dark-50: oklch(44.806% 0.08425 282.46);
+  --color-app-dark-100: oklch(41.634% 0.07757 282.5);
+  --color-app-dark-200: oklch(35.476% 0.06361 282.67);
+  --color-app-dark-300: oklch(28.978% 0.0471 283.07);
+  --color-app-dark-400: oklch(21.796% 0.0331 283.31);
+  --color-app-dark-500: oklch(14.298% 0.01306 284.63);
+  --color-app-dark-600: oklch(0% 0 none);
+  --color-app-dark-700: oklch(0% 0 none);
+  --color-app-dark-800: oklch(0% 0 none);
+  --color-app-dark-900: oklch(0% 0 none);
+  --color-app-dark-950: oklch(0% 0 none);
 
-    --color-app-red: #F7374F;
-    --color-app-orange: #FF6500;
-    --color-app-gray: #282830;
+  --color-app-red: #f7374f;
+  --color-app-orange: #ff6500;
+  --color-app-gray: #282830;
 
-    --color-app-orange: oklch(69.454% 0.20503 43.183);
-    --color-app-orange-50: oklch(89.967% 0.06119 54.842);
-    --color-app-orange-100: oklch(87.272% 0.07975 55.357);
-    --color-app-orange-200: oklch(81.975% 0.11633 53.914);
-    --color-app-orange-300: oklch(77.138% 0.15082 51.598);
-    --color-app-orange-400: oklch(73.021% 0.18086 48.694);
-    --color-app-orange-500: oklch(69.454% 0.20503 43.183);
-    --color-app-orange-600: oklch(57.882% 0.16854 43.947);
-    --color-app-orange-700: oklch(45.704% 0.12997 45.315);
-    --color-app-orange-800: oklch(32.499% 0.08923 47.471);
-    --color-app-orange-900: oklch(18.017% 0.04269 58.969);
-    --color-app-orange-950: oklch(7.5348% 0.01676 66.154);
+  --color-app-orange: oklch(69.454% 0.20503 43.183);
+  --color-app-orange-50: oklch(89.967% 0.06119 54.842);
+  --color-app-orange-100: oklch(87.272% 0.07975 55.357);
+  --color-app-orange-200: oklch(81.975% 0.11633 53.914);
+  --color-app-orange-300: oklch(77.138% 0.15082 51.598);
+  --color-app-orange-400: oklch(73.021% 0.18086 48.694);
+  --color-app-orange-500: oklch(69.454% 0.20503 43.183);
+  --color-app-orange-600: oklch(57.882% 0.16854 43.947);
+  --color-app-orange-700: oklch(45.704% 0.12997 45.315);
+  --color-app-orange-800: oklch(32.499% 0.08923 47.471);
+  --color-app-orange-900: oklch(18.017% 0.04269 58.969);
+  --color-app-orange-950: oklch(7.5348% 0.01676 66.154);
 }
-
 
 @media (prefers-color-scheme: light) {
-
-    html,
-    body {
-        @apply text-app-dark bg-white;
-        overscroll-behavior: none;
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        user-select: none;
-    }
+  html,
+  body {
+    @apply text-app-dark bg-white;
+    overscroll-behavior: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    user-select: none;
+  }
 }
 
-
 @media (prefers-color-scheme: dark) {
-
-    html,
-    body {
-        @apply bg-app-dark text-white/90;
-        overscroll-behavior: none;
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        user-select: none;
-    }
+  html,
+  body {
+    @apply bg-app-dark text-white/90;
+    overscroll-behavior: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    user-select: none;
+  }
 }
 
 .icon {
-    @apply size-5 lg:size-5 cursor-pointer hover:text-app-orange;
+  @apply size-5 lg:size-5 cursor-pointer hover:text-app-orange;
 }
-
 
 /* .parent-element {
     @apply px-4;
 } */
 
-
 .layout {
-    @apply pt-8 px-6 h-screen overflow-scroll scroll-smooth;
-
+  @apply pt-8 px-6 h-screen overflow-scroll scroll-smooth;
+  box-sizing: border-box;
 }
-
 
 /* Adds pointer cursor to buttons */
 @layer base {
-
-    button:not(:disabled),
-    [role="button"]:not(:disabled) {
-        cursor: pointer;
-    }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
 /* Defaults hover styles on all devices */
 @custom-variant hover (&:hover);
 
-
 .app-form-input {
-    @apply py-4 pl-4 outline-none rounded-lg text-[16px] placeholder:text-sm placeholder:text-stone-500 placeholder:italic border-stone-600 dark:border-stone-500 hover:border hover:border-app-orange/60 selection:bg-app-orange transition-colors duration-200 dark:border dark:text-gray-300;
+  @apply py-4 pl-4 outline-none rounded-lg text-[16px] placeholder:text-sm placeholder:text-stone-500 placeholder:italic border-stone-600 dark:border-stone-500 hover:border hover:border-app-orange/60 selection:bg-app-orange transition-colors duration-200 dark:border dark:text-gray-300;
 }
 
 @media (prefers-color-scheme: light) {
-    .app-form-input {
-        @apply bg-app-orange/10;
-    }
+  .app-form-input {
+    @apply bg-app-orange/10;
+  }
 }
 
-
-
 .input-box {
-    @apply border-app-orange/10 border hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange
+  @apply border-app-orange/10 border hover:border hover:border-app-orange/60 bg-app-orange/10 selection:bg-app-orange;
 }
 
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease;
 }
 
 .fade-enter-from,
 .fade-leave-to {
-    opacity: 0;
+  opacity: 0;
 }
 
-
 .CheckboxRoot {
-    background-color: white;
-    width: 25px;
-    height: 25px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 10px var(--black-a7);
+  background-color: white;
+  width: 25px;
+  height: 25px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px var(--black-a7);
 }
 
 .CheckboxRoot:hover {
-    background-color: var(--grass-3);
+  background-color: var(--grass-3);
 }
 
 .CheckboxRoot:focus {
-    box-shadow: 0 0 0 2px black;
+  box-shadow: 0 0 0 2px black;
 }
 
 .CheckboxIndicator {
-    color: var(--grass-11);
+  color: var(--grass-11);
 }
 
 .Label {
-    color: white;
-    padding-left: 15px;
-    font-size: 15px;
-    line-height: 1;
+  color: white;
+  padding-left: 15px;
+  font-size: 15px;
+  line-height: 1;
 }
 
-.accent{
-@apply text-app-orange
+.accent {
+  @apply text-app-orange;
+}
+
+.text-150 {
+  /* font-size: 120%; */
+  /* line-height: 36px; */
+}
+
+
+.walkthrough_layout > * {
+  @apply px-8 text-app-dark;
 }

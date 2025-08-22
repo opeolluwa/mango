@@ -100,7 +100,7 @@ const submitForm = handleSubmit(async (values) => {
     formSubmitError.value = message;
     return;
   }
-  router.push({ name: "Home" });
+  await router.push({name: "Home"});
   processingRequest.value = false;
 });
 </script>

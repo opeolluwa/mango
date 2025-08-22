@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useCachedUserStore } from "../stores/cachedUser";
 import { useTokenStore } from "../stores/token";
-import { useUserInformation } from "../stores/user";
+import { useUserInformationStore } from "../stores/user";
 
 interface LoginResult {
   success: boolean;
@@ -14,7 +14,7 @@ interface LoginRequest {
 }
 export const useLogin = async (auth: LoginRequest): Promise<LoginResult> => {
   const cachedUserStore = useCachedUserStore();
-  const userStore = useUserInformation();
+  const userStore = useUserInformationStore();
   const tokenStore = useTokenStore();
 
   const { email, password } = auth;
@@ -25,7 +25,6 @@ export const useLogin = async (auth: LoginRequest): Promise<LoginResult> => {
       headers: { "Content-Type": "application/json" },
     }
   );
-
   if (status !== 200 || !data?.data?.accessToken) {
     return {
       success: false,
@@ -34,7 +33,7 @@ export const useLogin = async (auth: LoginRequest): Promise<LoginResult> => {
   }
 
   const token = data.data.accessToken;
-  const userInformation = await userStore.fetchUserInformation(token);
+  const userInformation = await userStore.initialize(token);
 
   await cachedUserStore.cacheUserData({
     email: userInformation.email,

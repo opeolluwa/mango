@@ -51,7 +51,7 @@ import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
 import SubmitButton from "../../components/form/SubmitButton.vue";
 import { useCachedUserStore } from "../../stores/cachedUser";
 import { UserInformation } from "../../types/userProfile";
-import { useUserInformation } from "../../stores/user";
+import { useUserInformationStore } from "../../stores/user";
 
 const formSchema = yup.object({
   firstname: yup.string().required(),
@@ -66,7 +66,7 @@ const router = useRouter();
 const route = useRoute();
 
 const cachedUserStore = useCachedUserStore();
-const userStore = useUserInformation();
+const userStore = useUserInformationStore();
 
 const [firstname, firstnameAttr] = defineField("firstname");
 const [lastname, lastnameAttr] = defineField("lastname");

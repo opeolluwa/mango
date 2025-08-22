@@ -1,15 +1,15 @@
 <template>
   <div
-    class="px-8 py-2 relative flex flex-col h-screen justify-center items-center w-screen layout"
+    class="relative flex flex-col h-screen max-w-screen walkthrough_layout"
   >
-    <img src="/hero.svg" alt="" class="h-[50vh]" />
+    <img src="../../assets/illustrations/listen.svg" alt="" class="h-[50vh]" />
     <h1
-      class="text-2xl mt-8 font-extrabold leading-loose text-center dark:text-white/70 w-[90%]"
+      class="text-2xl mt-2 font-extrabold leading-loose text-center dark:text-white/70 w-[90%]"
       style="line-height: 20px; font-weight: 800"
     >
       Listen offline or online
     </h1>
-    <p class="text-center text-150">
+    <p class="text-center text-gray-400 text-150">
       Listen to audio equivalent of your documents offline or online
     </p>
 
@@ -18,7 +18,7 @@
     <div class="flex justify-between w-full mt-8 absolute px-8 bottom-7">
       <RouterLink
         :to="{ name: 'ScreenOne' }"
-        class="text-app-dark dark:text-gray-400 font-medium bg-transparent rounded-lg py-4 text-center hover:animate-pulse h-fit"
+        class=" dark:text-gray-400 font-medium bg-transparent rounded-lg py-4 text-center hover:animate-pulse h-fit text-gray-400"
       >
         Prev
       </RouterLink>
@@ -35,3 +35,5 @@
 import SensationalTint from "@/components/uiBlocks/SensationalTint.vue";
 import { RouterLink } from "vue-router";
 </script>
+
+
