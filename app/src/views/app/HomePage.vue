@@ -52,7 +52,9 @@
       <div class="flex flex-col overflow-x-hidden pb-48">
         <div class="flex justify-between">
           <div>
-            <h2 class="text-2xl= font-black text-app-dark/90 dark:text-gray-200">
+            <h2
+              class="text-2xl= font-black text-app-dark/90 dark:text-gray-200"
+            >
               Hey, {{ firstName || "there" }}! 👋
             </h2>
             <VueGreetings class="leading-5 text-gray-600 dark:text-gray-400" />
@@ -60,7 +62,14 @@
         </div>
       </div>
 
-      <button class="size-12 bg-app-orange-500 z-[5000] absolute right-12 bottom-24 rounded-full shadow-xl "></button>
+      <button
+        class="size-12 bg-app-orange-500 z-[5000] absolute right-8 bottom-24 rounded-full shadow-xl"
+      >
+        <Icon
+          icon="cuida:-plus-circle-outline"
+          class="size-4 text-app-dark mx-auto"
+        />
+      </button>
     </ScreenLayout>
   </template>
 </template>
@@ -73,6 +82,7 @@ import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
 import { useTokenStore } from "../../stores/token.ts";
 import { useUserInformationStore } from "../../stores/user.ts";
 import ScreenLayout from "./ScreenLayout.vue";
+import { Icon } from "@iconify/vue";
 
 const userInformationStore = useUserInformationStore();
 const firstName = computed(() => userInformationStore.firstName);
@@ -91,10 +101,8 @@ const handleUpload = async () => {
 
   const formData = new FormData();
   formData.append("document", file.value);
-  // formData.append("t")
-
   const tokenStore = useTokenStore();
-  const token = await tokenStore.extractAccessToken();
+  const token = tokenStore.accessToken;
   try {
     uploading.value = true;
     uploadError.value = null;

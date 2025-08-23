@@ -9,29 +9,30 @@ import Library from "@views/app/LibraryPage.vue";
 import Notification from "@views/app/NotificationPage.vue";
 import Voices from "@views/app/VoicesPage.vue";
 
-import ConfirmOtpPage from "./views/authentication/ConfirmOtpPage.vue";
-import ForgottenPassword from "./views/authentication/ForgottenPassword.vue";
-import AuthenticationLayout from "./views/authentication/AutenticationLayout.vue";
-import LoginPage from "./views/authentication/LoginPage.vue";
-import LoginExistingPage from "./views/authentication/LoginExistingPage.vue";
-import SetNewPassword from "./views/authentication/SetNewPassword.vue";
-import SignupPage from "./views/authentication/SignupPage.vue";
-import OnboardingPage from "./views/authentication/OnboardingPage.vue";
-import VerifyAccountRecovery from "./views/authentication/VerifyAccountRecovery.vue";
+import ConfirmOtpPage from "@views/authentication/ConfirmOtpPage.vue";
+import ForgottenPassword from "@views/authentication/ForgottenPassword.vue";
+import AuthenticationLayout from "@views/authentication/AutenticationLayout.vue";
+import LoginPage from "@views/authentication/LoginPage.vue";
+import LoginExistingPage from "@views/authentication/LoginExistingPage.vue";
+import SetNewPassword from "@views/authentication/SetNewPassword.vue";
+import SignupPage from "@views/authentication/SignupPage.vue";
+import OnboardingPage from "@views/authentication/OnboardingPage.vue";
+import VerifyAccountRecovery from "@views/authentication/VerifyAccountRecovery.vue";
 
-import ScreenOne from "./views/walkthrough/ScreenOne.vue";
-import ScreenTwo from "./views/walkthrough/ScreenTwo.vue";
-import ScreenThree from "./views/walkthrough/ScreenThree.vue";
+import ScreenOne from "@views/walkthrough/ScreenOne.vue";
+import ScreenTwo from "@views/walkthrough/ScreenTwo.vue";
+import ScreenThree from "@views/walkthrough/ScreenThree.vue";
 
-import AudioPlayerLayout from "./views/player/AudioPlayerLayout.vue";
-import UserProfile from "./views/app/settings/UserProfile.vue";
-import AppSettingsLayout from "./views/app/settings/AppSettingsLayout.vue";
-import SettingsPage from "./views/app/settings/SettingsPage.vue";
-import SecurityPage from "./views/app/settings/security/SecurityPage.vue";
-import HelpPage from "./views/app/settings/HelpPage.vue";
-import PaymentPage from "./views/app/settings/PaymentPage.vue";
-import AppSecurityLayout from "./views/app/settings/security/AppSecurityLayout.vue";
-import UpdatePassword from "./views/app/settings/security/UpdatePassword.vue";
+import AudioPlayerLayout from "@views/player/AudioPlayerLayout.vue";
+import UserProfile from "@views/app/settings/UserProfile.vue";
+import AppSettingsLayout from "@views/app/settings/AppSettingsLayout.vue";
+import SettingsPage from "@views/app/settings/SettingsPage.vue";
+import SecurityPage from "@views/app/settings/security/SecurityPage.vue";
+import HelpPage from "@views/app/settings/HelpPage.vue";
+import PaymentPage from "@views/app/settings/PaymentPage.vue";
+import AppSecurityLayout from "@views/app/settings/security/AppSecurityLayout.vue";
+import UpdatePassword from "@views/app/settings/security/UpdatePassword.vue";
+import { useTokenStore } from "../stores/token";
 
 const routes = [
   {
@@ -182,4 +183,21 @@ const router = createRouter({
   routes,
 });
 
+router.beforeEach((to, from, next) => {
+  const token = useTokenStore().accessToken;
+  if (to.name !== "Login" && to.name !== "SignUp" && !token) {
+    next({ name: "Login" });
+    return;
+  }
+  if ((to.name === "Login" || to.name === "SignUp") && token) {
+    next({ name: "Home" });
+    return;
+  }
+  if (from.path.startsWith("/app") && token && to.path.startsWith("/auth")) {
+    next({ name: "Home" });
+    return;
+  }
+  window.scrollTo(0, 0);
+  next();
+});
 export default router;

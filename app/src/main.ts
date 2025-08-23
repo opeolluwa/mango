@@ -11,7 +11,7 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 import ui from "@nuxt/ui/vue-plugin";
 import App from "./App.vue";
-import router from "./routes";
+import router from "./router";
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
