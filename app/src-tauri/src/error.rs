@@ -1,6 +1,5 @@
 // use libaudify::error::AudifyError;
 use serde::{Deserialize, Serialize};
-use sqlx::error;
 use thiserror::Error;
 
 #[derive(Debug, Serialize, Deserialize)]

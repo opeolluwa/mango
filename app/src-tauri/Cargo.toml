@@ -6,7 +6,6 @@ authors = ["you"]
 edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-
 [workspace]
 resolver = "2"
 
@@ -21,7 +20,6 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 chrono = { version = "0.4.41", features = ["serde"] }
 dirs = "6.0.0"
 futures = "0.3.31"
-lazy_static = "1.5.0"
 log = "0.4.27"
 
 serde = { version = "1", features = ["derive"] }
@@ -40,12 +38,10 @@ tauri-plugin-upload = "2"
 tauri-plugin-websocket = "2"
 thiserror = "2.0.12"
 tokio = { version = "1.45.1", features = ["full"] }
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 ts-rs = "10.1.0"
 uuid = { version = "1.17.0", features = ["v4"] }
-tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
-tracing = "0.1.41"
-
-
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
