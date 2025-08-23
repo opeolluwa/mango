@@ -17,7 +17,6 @@
       <AppLabeledIcon
         icon="mdi:book-plus-outline"
         label="Import new"
-        @click="createNewBook"
       />
       <AppLabeledIcon
         icon="fluent:heart-28-regular"
@@ -54,7 +53,6 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import { ref } from "vue";
-import { createNewBook } from "../../composibles/book.ts";
 import PlayListTag from "../PlayListTag.vue";
 import AppLabeledIcon from "./AppLabeledIcon.vue";
 

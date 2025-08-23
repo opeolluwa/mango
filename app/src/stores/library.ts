@@ -1,22 +1,25 @@
 import { defineStore } from "pinia";
-import { AudioBook } from "../../src-tauri/bindings/AudioBook";
-import { type AudioLibrary } from "../../src-tauri/bindings/AudioLibrary";
-
+import api from "../plugins/api";
+import { AudioBookEntity } from "../types/audioBook";
 
 interface State {
-    audioLibrary: AudioLibrary;
-    audioBooks: AudioBook[];
-    isProcessingPdf: boolean;
-
+  audioBooks: AudioBookEntity[];
+//   stats: 
 }
 
-export const useAudioBookLibrary = defineStore("musicLibrary", {
-    state: () => ({
-       
-    }),
-    actions: {
-       
+export const useBookStore = defineStore("book_store", {
+  state: (): State => ({
+    audioBooks: [],
+    
+  }),
+  actions: {
+    async fetchBooks(): Promise<AudioBookEntity[]> {
+      const response = await api.get("/books");
+      this.audioBooks = response.data.data.data;
+      console.log(JSON.stringify(this.audioBooks, null, 2));
+      return this.audioBooks;
     },
-    getters: {
-    },
+  },
+  getters: {},
+  persist: true,
 });

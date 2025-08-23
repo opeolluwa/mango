@@ -1,9 +1,7 @@
-<script setup lang="ts">
-import ScreenLayout from "../../ScreenLayout.vue";
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <ScreenLayout>
+  <AppScreenLayout>
     <RouterView />
-  </ScreenLayout>
+  </AppScreenLayout>
 </template>

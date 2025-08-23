@@ -147,3 +147,18 @@ pub async fn fetch_favourites(
         .data(data)
         .build())
 }
+
+pub async fn find_many_books(
+    State(audio_book_service): State<AudioBooksService>,
+    claims: Claims,
+    Query(pagination_params): Query<PaginationParams>,
+) -> Result<ApiResponse<PaginatedResponse<Vec<AudioBookEntity>>>, ServiceError> {
+    let data = audio_book_service
+        .fetch_many(&claims.user_identifier, &pagination_params)
+        .await?;
+
+    Ok(ApiResponseBuilder::new()
+        .message("Book retrieved from starred successfully")
+        .data(data)
+        .build())
+}

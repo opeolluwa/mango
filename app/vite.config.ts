@@ -36,6 +36,7 @@ export default defineConfig(async () => ({
       "@bindings": fileURLToPath(
         new URL("../src-tauri/bindings/", import.meta.url)
       ),
+      "@plugins": fileURLToPath(new URL("./src/plugins", import.meta.url)),
     },
   },
 

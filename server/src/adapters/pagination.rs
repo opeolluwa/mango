@@ -1,7 +1,9 @@
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
 #[serde(rename_all = "camelCase")]
+#[ts(export, export_to = "pagination.d.ts")]
 pub struct PaginatedResponse<T> {
     pub data: T,
     pub page: u32,
@@ -23,5 +25,14 @@ impl Default for PaginationParams {
             page: Some(1u32),
             per_page: Some(10u32),
         }
+    }
+}
+
+impl PaginationParams {
+    pub fn page(&self) -> u32 {
+        self.page.unwrap_or(1)
+    }
+    pub fn per_page(&self) -> u32 {
+        self.per_page.unwrap_or(10)
     }
 }

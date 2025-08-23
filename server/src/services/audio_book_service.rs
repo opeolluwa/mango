@@ -94,6 +94,14 @@ pub trait AudioBooksServiceExt {
         &self,
         message: &DocumentConverted,
     ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
+
+    fn fetch_many(
+        &self,
+        user_identifier: &Uuid,
+        pagination_params: &PaginationParams,
+    ) -> impl std::future::Future<
+        Output = Result<PaginatedResponse<Vec<AudioBookEntity>>, ServiceError>,
+    > + Send;
 }
 
 impl AudioBooksService {
@@ -291,5 +299,14 @@ impl AudioBooksServiceExt for AudioBooksService {
             )
             .await?;
         Ok(())
+    }
+    async fn fetch_many(
+        &self,
+        user_identifier: &Uuid,
+        pagination_params: &PaginationParams,
+    ) -> Result<PaginatedResponse<Vec<AudioBookEntity>>, ServiceError> {
+        self.audio_book_repository
+            .find_many(user_identifier, pagination_params)
+            .await
     }
 }

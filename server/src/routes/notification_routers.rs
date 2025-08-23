@@ -1,7 +1,4 @@
-use axum::{
-    Router,
-    routing::{any, get},
-};
+use axum::{Router, routing::any};
 
 use crate::{
     handlers::notification_handlers::listen_for_new_notifications,

@@ -212,7 +212,7 @@ impl EventWorkerExt for EventWorker {
 
             let notification = notification_service.fetch_one(&identifier).await.unwrap();
 
-            send_websocket_msg("ws://localhost:5006/notifications/listen", notification);
+            // send_websocket_msg("ws://localhost:5006/notifications/listen", notification);
         });
 
         Ok(())

@@ -1,4 +1,34 @@
 <template>
+  <UModal
+    v-model:open="open"
+    title="Select a document"
+    description="Pick a PDF document not less than 5 MiB"
+  >
+    <template #body>
+      <UFileUpload
+        v-model="file"
+        accept="application/pdf"
+        :multiple="false"
+        class="min-h-48"
+      />
+
+      <div class="mt-4">
+        <button
+          :disabled="uploading"
+          class="bg-app-orange text-app-dark btn-lg inline-flex gap-x-2 items-center px-8 py-3 mt-2 cursor-pointer shadow-md transition-colors duration-200 ease-linear hover:opacity-95 hover:scale-95 control rounded w-full text-center justify-center"
+          @click="handleUpload"
+        >
+          <span v-if="!uploading">Upload</span>
+          <span v-else>Uploading...</span>
+        </button>
+
+        <ErrorOutlet v-if="uploadError" class="mt-2">
+          {{ uploadError }}
+        </ErrorOutlet>
+      </div>
+    </template>
+  </UModal>
+
   <template v-if="emptyLibrary">
     <div
       class="overflow-hidden bg-cover bg-no-repeat relative flex flex-col justify-center items-center px-4 h-[90%]"
@@ -9,42 +39,6 @@
       <p class="text-center mt-1 mb-3 text-gray-500">
         Your audio books will appear as soon as you begin to add them
       </p>
-
-      <UModal
-        title="Select a document"
-        description="Pick a PDF document not less than 5 MiB"
-      >
-        <button
-          class="bg-app-orange text-app-dark btn-lg inline-flex gap-x-2 items-center px-8 py-3 mt-2 cursor-pointer shadow-md transition-colors duration-200 ease-linear hover:opacity-95 hover:scale-95 control rounded"
-        >
-          <UIcon name="cuida:plus-circle-outline" class="size-5" />
-          Create
-        </button>
-
-        <template #body>
-          <UFileUpload
-            v-model="file"
-            accept="application/pdf"
-            :multiple="false"
-            class="min-h-48"
-          />
-
-          <div class="mt-4">
-            <button
-              :disabled="uploading"
-              class="bg-app-orange text-app-dark btn-lg inline-flex gap-x-2 items-center px-8 py-3 mt-2 cursor-pointer shadow-md transition-colors duration-200 ease-linear hover:opacity-95 hover:scale-95 control rounded w-full text-center justify-center"
-              @click="handleUpload"
-            >
-              <span v-if="!uploading">Upload</span>
-              <span v-else>Uploading...</span>
-            </button>
-
-            <ErrorOutlet v-if="uploadError" class="mt-2">
-              {{ uploadError }}
-            </ErrorOutlet>
-          </div>
-        </template>
-      </UModal>
     </div>
   </template>
   <template v-else>
@@ -60,10 +54,23 @@
             <VueGreetings class="leading-5 text-gray-600 dark:text-gray-400" />
           </div>
         </div>
-      </div>
 
+        <div class="mt-12">
+          <SectionLabel label="Recent books" />
+          <AudioBook
+            v-for="(props, index) in audioBooks"
+            :key="index"
+            :name="props.name"
+            :author="props.src"
+            :duration="props.playlistIdentifier"
+            :src="props.src"
+            class="mb-3"
+          />
+        </div>
+      </div>
       <button
         class="size-12 bg-app-orange-500 z-[5000] absolute right-8 bottom-24 rounded-full shadow-xl"
+        @click="openModal"
       >
         <Icon
           icon="cuida:-plus-circle-outline"
@@ -75,7 +82,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import VueGreetings from "@components/uiBlocks/VueGreetings.vue";
 import axios from "axios";
 import ErrorOutlet from "@components/form/ErrorOutlet.vue";
@@ -83,6 +90,10 @@ import { useTokenStore } from "../../stores/token.ts";
 import { useUserInformationStore } from "../../stores/user.ts";
 import AppScreenLayout from "@components/layouts/AppScreenLayout.vue";
 import { Icon } from "@iconify/vue";
+import { AudioBookEntity } from "../../types/audioBook";
+import { useBookStore } from "../../stores/library.ts";
+import AudioBook from "../../components/AudioBook.vue";
+import SectionLabel from "../../components/settings/SectionLabel.vue";
 
 const userInformationStore = useUserInformationStore();
 const firstName = computed(() => userInformationStore.firstName);
@@ -92,6 +103,11 @@ const file = ref(null);
 
 const uploading = ref(false);
 const uploadError = ref<string | null>(null);
+
+const open = ref(false);
+const openModal = () => {
+  open.value = true;
+};
 
 const handleUpload = async () => {
   if (!file.value) {
@@ -120,8 +136,22 @@ const handleUpload = async () => {
     uploadError.value = error.response?.data?.message || "Upload failed";
   } finally {
     uploading.value = false;
+    open.value = false;
+    file.value = null;
   }
 };
+
+const audioBooks = ref<AudioBookEntity[]>();
+const bookStore = useBookStore();
+
+const fetchBooks = async () => {
+  const books = await bookStore.fetchBooks();
+  audioBooks.value = books;
+};
+
+onMounted(() => {
+  fetchBooks();
+});
 </script>
 
 <style scoped></style>
