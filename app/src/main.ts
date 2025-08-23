@@ -1,6 +1,6 @@
 import "./assets/styles.css";
-import "./axios.config";
-// import "./notification";
+import "./plugins/axios";
+import "./notification";
 import "./plugins/devtools";
 
 import { createApp } from "vue";

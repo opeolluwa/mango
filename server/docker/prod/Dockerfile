@@ -23,12 +23,14 @@ COPY . .
 
 RUN cargo build --release
 
+# copy native deps for extractous lib https://crates.io/crates/extractous
 RUN find target/release/build -name "libtika_native.so" -exec cp {} /usr/local/lib/ \;
 
 FROM debian:bookworm-slim AS final
 
 RUN apt-get update && \
     apt-get install -y libssl-dev && \
+    apt-get install -y openjdk-17-jre-headless && \ 
     apt-get install -y ca-certificates && update-ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
