@@ -33,11 +33,17 @@
           @click="showSideNav != showSideNav"
         /> -->
         <div class="flex gap-x-2 items-center justify-center">
-       <RouterLink :to="{name:''}">
-          <UChip size="3xl" color="error" text="5" inset @click="">
-            <UButton icon="i-lucide-bell" color="" variant="subtle" />
-          </UChip>
-       </RouterLink>
+          <RouterLink :to="{ name: '' }">
+            <UChip
+              size="3xl"
+              color="error"
+              text="5"
+              inset
+              @click="usePush({ name: 'Notifications' })"
+            >
+              <UButton icon="i-lucide-bell" color="" variant="subtle" />
+            </UChip>
+          </RouterLink>
           <UserCard :editable="false" :avatar-size="30" :show-text="false" />
         </div>
       </div>
@@ -48,7 +54,7 @@
         <Icon
           icon="fluent:chevron-left-32-filled"
           :class="['icon size-5 dark:text-white/90']"
-          @click="useGoBack"
+          @click="useGoToPreviousRoute"
         />
         <span class="font-medium"> {{ label }}</span>
       </div>
@@ -63,11 +69,12 @@
 
 <script lang="ts" setup>
 import { ref, watch } from "vue";
-import { useGoBack } from "../../composibles/useRouter";
+
 import { Icon } from "@iconify/vue";
 import { useRoute } from "vue-router";
-import UserCard from "../../components/settings/UserCard.vue";
-import AppNavigation from "../../components/uiBlocks/AppNavigation.vue";
+import UserCard from "@components/settings/UserCard.vue";
+import AppNavigation from "@components/uiBlocks/AppNavigation.vue";
+import { useGoToPreviousRoute, usePush } from "../../composibles/useRouter";
 
 const route = useRoute();
 const label = ref<string>("") || "";

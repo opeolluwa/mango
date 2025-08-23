@@ -48,7 +48,7 @@
     </div>
   </template>
   <template v-else>
-    <ScreenLayout>
+    <AppScreenLayout>
       <div class="flex flex-col overflow-x-hidden pb-48">
         <div class="flex justify-between">
           <div>
@@ -70,18 +70,18 @@
           class="size-4 text-app-dark mx-auto"
         />
       </button>
-    </ScreenLayout>
+    </AppScreenLayout>
   </template>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import VueGreetings from "../../components/uiBlocks/VueGreetings.vue";
+import VueGreetings from "@components/uiBlocks/VueGreetings.vue";
 import axios from "axios";
-import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
+import ErrorOutlet from "@components/form/ErrorOutlet.vue";
 import { useTokenStore } from "../../stores/token.ts";
 import { useUserInformationStore } from "../../stores/user.ts";
-import ScreenLayout from "./ScreenLayout.vue";
+import AppScreenLayout from "@components/layouts/AppScreenLayout.vue";
 import { Icon } from "@iconify/vue";
 
 const userInformationStore = useUserInformationStore();

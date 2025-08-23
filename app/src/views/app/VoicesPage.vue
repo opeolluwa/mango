@@ -1,7 +1,7 @@
 <template>
-  <ScreenLayout> hey </ScreenLayout>
+  <AppScreenLayout> hey </AppScreenLayout>
 </template>
 
 <script lang="ts" setup>
-import ScreenLayout from "./ScreenLayout.vue";
+import AppScreenLayout from "@components/layouts/AppScreenLayout.vue";
 </script>
