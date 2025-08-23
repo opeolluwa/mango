@@ -59,26 +59,26 @@ import PlayListTag from "../PlayListTag.vue";
 import AppLabeledIcon from "./AppLabeledIcon.vue";
 
 const playlists = ref<{ name: string; color: string }[]>([
-  {
-    name: "Engineering",
-    color: "orange",
-  },
-  {
-    name: "Self help",
-    color: "green",
-  },
-  {
-    name: "Business",
-    color: "blue",
-  },
-  {
-    name: "History",
-    color: "red",
-  },
-  {
-    name: "Science",
-    color: "purple",
-  },
+  // {
+  //   name: "Engineering",
+  //   color: "orange",
+  // },
+  // {
+  //   name: "Self help",
+  //   color: "green",
+  // },
+  // {
+  //   name: "Business",
+  //   color: "blue",
+  // },
+  // {
+  //   name: "History",
+  //   color: "red",
+  // },
+  // {
+  //   name: "Science",
+  //   color: "purple",
+  // },
 ]);
 </script>
 

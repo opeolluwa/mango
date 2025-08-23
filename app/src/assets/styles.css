@@ -162,7 +162,10 @@
   /* line-height: 36px; */
 }
 
-
 .walkthrough_layout > * {
   @apply px-8 text-app-dark;
+}
+
+input[type="email"] {
+  text-transform: lowercase;
 }

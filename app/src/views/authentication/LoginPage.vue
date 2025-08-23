@@ -21,7 +21,7 @@
           id="email"
           v-model="email"
           class="app-form-input"
-          type="text"
+          type="email"
           placeholder="jane@mailer.com"
           v-bind="emailProps"
         />

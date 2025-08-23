@@ -1,7 +1,6 @@
 <template>
   <AppNavigation
-    v-if="showSideNav"
-    class="fixed left-0 bottom-16 w-[70vw] z-[6000] dark:bg-app-dark bg-white"
+    class="fixed left-0 bottom-16 w-[70vw] z-[6000] dark:bg-app-dark bg-white hidden"
   />
 
   <div
@@ -11,12 +10,36 @@
       <div
         class="flex gap-x-2 justify-between items-center align-center w-full"
       >
-        <Icon
+        <USlideover
+          :close="{
+            color: 'primary',
+            variant: 'outline',
+            class: 'rounded-full',
+          }"
+        >
+          <Icon
+            icon="material-symbols:menu-rounded"
+            :class="['size-6 dark:text-white/90']"
+          />
+
+          <template #content>
+            <AppNavigation />
+          </template>
+        </USlideover>
+
+        <!-- <Icon
           icon="material-symbols:menu-rounded"
           :class="['size-6 dark:text-white/90']"
           @click="showSideNav != showSideNav"
-        />
-        <UserCard :editable="false" :avatar-size="35" :show-text="false" />
+        /> -->
+        <div class="flex gap-x-2 items-center justify-center">
+       <RouterLink :to="{name:''}">
+          <UChip size="3xl" color="error" text="5" inset @click="">
+            <UButton icon="i-lucide-bell" color="" variant="subtle" />
+          </UChip>
+       </RouterLink>
+          <UserCard :editable="false" :avatar-size="30" :show-text="false" />
+        </div>
       </div>
     </template>
 
@@ -48,7 +71,7 @@ import AppNavigation from "../../components/uiBlocks/AppNavigation.vue";
 
 const route = useRoute();
 const label = ref<string>("") || "";
-const showSideNav = ref(false);
+// const showSideNa÷v = ref(false);
 
 watch(
   () => route.meta.label,

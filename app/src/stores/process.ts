@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { useAudioBookLibrary } from "./library";
-import { useCurrentBook } from "./book.ts";
+import { useCurrentBook } from "./books.ts";
 
 interface Store {
   isProcessingNewBook: boolean;

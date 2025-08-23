@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { useCurrentBook } from "../stores/book.ts";
+import { useCurrentBook } from "../stores/books.ts";
 import { useAudioBookLibrary } from "../stores/library.ts";
 import { AudioBook } from "../../src-tauri/bindings/AudioBook.ts";
 import { open } from "@tauri-apps/plugin-dialog";

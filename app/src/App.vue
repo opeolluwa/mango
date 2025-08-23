@@ -1,16 +1,24 @@
 <template>
-
-  <Transition name="fade">
-    <UApp class="w-full"> <RouterView /> </UApp>
-  </Transition>
-
+    <UApp class="w-full">
+      <RouterView v-slot="{ Component }">
+        <Transition name="fade">
+          <Component :is="Component" />
+        </Transition>
+      </RouterView>
+    </UApp>
 </template>
 
 <script lang="ts" setup>
 import { onMounted } from "vue";
 import { RouterView } from "vue-router";
 
-onMounted(() => {});
+onMounted(() => {
+  const splash = document.getElementById("splashscreen");
+  splash?.classList.add("animate__fadeOut");
+  if (splash) {
+    splash.style.display = "none";
+  }
+});
 </script>
 
 <style scoped></style>

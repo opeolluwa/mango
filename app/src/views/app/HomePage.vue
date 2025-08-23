@@ -52,17 +52,15 @@
       <div class="flex flex-col overflow-x-hidden pb-48">
         <div class="flex justify-between">
           <div>
-            <h2 class="text-2xl font-black text-app-dark/90 dark:text-gray-200">
+            <h2 class="text-2xl= font-black text-app-dark/90 dark:text-gray-200">
               Hey, {{ firstName || "there" }}! 👋
             </h2>
             <VueGreetings class="leading-5 text-gray-600 dark:text-gray-400" />
           </div>
-
-         
         </div>
-
-      
       </div>
+
+      <button class="size-12 bg-app-orange-500 z-[5000] absolute right-12 bottom-24 rounded-full shadow-xl "></button>
     </ScreenLayout>
   </template>
 </template>
