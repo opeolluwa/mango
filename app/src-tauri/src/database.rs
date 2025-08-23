@@ -1,4 +1,4 @@
-use std::{path::PathBuf, sync::Arc};
+use std::{path::Path, sync::Arc};
 
 use crate::{config::AppConfig, error::DbError, state::AppState};
 use sqlx::{sqlite::SqliteConnectOptions, Pool, Sqlite, SqlitePool};
@@ -9,7 +9,7 @@ pub trait ModelTrait: Sized + Sync + Send {
 
 /// Initialize the database connection and state
 pub async fn initialize_database(
-    app_data_dir: &PathBuf,
+    app_data_dir: &Path,
     config: &AppConfig,
 ) -> Result<AppState, DbError> {
     let db_path = app_data_dir.join(config.database_path);

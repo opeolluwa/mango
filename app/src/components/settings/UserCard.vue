@@ -13,7 +13,7 @@
       />
       <AvatarFallback
         class="text-grass11 dark:text-stone-300 leading-1 flex h-full w-full items-center justify-center bg-app-orange-50 dark:bg-stone-800 text-sm font-medium"
-        :delay-ms="600"
+      
       >
         {{ initials }}
       </AvatarFallback>

@@ -16,7 +16,7 @@
 
     <div class="flex flex-col w-full">
       <AppFormLabel for="firstname" text="Email" />
-      <input v-model="email" class="app-form-input" type="text" />
+      <input v-model="email" class="app-form-input" type="email" />
     </div>
 
     <SubmitButton :loading="false" class="text-white" text="Update profile" />

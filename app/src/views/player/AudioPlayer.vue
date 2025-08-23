@@ -28,21 +28,19 @@
     />
 
     <div class="mb-20 text-center">
-      <h6 class="text-3xl text-center text-gray-500">Half of a yellow sun</h6>
-      <p class="small text-gray-400 mt-2">Chimamanda Nogozi</p>
+      <h6 class="text-3xl text-center text-gray-500">{{ title }}</h6>
+      <!-- <p class="small text-gray-400 mt-2">Chimamanda Nogozi</p> -->
     </div>
 
     <div class="flex gap-x-6 items-center justify-center">
       <Icon
         icon="iconoir:rewind-solid"
         :class="['icon size-5 dark:text-white/90']"
-        @click="playThePreviousBook"
       />
 
       <Icon
         icon="mingcute:rewind-backward-10-line"
         :class="['icon size-5 dark:text-white/90']"
-        @click="playThePreviousBook"
       />
 
       <div
@@ -61,7 +59,6 @@
       <Icon
         icon="iconoir:forward-solid"
         :class="['icon size-5 dark:text-white/90']"
-        @click="playThePreviousBook"
       />
     </div>
 
@@ -108,10 +105,14 @@
 import { Icon } from "@iconify/vue";
 import { SliderRange, SliderRoot, SliderThumb, SliderTrack } from "reka-ui";
 import { ref } from "vue";
-import { playThePreviousBook } from "../../composibles/book.ts";
 import { useGoBack } from "../../composibles/useRouter.ts";
+import { useRoute } from "vue-router";
 const player = ref(new Audio());
 const isPlaying = ref(false);
+
+const route = useRoute();
+const src = route.params["src"];
+const title = route.params["title"]
 
 const currentTime = ref(0);
 const duration = ref(0);
@@ -139,8 +140,7 @@ const formatTime = (time: number): string => {
 };
 
 const play = () => {
-  player.value.src =
-    "https://ik.imagekit.io/nethbooks/tes.edited-v2.pdf_Yanwb0U8U.mp3?updatedAt=1751924145616";
+  player.value.src = String(src);
 
   player.value.playbackRate = 0.95;
 

@@ -5,8 +5,8 @@ use axum::{
 
 use crate::{
     handlers::audio_books_handlers::{
-        create_new_book, delete_book, fetch_book, fetch_favourites, mark_favourite,
-        unmark_favourite, update_book,
+        create_new_book, delete_book, fetch_book, fetch_favourites, find_many_books,
+        mark_favourite, unmark_favourite, update_book,
     },
     states::services_state::ServicesState,
 };
@@ -14,6 +14,7 @@ use crate::{
 pub(super) fn audio_book_routes(state: ServicesState) -> Router {
     Router::new()
         .route("/", post(create_new_book))
+        .route("/", get(find_many_books))
         .route("/{book_identifier}", put(update_book))
         .route("/{book_identifier}", get(fetch_book))
         .route("/{book_identifier}", delete(delete_book))

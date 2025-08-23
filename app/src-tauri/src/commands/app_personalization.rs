@@ -24,7 +24,7 @@ pub async fn fetch_app_personalization<R: Runtime>(
             DbError::QueryFailed
         })?;
 
-    println!("result: {:#?}", result);
+    println!("result: {result:#?}");
     Ok(result)
 }
 

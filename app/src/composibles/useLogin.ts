@@ -43,7 +43,9 @@ export const useLogin = async (auth: LoginRequest): Promise<LoginResult> => {
   });
 
   const { accessToken, refreshToken } = data.data;
-  await tokenStore.saveAuthToken({ accessToken, refreshToken });
+
+  tokenStore.persistAccessToken(accessToken)
+  tokenStore.persistRefreshToken(refreshToken)
 
   return { success: true, message: "Login successful" };
 };

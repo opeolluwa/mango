@@ -5,11 +5,8 @@ import { useTokenStore } from "../stores/token";
 // Create axios instance
 const api = axios.create({
   baseURL:
-    // (import.meta.env.VITE_API_BASE_URL as string) ||
     // "https://eckko.koyeb.app" ||
     "http://192.168.0.170:5006",
-  // "http://10.0.2.2:5006" ||
-  // "http://localhost:5006",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -21,7 +18,7 @@ const api = axios.create({
 api.interceptors.request.use(
   async (config) => {
     const tokenStore = useTokenStore();
-    const token = await tokenStore.extractRequestToken;
+    const token = tokenStore.accessToken;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
