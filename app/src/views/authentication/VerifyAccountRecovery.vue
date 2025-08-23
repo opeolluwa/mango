@@ -55,7 +55,7 @@ import { useCountdown } from "@vueuse/core";
 import { PinInputInput, PinInputRoot } from "reka-ui";
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import axios from "../../axios.config";
+import axios from "../../plugins/axios";
 import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 import FormLoader from "../../components/form/FormLoader.vue";
 

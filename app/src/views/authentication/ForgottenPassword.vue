@@ -50,7 +50,7 @@ import { useForm } from "vee-validate";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import * as yup from "yup";
-import axios from "../../axios.config";
+import axios from "../../plugins/axios";
 import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
