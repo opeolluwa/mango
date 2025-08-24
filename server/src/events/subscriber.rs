@@ -69,22 +69,20 @@ impl EventSubscriberExt for EventSubscriber {
                 let message = Self::parse_message::<DocumentConverted>(message)?;
 
                 if let Err(err) = worker.process_document_converted(&message).await {
-                    log::error!("failed to process event due to {}", err);
+                    log::error!("failed to process event due to {err}");
                 }
             }
 
             EventChannel::ConvertDocumentToAudio => {
                 let message = Self::parse_message::<ConvertDocument>(message)?;
                 if let Err(err) = worker.convert_document_to_audio(&message).await {
-                    log::error!("failed to process event due to err {}", err);
+                    log::error!("failed to process event due to err {err}");
                 };
             }
 
             _ => {
                 log::warn!(
-                    "worker for channel {} not found, discarding message {:#?}",
-                    channel,
-                    message
+                    "worker for channel {channel} not found, discarding message {message:#?}"
                 )
             }
         }

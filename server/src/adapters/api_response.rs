@@ -11,6 +11,7 @@ use crate::errors::service_error::ServiceError;
 pub struct ApiResponse<T: Serialize> {
     #[serde(skip_serializing_if = "Option::is_none")]
     message: Option<String>,
+    #[serde(flatten)]
     data: Option<T>,
     #[serde(skip)]
     status_code: StatusCode,
@@ -85,14 +86,12 @@ where
     T: Serialize,
 {
     fn into_response(self) -> Response {
-        // if self.message.is_none() && self.data.is_none() {
-        //     panic!("Both data and message canno be null")
-        // }
         #[derive(Debug, Serialize)]
         struct BaseResponse<T> {
             #[serde(skip_serializing_if = "Option::is_none")]
             message: Option<String>,
             #[serde(skip_serializing_if = "Option::is_none")]
+            #[serde(flatten)]
             data: Option<T>,
         }
         let body = Json(BaseResponse {

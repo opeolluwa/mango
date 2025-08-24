@@ -15,7 +15,6 @@ use crate::{
         channels::EventChannel,
         message::{ConvertDocument, DocumentConverted},
         producer::EventPrducer,
-        websocket::send_websocket_msg,
     },
     services::{
         audio_book_service::{AudioBooksService, AudioBooksServiceExt},
@@ -71,7 +70,7 @@ impl EventWorker {
 
     fn ensure_file_exists(&self, path_str: &str) -> Result<(), ServiceError> {
         if !Path::new(path_str).exists() {
-            log::error!("File not found: {}", path_str);
+            log::error!("File not found: {path_str}");
             return Err(ServiceError::OperationFailed);
         }
         Ok(())
@@ -91,7 +90,7 @@ impl EventWorker {
             extract_env("IMAGEKIT_PRIVATE_KEY").map_err(ServiceError::from)?;
         let public_key: String = extract_env("IMAGEKIT_PUBLIC_KEY").map_err(ServiceError::from)?;
         ImagekitClient::new(&public_key, &private_key).map_err(|err| {
-            log::error!("ImageKit client creation failed: {}", err);
+            log::error!("ImageKit client creation failed: {err}");
             ServiceError::OperationFailed
         })
     }
@@ -106,7 +105,7 @@ impl EventWorker {
             .upload_file(mp3_path, file_name)
             .await
             .map_err(|err| {
-                log::error!("MP3 upload failed: {}", err);
+                log::error!("MP3 upload failed: {err}");
                 ServiceError::OperationFailed
             })
             .map(|res| res.url)
@@ -150,7 +149,7 @@ impl EventWorkerExt for EventWorker {
         } = &message;
 
         if !file_path.exists() {
-            log::error!("File {:?} does not exist", file_path);
+            log::error!("File {file_path:?} does not exist");
             return Err(ServiceError::OperationFailed);
         }
 
@@ -201,7 +200,7 @@ impl EventWorkerExt for EventWorker {
         };
 
         tokio::task::spawn(async move {
-            let Some(identifier) = notification_service
+            let Some(_identifier) = notification_service
                 .create_new_notification(&request)
                 .await
                 .ok()
@@ -210,7 +209,7 @@ impl EventWorkerExt for EventWorker {
                 return;
             };
 
-            let notification = notification_service.fetch_one(&identifier).await.unwrap();
+            // let notification = notification_service.fetch_one(&identifier).await.unwrap();
 
             // send_websocket_msg("ws://localhost:5006/notifications/listen", notification);
         });

@@ -30,7 +30,7 @@ impl NotifiactionService {
         // send messages to connected client
         tokio::spawn(async move {
             if let Err(err) = outgoing.send(Message::Text("sample essage".into())).await {
-                log::error!("{}", err);
+                log::error!("{err}");
             }
         });
 
@@ -38,7 +38,7 @@ impl NotifiactionService {
         tokio::spawn(async move {
             while let Some(message) = incoming.next().await {
                 // send the message
-                log::info!("got incoming message {:#?}", message);
+                log::info!("got incoming message {message:#?}");
             }
         });
     }

@@ -23,7 +23,7 @@ where
     pub fn new(channel: &EventChannel, message: T) -> Self {
         Self {
             channel: EventChannel::from(channel.to_string()),
-            message: message,
+            message,
         }
     }
     pub async fn send(&self) -> Result<(), ServiceError> {
@@ -38,7 +38,7 @@ where
             ServiceError::SerdeJsonError(err)
         })?;
 
-        log::info!("sending message {}", message_as_str);
+        log::info!("sending message {message_as_str}");
         redis_client
             .get_connection()
             .publish(self.channel.to_string(), message_as_str)

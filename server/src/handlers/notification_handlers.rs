@@ -1,8 +1,5 @@
 use axum::{
-    extract::{
-        State, WebSocketUpgrade,
-        ws::{Message, WebSocket},
-    },
+    extract::{State, WebSocketUpgrade},
     response::Response,
 };
 
@@ -10,7 +7,7 @@ use crate::{
     adapters::{api_response::ApiResponse, jwt::Claims},
     entities::notifications::Notification,
     errors::service_error::ServiceError,
-    services::notification_service::{NotifiactionService, NotificationServiceExt},
+    services::notification_service::NotifiactionService,
 };
 
 pub async fn listen_for_new_notifications(

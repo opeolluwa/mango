@@ -19,9 +19,7 @@ pub enum AppError {
 
 impl AppError {
     pub fn status_code(&self) -> StatusCode {
-        match self {
-            _ => StatusCode::INTERNAL_SERVER_ERROR,
-        }
+        StatusCode::INTERNAL_SERVER_ERROR
     }
 }
 impl IntoResponse for AppError {
