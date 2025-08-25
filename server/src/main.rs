@@ -1,3 +1,4 @@
+#![warn(unused_extern_crates)]
 use aers_lib::{
     config::{
         AppConfig,
