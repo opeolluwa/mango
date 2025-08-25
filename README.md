@@ -1,6 +1,6 @@
-# Project Eckko
+# Project Mango
 
-- [Project Eckko](#project-eckko)
+- [Project mango](#project-mango)
   - [Description](#description)
   - [Getting Started](#getting-started)
     - [Dependencies](#dependencies)
@@ -26,8 +26,8 @@ Eckko is a platform for converting documents to audio books
 ### Installing
 
 ```sh
-git clone https://github.com/opeolluwa/eckko
-cd eckko
+git clone https://github.com/opeolluwa/mango
+cd mango
 ```
 
 ### Executing program
