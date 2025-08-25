@@ -10,7 +10,7 @@
 
 ## Description
 
-Eckko is a platform for converting documents to audio books
+Mango is a platform for converting documents to audio books
 
 ## Getting Started
 
