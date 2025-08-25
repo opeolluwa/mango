@@ -38,13 +38,22 @@
               size="3xl"
               color="error"
               text="5"
-              inset
-              @click="usePush({ name: 'Notifications' })"
+
             >
-              <UButton icon="i-lucide-bell" color="" variant="subtle" />
+              <UButton
+                icon="i-lucide-bell"
+                color=""
+                variant="subtle"
+                @click="usePush({ name: 'Notification' })"
+              />
             </UChip>
           </RouterLink>
-          <UserCard :editable="false" :avatar-size="30" :show-text="false" />
+          <UserCard
+            :editable="false"
+            :avatar-size="30"
+            :show-text="false"
+            @click="usePush({ name: 'Settings' })"
+          />
         </div>
       </div>
     </template>

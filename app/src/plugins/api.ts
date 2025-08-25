@@ -1,12 +1,10 @@
-// src/plugins/api.ts
 import axios from "axios";
 import { useTokenStore } from "../stores/token";
 
-// Create axios instance
 const api = axios.create({
   baseURL:
-    "https://eckko.koyeb.app" ,
-    // "http://192.168.0.170:5006",
+    // "https://eckko.koyeb.app" ,
+    "http://192.168.0.170:5006",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -14,14 +12,15 @@ const api = axios.create({
   timeout: 10000,
 });
 
-// Request interceptor (e.g., attach auth token automatically)
 api.interceptors.request.use(
   async (config) => {
     const tokenStore = useTokenStore();
-    const token = tokenStore.accessToken;
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (!tokenStore.isAccessTokenValid()) {
+      await tokenStore.getRefeshToken();
     }
+
+    const token = tokenStore.accessToken;
+    config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
   (error) => Promise.reject(error)
