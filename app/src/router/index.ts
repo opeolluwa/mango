@@ -185,12 +185,8 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = useTokenStore().accessToken;
-  if (to.name !== "Login" && to.name !== "SignUp" && !token) {
-    next({ name: "Login" });
-    return;
-  }
-  if ((to.name === "Login" || to.name === "SignUp") && token) {
-    next({ name: "Home" });
+  if (to.path.startsWith("/app") && !token) {
+    next({ name: "LoginExisting" });
     return;
   }
   if (from.path.startsWith("/app") && token && to.path.startsWith("/auth")) {

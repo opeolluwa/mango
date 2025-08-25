@@ -96,14 +96,13 @@ impl NotificationRepositoryExt for NotificationRepository {
     }
 
     async fn fetch_one(&self, notification_identifier: &Uuid) -> Option<Notification> {
-        let result =
-            sqlx::query_as::<_, Notification>("SELECT * FROM notifications WHERE identifier = $1")
+        
+        sqlx::query_as::<_, Notification>("SELECT * FROM notifications WHERE identifier = $1")
                 .bind(notification_identifier)
                 .fetch_optional(self.pool.as_ref())
                 .await
                 .map_err(RepositoryError::SqlxError)
                 .ok()
-                .flatten();
-        result
+                .flatten()
     }
 }

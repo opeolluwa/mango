@@ -14,6 +14,8 @@ pub struct EmailClient {
     mailer: SmtpTransport,
 }
 
+
+
 impl EmailClient {
     pub fn new() -> Self {
         let smtp_host: String = extract_env("SMTP_HOST")
@@ -100,7 +102,7 @@ impl EmailClientExt for EmailClient {
         email: &Email<impl Template + Send + Serialize + Default>,
     ) -> Result<(), EmailError> {
         self.send_email(email).map_err(|e| {
-            log::error!("Failed to send confirmation email: {}", e);
+            log::error!("Failed to send confirmation email: {e}");
             e
         })
     }

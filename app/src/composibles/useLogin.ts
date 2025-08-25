@@ -42,10 +42,17 @@ export const useLogin = async (auth: LoginRequest): Promise<LoginResult> => {
     avatarUrl: userInformation.profilePicture,
   });
 
-  const { accessToken, refreshToken } = data.data;
+  const {
+    accessToken,
+    refreshToken,
+    refreshTokenExp,
+    exp: accessTokenExp,
+  } = data.data;
 
-  tokenStore.persistAccessToken(accessToken)
-  tokenStore.persistRefreshToken(refreshToken)
+  tokenStore.persistAccessToken(accessToken);
+  tokenStore.persistRefreshToken(refreshToken);
+  tokenStore.setAccessTokenExpiry(accessTokenExp);
+  tokenStore.setRefreshTokenExpiry(refreshTokenExp);
 
   return { success: true, message: "Login successful" };
 };

@@ -20,7 +20,7 @@ where
 
     let message = json!({"message":payload});
     if let Err(err) = socket.send(Message::Text(message.to_string().into())) {
-        log::error!("failed to send {} due to {}", payload, err);
+        log::error!("failed to send {payload} due to {err}");
     } else {
         log::info!("message sent >>>>>>>.")
     }

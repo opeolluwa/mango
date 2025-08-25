@@ -6,7 +6,7 @@
     />
 
     <AuthScreenHeaderText
-      >Welcome back, {{ cachedUser?.firstName }}!</AuthScreenHeaderText
+      >Welcome back, {{ cachedUser?.firstName.trim() }}!</AuthScreenHeaderText
     >
     <p class="small text-gray-400">Login with your password to continue</p>
     <ErrorOutlet v-if="formSubmitError">{{ formSubmitError }}</ErrorOutlet>
