@@ -45,19 +45,25 @@
         errors.confirmpassword
       }}</ErrorOutlet>
     </div>
-    <SubmitButton :loading="processingRequest" class="text-white" />
+
+    <SubmitButton
+      :loading="formSubmitted"
+      :diabaled="dataUnchanged"
+      class="text-white"
+      text="Update password"
+    />
   </form>
 </template>
 
 <script lang="ts" setup>
 import axios from "axios";
 import { useForm } from "vee-validate";
-import { ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { computed, ref } from "vue";
 import * as yup from "yup";
-import SubmitButton from "../../../../components/form/SubmitButton.vue";
 import AppFormLabel from "../../../../components/form/AppFormLabel.vue";
 import ErrorOutlet from "../../../../components/form/ErrorOutlet.vue";
+import SubmitButton from "../../../../components/form/SubmitButton.vue";
+import { useUpdatePassword } from "../../../../composibles/useUpdatepassword";
 
 const validationSchema = yup.object({
   confirmPassword: yup.string().required(),
@@ -72,40 +78,41 @@ const [password, passwordProps] = defineField("password");
 const [confirmPassword, confirmPasswordProps] = defineField("confirmPassword");
 const [currentPassword, currentPasswordProps] = defineField("currentPassword");
 
-const router = useRouter();
-const processingRequest = ref(false);
 const formSubmitError = ref<string | null>(null);
-const route = useRoute();
 
-const submitForm = handleSubmit(async (values) => {
-  processingRequest.value = true;
+const formSubmitted = ref(false);
+const dataUnchanged = computed(() => {
+  return (
+    password.value === "" &&
+    confirmPassword.value === "" &&
+    currentPassword.value === ""
+  );
+});
+const submitForm = handleSubmit(async () => {
+  formSubmitError.value = null;
   try {
-    const { password, confirmPassword } = values;
-    processingRequest.value = true;
-    const response = await axios.post(
-      "/auth/reset-password",
-      { confirmPassword, password, currentPassword },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${route.query.token}`,
-        },
-      }
-    );
+    const response = await useUpdatePassword({
+      currentPassword: currentPassword.value,
+      newPassword: password.value,
+      confirmPassword: confirmPassword.value,
+    });
 
-    console.log(response);
-    if (response.status === 200) {
-      router.replace({ name: "Login" });
-    } else {
-      throw new Error("Operation failed");
+    if (!response.success) {
+      formSubmitError.value =
+        response.data.message || "An error occurred. Please try again.";
+      return;
     }
-  } catch (error) {
-    console.log(error);
-    if (error) {
-      formSubmitError.value = "Invalid credentials";
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      formSubmitError.value =
+        error.response?.data?.message || "An error occurred. Please try again.";
+    } else {
+      formSubmitError.value = "An error occurred. Please try again.";
     }
   } finally {
-    processingRequest.value = false;
+    formSubmitted.value = false;
   }
 });
 </script>

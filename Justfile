@@ -5,7 +5,7 @@ import 'scripts/clean.just'
 import 'scripts/server.just'
 import 'scripts/lint.just'
 import 'scripts/android.just'
-
+import 'scripts/misc.just'
 
 
 # Alias

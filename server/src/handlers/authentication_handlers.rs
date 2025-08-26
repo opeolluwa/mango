@@ -1,6 +1,8 @@
 use crate::adapters::api_request::AuthenticatedRequest;
 use crate::adapters::api_response::ApiResponseBuilder;
-use crate::adapters::authentication::{ForgottenPasswordResponse, RefreshTokenResponse};
+use crate::adapters::authentication::{
+    ChangePasswordRequest, ForgottenPasswordResponse, RefreshTokenResponse,
+};
 use crate::adapters::authentication::{OnboardingRequest, VerifyAccountRequest};
 use crate::adapters::jwt::Claims;
 use crate::errors::service_error::ServiceError;
@@ -112,5 +114,16 @@ pub async fn verify_reset_otp(
         .status_code(StatusCode::OK)
         .data(verify_account_response)
         .message("OTP verified successfully")
+        .build())
+}
+
+pub async fn change_password(
+    State(user_service): State<AuthenticationService>,
+    AuthenticatedRequest { data, claims }: AuthenticatedRequest<ChangePasswordRequest>,
+) -> Result<ApiResponse<()>, ServiceError> {
+    user_service.change_password(&data, &claims).await?;
+
+    Ok(ApiResponseBuilder::new()
+        .message("User's password changed successfully")
         .build())
 }

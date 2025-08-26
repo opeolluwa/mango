@@ -53,7 +53,10 @@ export const useTokenStore = defineStore("token_store", {
 
     isAccessTokenValid() {
       const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
-      return this.accessToken && this.accessTokenExpiry > currentTime + 60; // Consider valid if expires in more than 60 seconds
+
+      const validToken =
+        this.accessToken && this.accessTokenExpiry > currentTime + 60;
+      return validToken;
     },
   },
   getters: {},

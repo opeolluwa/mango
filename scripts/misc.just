@@ -20,4 +20,22 @@ download-models:
     wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/libritts_r/medium/en_US-libritts_r-medium.onnx     
     wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/libritts_r/medium/en_US-libritts_r-medium.onnx.json
 
-sign-android: keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+# sign-android:
+#     keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+
+
+[working-directory:'server']
+export-server-types:
+    cargo test
+    cp "src/bindings/*.ts" "../app/src/types"
+
+
+
+[working-directory:'app/src-tauri']
+export-tauri-types:
+    cargo test
+    cp "src/bindings/*.ts" "../src/types"
+
+export-types:
+    @just export-server-types
+    @just export-tauri-types
