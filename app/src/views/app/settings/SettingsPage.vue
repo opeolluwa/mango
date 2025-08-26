@@ -12,14 +12,14 @@
       <component
         :is="section.routeName ? 'RouterLink' : 'div'"
         :to="section.routeName ? { name: section.routeName } : null"
-        class="grid grid-cols-12 justify-between  items-center gap-x-4 cursor-pointer"
+        class="grid grid-cols-12 justify-between items-center gap-x-4 cursor-pointer"
         @click="section.isLogout ? logOut() : null"
       >
         <Icon
           :icon="section.icon"
           class="size-6 dark:text-gray-400 col-span-2"
         />
-        <div class="col-span-8 ">
+        <div class="col-span-8">
           <h2 class="font-medium dark:text-gray-400 capitalize">
             {{ section.title }}
           </h2>
@@ -37,9 +37,9 @@
 </template>
 
 <script lang="ts" setup>
-import { Icon } from "@iconify/vue";
-import { useRouter } from "vue-router";
 import UserCard from "@/components/settings/UserCard.vue";
+import { Icon } from "@iconify/vue";
+import { useLogout } from "../../../composibles/useLogout";
 
 interface Section {
   icon: string;
@@ -88,10 +88,7 @@ const sections: Section[] = [
   },
 ];
 
-const router = useRouter();
-
 const logOut = () => {
-  // Add actual logout logic here (e.g., clearing tokens, etc.)
-  router.push({ name: "Login" });
+  useLogout();
 };
 </script>

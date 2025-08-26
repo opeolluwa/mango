@@ -4,7 +4,7 @@
   />
 
   <div
-    class="flex gap-4 min-h-12 items-center justify-between absolute top-0 left-0 px-4 w-screen py-3 bg-white z-500 shadow-sm dark:bg-app-dark border-gray-100/50 backdrop-blur-md"
+    class="flex gap-4 min-h-12 items-center justify-between absolute top-0 left-0 px-4 w-screen py-3 bg-white z-500 shadow-sm dark:bg-app-dark border-gray-100/50 backdrop-blur-md pt-12"
   >
     <template v-if="route.meta.isHome">
       <div
