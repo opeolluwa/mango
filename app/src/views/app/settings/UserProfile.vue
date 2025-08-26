@@ -33,8 +33,8 @@ import { computed, ref } from "vue";
 import SubmitButton from "../../../components/form/SubmitButton.vue";
 import UserCard from "../../../components/settings/UserCard.vue";
 import { useUserInformationStore } from "../../../stores/user";
-import { useUpdateUserProfile } from "../../../composibles/useUpdateuserProfile";
 import { useCachedUserStore } from "../../../stores/cachedUser";
+import { useUpdateUserProfile } from "../../../composibles/useUpdateUserProfile";
 
 const userInformationStore = useUserInformationStore();
 const fullName = computed(() => userInformationStore.fullName);
