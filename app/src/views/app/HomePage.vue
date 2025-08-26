@@ -73,8 +73,8 @@
         @click="openModal"
       >
         <Icon
-          icon="cuida:-plus-circle-outline"
-          class="size-4 text-app-dark mx-auto"
+          icon="ic:round-plus"
+          class="size-6 text-white mx-auto"
         />
       </button>
     </AppScreenLayout>
