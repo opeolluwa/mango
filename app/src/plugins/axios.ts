@@ -14,3 +14,5 @@ axios.defaults.headers.common["Accept"] = "application/json";
 // axios.defaults.timeout = 10000; // Set a timeout of 10 seconds
 
 export default axios;
+
+

@@ -1,11 +1,4 @@
 import java.util.Properties
-import java.io.FileInputStream
-
-
-val keyPropertiesFile = rootProject.file("key.properties")
-val keyProperties = Properties()
-keyProperties.load(FileInputStream(keyPropertiesFile))
-
 
 plugins {
     id("com.android.application")
@@ -20,26 +13,17 @@ val tauriProperties = Properties().apply {
     }
 }
 
-
 android {
     compileSdk = 36
-    namespace = "com.mango.app"
+    namespace = "com.mango.project"
     defaultConfig {
         manifestPlaceholders["usesCleartextTraffic"] = "false"
-        applicationId = "com.mango.app"
+        applicationId = "com.mango.project"
         minSdk = 24
         targetSdk = 36
         versionCode = tauriProperties.getProperty("tauri.android.versionCode", "1").toInt()
         versionName = tauriProperties.getProperty("tauri.android.versionName", "1.0")
     }
-    signingConfigs {
-     create("release") {
-            keyAlias = keyProperties["keyAlias"] as String
-            keyPassword = keyProperties["keyPassword"] as String
-            storeFile = file(keyProperties["storeFile"] as String)
-            storePassword = keyProperties["storePassword"] as String
-        }
-
     buildTypes {
         getByName("debug") {
             manifestPlaceholders["usesCleartextTraffic"] = "true"
@@ -53,7 +37,12 @@ android {
             }
         }
         getByName("release") {
-           signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            proguardFiles(
+                *fileTree(".") { include("**/*.pro") }
+                    .plus(getDefaultProguardFile("proguard-android-optimize.txt"))
+                    .toList().toTypedArray()
+            )
         }
     }
     kotlinOptions {
@@ -77,5 +66,5 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.4")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
 }
-}
+
 apply(from = "tauri.build.gradle.kts")

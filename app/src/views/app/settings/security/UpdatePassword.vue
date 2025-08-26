@@ -63,7 +63,7 @@ import * as yup from "yup";
 import AppFormLabel from "../../../../components/form/AppFormLabel.vue";
 import ErrorOutlet from "../../../../components/form/ErrorOutlet.vue";
 import SubmitButton from "../../../../components/form/SubmitButton.vue";
-import { useUpdatePassword } from "../../../../composibles/useUpdatepassword";
+import { useUpdatePassword } from "../../../../composibles/useUpdatePassword";
 
 const validationSchema = yup.object({
   confirmPassword: yup.string().required(),

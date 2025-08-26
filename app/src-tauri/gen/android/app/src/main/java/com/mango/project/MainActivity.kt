@@ -1,4 +1,4 @@
-package com.mango.app
+package com.mango.project
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
