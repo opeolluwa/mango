@@ -30,6 +30,7 @@ export const useUserInformationStore = defineStore("user_information", {
         state.firstName = userInformation.firstName;
         state.lastName = userInformation.lastName;
         state.email = userInformation.email;
+        state.profilePicture = userInformation.profilePicture;
       });
       return userInformation;
     },
@@ -43,7 +44,9 @@ export const useUserInformationStore = defineStore("user_information", {
         throw new Error(`Failed to fetch user information due to ${error}`);
       }
     },
- 
+    setProfilePicture(url: string) {
+      this.$patch({ profilePicture: url });
+    },
   },
-     persist: true,
+  persist: true,
 });

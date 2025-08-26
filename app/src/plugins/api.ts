@@ -3,8 +3,8 @@ import { useTokenStore } from "../stores/token";
 
 const api = axios.create({
   baseURL:
-    "https://eckko.koyeb.app" ,
-    // "http://192.168.0.170:5006",
+    // "https://eckko.koyeb.app" ,
+    "http://192.168.0.170:5006",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
