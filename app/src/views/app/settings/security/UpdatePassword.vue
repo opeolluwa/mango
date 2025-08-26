@@ -50,7 +50,7 @@
       :loading="formSubmitted"
       :diabaled="dataUnchanged"
       class="text-white"
-      text="Update profile"
+      text="Update password"
     />
   </form>
 </template>
@@ -63,7 +63,7 @@ import * as yup from "yup";
 import AppFormLabel from "../../../../components/form/AppFormLabel.vue";
 import ErrorOutlet from "../../../../components/form/ErrorOutlet.vue";
 import SubmitButton from "../../../../components/form/SubmitButton.vue";
-import { useUpdatePassword } from "../../../../composibles/useUpdatePassword";
+import { useUpdatePassword } from "../../../../composibles/useUpdatepassword";
 
 const validationSchema = yup.object({
   confirmPassword: yup.string().required(),
