@@ -79,9 +79,7 @@
   @apply size-5 lg:size-5 cursor-pointer hover:text-app-orange;
 }
 
-/* .parent-element {
-    @apply px-4;
-} */
+
 
 .layout {
   @apply pt-12 px-6 h-screen overflow-scroll scroll-smooth;
@@ -158,12 +156,11 @@
 }
 
 .text-150 {
-  /* font-size: 120%; */
-  /* line-height: 36px; */
+  font-size: 120%;
 }
 
 .walkthrough_layout > * {
-  @apply px-8 text-app-dark;
+  @apply px-8;
 }
 
 input[type="email"] {

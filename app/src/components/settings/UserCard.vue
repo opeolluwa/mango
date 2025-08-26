@@ -1,4 +1,34 @@
 <template>
+  <UModal
+    v-model:open="open"
+    title="Select a document"
+    description="Pick a PDF document not less than 5 MiB"
+  >
+    <template #body>
+      <UFileUpload
+        v-model="file"
+        accept="image/*"
+        :multiple="false"
+        class="min-h-48"
+      />
+
+      <div class="mt-4">
+        <button
+          :disabled="uploading"
+          class="bg-app-orange text-app-dark btn-lg inline-flex gap-x-2 items-center px-8 py-3 mt-2 cursor-pointer shadow-md transition-colors duration-200 ease-linear hover:opacity-95 hover:scale-95 control rounded w-full text-center justify-center"
+          @click="handleUpload"
+        >
+          <span v-if="!uploading">Upload</span>
+          <span v-else>Uploading...</span>
+        </button>
+
+        <ErrorOutlet v-if="uploadError" class="mt-2">
+          {{ uploadError }}
+        </ErrorOutlet>
+      </div>
+    </template>
+  </UModal>
+
   <div class="flex items-center gap-x-4 relative">
     <AvatarRoot
       :class="[
@@ -13,7 +43,6 @@
       />
       <AvatarFallback
         class="text-grass11 dark:text-stone-300 leading-1 flex h-full w-full items-center justify-center bg-app-orange-50 dark:bg-stone-800 text-sm font-medium"
-      
       >
         {{ initials }}
       </AvatarFallback>
@@ -22,7 +51,7 @@
         v-if="editable"
         class="text-xs absolute -bottom-1.5 -right-1.5 bg-white/80 p-1 rounded-full text-app-orange-500"
       >
-        <Icon icon="tabler:edit" class="size-4 text-app" />
+        <Icon icon="tabler:edit" class="size-4 text-app" @click="uploadImage" />
       </span>
     </AvatarRoot>
 
@@ -39,8 +68,11 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import { AvatarFallback, AvatarImage, AvatarRoot } from "reka-ui";
-import { computed, toRefs } from "vue";
+import { computed, ref, toRefs } from "vue";
 import { useUserInformationStore } from "../../stores/user";
+import ErrorOutlet from "../form/ErrorOutlet.vue";
+import { useTokenStore } from "../../stores/token";
+import axios from "axios";
 
 const props = defineProps({
   showText: { type: Boolean, default: true },
@@ -48,12 +80,65 @@ const props = defineProps({
   editable: { type: Boolean, default: false },
 });
 
+const open = ref(false);
+const openModal = () => {
+  open.value = true;
+};
+
+const file = ref(null);
+
+const userInformationStore = useUserInformationStore();
+
+const uploading = ref(false);
+const uploadError = ref<string | null>(null);
+
+const handleUpload = async () => {
+  if (!file.value) {
+    uploadError.value = "Please select a file first.";
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("image", file.value);
+  const tokenStore = useTokenStore();
+
+  const token = tokenStore.accessToken;
+  try {
+    uploading.value = true;
+    uploadError.value = null;
+
+    const response = await axios.post("/user/avatar", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+
+    userInformationStore.setProfilePicture(response.data.data.profilePicture);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    uploadError.value = error.response?.data?.message || "Upload failed";
+  } finally {
+    uploading.value = false;
+    open.value = false;
+    file.value = null;
+  }
+};
+
 const { showText, editable, avatarSize } = toRefs(props);
 
-const store = useUserInformationStore();
-const userInformation = computed(() => store.user);
-const fullName = computed(() => store.fullName);
+const userInformation = computed(() => userInformationStore.user);
+const fullName = computed(() => userInformationStore.fullName);
 const initials = computed(() =>
-  store.user.firstName[0].concat(store.user.lastName[0])
+  userInformationStore.user.firstName[0].concat(
+    userInformationStore.user.lastName[0]
+  )
 );
+
+const uploadImage = () => {
+  if (editable.value) {
+    openModal();
+  }
+};
 </script>

@@ -155,7 +155,7 @@ impl UserRepositoryTrait for UserRepository {
         user_identifier: &Uuid,
         avatar_url: &str,
     ) -> Result<(), UserServiceError> {
-        sqlx::query(r#"UPDATE users SET avatar = $2 WHERE identifier = $1"#)
+        sqlx::query(r#"UPDATE users SET profile_picture = $2 WHERE identifier = $1"#)
             .bind(user_identifier)
             .bind(avatar_url)
             .execute(self.pool.as_ref())
