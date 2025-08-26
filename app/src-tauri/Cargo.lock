@@ -1269,36 +1269,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "eckko"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "dirs 6.0.0",
- "futures",
- "log",
- "serde",
- "serde_json",
- "sqlx",
- "tauri",
- "tauri-build",
- "tauri-plugin-dialog",
- "tauri-plugin-fs",
- "tauri-plugin-notification",
- "tauri-plugin-opener",
- "tauri-plugin-sql",
- "tauri-plugin-store",
- "tauri-plugin-stronghold",
- "tauri-plugin-upload",
- "tauri-plugin-websocket",
- "thiserror 2.0.15",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "ts-rs",
- "uuid",
-]
-
-[[package]]
 name = "ed25519"
 version = "2.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2821,6 +2791,36 @@ dependencies = [
  "objc2 0.6.2",
  "objc2-foundation 0.3.1",
  "time",
+]
+
+[[package]]
+name = "mango"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "dirs 6.0.0",
+ "futures",
+ "log",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-dialog",
+ "tauri-plugin-fs",
+ "tauri-plugin-notification",
+ "tauri-plugin-opener",
+ "tauri-plugin-sql",
+ "tauri-plugin-store",
+ "tauri-plugin-stronghold",
+ "tauri-plugin-upload",
+ "tauri-plugin-websocket",
+ "thiserror 2.0.15",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "ts-rs",
+ "uuid",
 ]
 
 [[package]]
