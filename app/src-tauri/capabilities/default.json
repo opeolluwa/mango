@@ -5,12 +5,14 @@
   "windows": ["main"],
   "permissions": [
     "core:default",
-    "notification:allow-is-permission-granted",
     "notification:default",
     "sql:default",
     "sql:allow-execute",
     "dialog:default",
     "dialog:allow-message",
-    "fs:default"
+    "fs:default",
+    "core:app:allow-version",
+    "store:default",
+    "websocket:default"
   ]
 }

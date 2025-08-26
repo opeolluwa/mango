@@ -1,17 +1,34 @@
 import "./assets/styles.css";
-import "./axios.config";
+import 'vue-final-modal/style.css'
 
-import { createPinia } from "pinia";
+import "./plugins/axios";
+import "./plugins/notification";
+import "./plugins/devtools";
+
 import { createApp } from "vue";
-import App from "./App.vue";
-import router from "./routes";
+import { createPinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import { createVfm } from 'vue-final-modal'
+
 import ui from "@nuxt/ui/vue-plugin";
 
-const store = createPinia();
+import router from "./router";
+import App from "./App.vue";
+import AppScreenLayout from "@components/layouts/AppScreenLayout.vue";
+
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
+
+const vfm = createVfm()
+
+
 const app = createApp(App);
 
-app.use(store);
+app.component("AppScreenLayout", AppScreenLayout);
+
+app.use(pinia);
 app.use(router);
 app.use(ui);
+app.use(vfm)
 
 app.mount("#app");

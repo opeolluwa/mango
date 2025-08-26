@@ -6,8 +6,9 @@ use axum_typed_multipart::TypedMultipart;
 use sqlx::{Pool, Postgres};
 use uuid::Uuid;
 
-use crate::AERS_FILE_UPLOAD_PATH;
-use crate::adapters::audio_books::UpdateProfilePicture;
+use crate::adapters::profile::UploadProfilePictureRequest;
+use crate::config::AppConfig;
+
 use crate::adapters::authentication::SetNewPasswordRequest;
 use crate::adapters::users::{PartialUserProfile, UserDto};
 use crate::errors::service_error::ServiceError;
@@ -46,7 +47,7 @@ pub(crate) trait UserServiceTrait {
 
     async fn update_profile_picture(
         &self,
-        request: TypedMultipart<UpdateProfilePicture>,
+        request: TypedMultipart<UploadProfilePictureRequest>,
         user_identifier: &Uuid,
     ) -> Result<(), ServiceError>;
 
@@ -83,7 +84,9 @@ impl UserServiceTrait for UserService {
 
     async fn update_profile_picture(
         &self,
-        TypedMultipart(UpdateProfilePicture { image }): TypedMultipart<UpdateProfilePicture>,
+        TypedMultipart(UploadProfilePictureRequest { image }): TypedMultipart<
+            UploadProfilePictureRequest,
+        >,
         user_identifier: &Uuid,
     ) -> Result<(), ServiceError> {
         // tokio::task::spawn(async move {
@@ -93,7 +96,8 @@ impl UserServiceTrait for UserService {
             .clone()
             .unwrap_or(generate_file_name());
 
-        let temp_dir = Path::new(AERS_FILE_UPLOAD_PATH);
+        let config = AppConfig::from_env()?;
+        let temp_dir = Path::new(&config.upload_path);
         let file_path = temp_dir.join(format!(
             "{time_stamp}_{file_name}",
             time_stamp = chrono::Local::now().timestamp()

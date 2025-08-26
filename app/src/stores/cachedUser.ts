@@ -19,6 +19,7 @@ export const useCachedUserStore = defineStore("cached_user", {
     firstName: (state) => state.firstName,
     lastName: (state) => state.lastName,
     email: (state) => state.email,
+    fullName: (state) => `${state.firstName} ${state.lastName}`,
     storeIsNull: (state): boolean => {
       const entryIsFalsy = (entry: unknown) => !entry;
       return Object.values(state).every(entryIsFalsy);

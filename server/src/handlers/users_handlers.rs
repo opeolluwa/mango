@@ -3,12 +3,7 @@ use axum_typed_multipart::TypedMultipart;
 
 use crate::{
     adapters::{
-        api_request::AuthenticatedRequest,
-        api_response::{ApiResponse, ApiResponseBuilder},
-        audio_books::UpdateProfilePicture,
-        authentication::SetNewPasswordRequest,
-        jwt::Claims,
-        users::{PartialUserProfile, UserDto},
+        api_request::AuthenticatedRequest, api_response::{ApiResponse, ApiResponseBuilder}, authentication::SetNewPasswordRequest, jwt::Claims, profile::UploadProfilePictureRequest, users::{PartialUserProfile, UserDto}
     },
     errors::{service_error::ServiceError, user_service_error::UserServiceError},
     services::user_service::UserService,
@@ -46,7 +41,7 @@ pub async fn update_password(
 pub async fn update_profile_picture(
     State(user_service): State<UserService>,
     claims: Claims,
-    request: TypedMultipart<UpdateProfilePicture>,
+    request: TypedMultipart<UploadProfilePictureRequest>,
 ) -> Result<ApiResponse<UserDto>, ServiceError> {
     user_service
         .update_profile_picture(request, &claims.user_identifier)

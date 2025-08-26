@@ -8,7 +8,7 @@ use uuid::Uuid;
 #[ts(export)]
 #[serde(rename_all = "camelCase")]
 pub struct CachedUser {
-    #[ts(type="string")]
+    #[ts(type = "string")]
     pub identifier: Uuid,
     pub first_name: Option<String>,
     pub last_name: Option<String>,
@@ -55,10 +55,7 @@ impl ModelTrait for CachedUser {
             .bind(self.avatar_url.to_owned())
             .execute(db_conn)
             .await
-            .map_err(|err| {
-                        log::error!("{err}");
-                DbError::Database(err.to_string())
-            })?;
+           .map_err(DbError::from)?;
         Ok(())
     }
 }

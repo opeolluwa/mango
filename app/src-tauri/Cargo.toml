@@ -1,11 +1,10 @@
 [package]
-name = "eckko"
+name = "mango"
 version = "0.1.0"
 description = "A Tauri App"
 authors = ["you"]
 edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 
 [workspace]
 resolver = "2"
@@ -14,15 +13,13 @@ resolver = "2"
 # The `_lib` suffix may seem redundant but it is necessary
 # to make the lib name unique and wouldn't conflict with the bin name.
 # This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
-name = "eckko_lib"
+name = "mango_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [dependencies]
-anyhow = "1.0.98"
 chrono = { version = "0.4.41", features = ["serde"] }
 dirs = "6.0.0"
 futures = "0.3.31"
-lazy_static = "1.5.0"
 log = "0.4.27"
 
 serde = { version = "1", features = ["derive"] }
@@ -38,12 +35,13 @@ tauri-plugin-sql = { version = "2", features = ["sqlite"] }
 tauri-plugin-store = "2"
 tauri-plugin-stronghold = "2"
 tauri-plugin-upload = "2"
+tauri-plugin-websocket = "2"
 thiserror = "2.0.12"
 tokio = { version = "1.45.1", features = ["full"] }
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 ts-rs = "10.1.0"
 uuid = { version = "1.17.0", features = ["v4"] }
-
-
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }

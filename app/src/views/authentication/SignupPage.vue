@@ -72,12 +72,12 @@ import { useForm } from "vee-validate";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import * as yup from "yup";
-import axios from "../../axios.config.ts";
+import axios from "../../plugins/axios.ts";
 import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
 import SubmitButton from "../../components/form/SubmitButton.vue";
-import { useGoBack } from "../../composibles/router.ts";
+import { useGoBack } from "../../composibles/useRouter.ts";
 
 const validationSchema = yup.object({
   email: yup.string().required().email(),

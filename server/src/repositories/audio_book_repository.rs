@@ -6,7 +6,7 @@ use uuid::Uuid;
 use crate::{
     adapters::{
         audio_books::{CreateAudioBookRequest, UpdateBookRequest},
-        pagination::PaginationParams,
+        pagination::{PaginatedResponse, PaginationParams},
     },
     entities::audio_book::AudioBookEntity,
     errors::service_error::ServiceError,
@@ -42,7 +42,7 @@ pub trait AudioBookRepositoryExt {
         &self,
         user_identifier: &Uuid,
         pagination: &PaginationParams,
-    ) -> impl std::future::Future<Output = Result<Vec<AudioBookEntity>, ServiceError>> + Send;
+    ) -> impl std::future::Future<Output = Result<PaginatedResponse<Vec<AudioBookEntity>>, ServiceError>> + Send;
 
     fn update(
         &self,
@@ -134,18 +134,45 @@ impl AudioBookRepositoryExt for AudioBookRepository {
         &self,
         user_identifier: &Uuid,
         pagination: &PaginationParams,
-    ) -> Result<Vec<AudioBookEntity>, ServiceError> {
-        let limit = pagination.page.unwrap_or_default() - 1;
-        let offset = pagination.per_page.unwrap_or_default();
+    ) -> Result<PaginatedResponse<Vec<AudioBookEntity>>, ServiceError> {
+        let page = pagination.page();
+        let per_page = pagination.per_page();
+        let offset = (page - 1) * per_page;
 
-        sqlx::query_as::<_, AudioBookEntity>(
-            r#"SELECT * audio_books WHERE user_identifier = $1 LIMIT $2 OFFSET $3 SORT BY created_at"#,
+        // query total count
+        let total_count: i64 =
+            sqlx::query_scalar(r#"SELECT COUNT(*) FROM audio_books WHERE user_identifier = $1"#)
+                .bind(user_identifier)
+                .fetch_one(self.pool.as_ref())
+                .await
+                .map_err(ServiceError::from)?;
+
+        let total_pages = ((total_count as f64) / (per_page as f64)).ceil() as u32;
+
+        // query paginated data
+        let data = sqlx::query_as::<_, AudioBookEntity>(
+            r#"
+            SELECT * 
+            FROM audio_books 
+            WHERE user_identifier = $1
+            ORDER BY created_at DESC
+            LIMIT $2 OFFSET $3
+            "#,
         )
         .bind(user_identifier)
-        .bind(limit.to_string())
-        .bind(offset.to_string())
+        .bind(per_page as i64)
+        .bind(offset as i64)
         .fetch_all(self.pool.as_ref())
-        .await.map_err(ServiceError::from)
+        .await
+        .map_err(ServiceError::from)?;
+
+        Ok(PaginatedResponse {
+            data,
+            page,
+            per_page,
+            total_count: total_count as u64,
+            total_pages,
+        })
     }
 
     async fn update(

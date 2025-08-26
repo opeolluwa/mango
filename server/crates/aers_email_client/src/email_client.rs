@@ -1,8 +1,8 @@
 use askama::Template;
 use lettre::{
-    message::{header, Mailbox, MultiPart, SinglePart},
-    transport::smtp::authentication::Credentials,
     SmtpTransport, Transport,
+    message::{Mailbox, MultiPart, SinglePart, header},
+    transport::smtp::authentication::Credentials,
 };
 use serde::Serialize;
 
@@ -13,6 +13,8 @@ use crate::{email::Email, errors::EmailError};
 pub struct EmailClient {
     mailer: SmtpTransport,
 }
+
+
 
 impl EmailClient {
     pub fn new() -> Self {
@@ -100,7 +102,7 @@ impl EmailClientExt for EmailClient {
         email: &Email<impl Template + Send + Serialize + Default>,
     ) -> Result<(), EmailError> {
         self.send_email(email).map_err(|e| {
-            log::error!("Failed to send confirmation email: {}", e);
+            log::error!("Failed to send confirmation email: {e}");
             e
         })
     }

@@ -1,5 +1,5 @@
 <template>
-  <Label class="font-medium text-stone-500 leading-[35px]">
+  <Label class="font-medium text-stone-500 leading-[35px] capitalize">
     {{ text }}
   </Label>
 </template>

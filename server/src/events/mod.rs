@@ -4,3 +4,4 @@ pub mod producer;
 pub mod redis;
 pub mod subscriber;
 pub mod worker;
+pub mod websocket;

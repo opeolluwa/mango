@@ -2,13 +2,88 @@
 <html lang="en" data-theme="cupcake">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta charset="UTF-8" />
+    <script src="http://localhost:8098"></script>
+    <script src="http://192.168.0.170:8098"></script>
+    <meta meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, interactive-widget=resizes-content">
+    <style>
+        /* HTML: <div class="loader"></div> */
+        #splashscreen_loader {
+            --r1: 154%;
+            --r2: 68.5%;
+            width: 60px;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background:
+                radial-gradient(var(--r1) var(--r2) at top, #0000 79.5%, #ff6500 80%),
+                radial-gradient(var(--r1) var(--r2) at bottom, #ff6500 79.5%, #0000 80%),
+                radial-gradient(var(--r1) var(--r2) at top, #0000 79.5%, #ff6500 80%),
+                #f5f2f2;
+            background-size: 50.5% 220%;
+            background-position: -100% 0%, 0% 0%, 100% 0%;
+            background-repeat: no-repeat;
+            animation: l9 2s infinite linear;
+            animation-delay: 0ms;
+        }
+
+        @keyframes l9 {
+            33% {
+                background-position: 0% 33%, 100% 33%, 200% 33%
+            }
+
+            66% {
+                background-position: -100% 66%, 0% 66%, 100% 66%
+            }
+
+            100% {
+                background-position: 0% 100%, 100% 100%, 200% 100%
+            }
+        }
+
+        @font-face {
+            font-family: 'Bebas Neue';
+            src: url("./src/assets/BebasNeue-Regular.ttf");
+        }
+
+        .label {
+            font-family: 'Bebas Neue';
+            text-transform: capitalize;
+            font-size: 120%;
+            font-weight: 800;
+            color: #bbb;
+            letter-spacing: 3.5px;
+            position: absolute;
+            bottom: 0;
+            user-select: none;
+        }
+
+        #splashscreen {
+            height: calc(100vh - 30px) !important;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: oklch(14.298% 0.01306 284.63);
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <div id="app"></div>
-  <script type="module" src="/src/main.ts"></script>
+    <div id="splashscreen">
+        <div id="splashscreen_loader"></div>
+        <p class="label">Geckko labs </p>
+    </div>
+    <div id="app" class="isolate"></div>
+    <script type="module" src="/src/main.ts"></script>
 </body>
 
 </html>

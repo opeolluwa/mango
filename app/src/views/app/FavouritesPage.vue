@@ -1,5 +1,7 @@
 <template>
-    favourites
+  <AppScreenLayout> hey </AppScreenLayout>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+
+</script>

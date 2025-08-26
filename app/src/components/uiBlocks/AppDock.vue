@@ -40,11 +40,17 @@ const routes: Array<{ default: string; active: string; route: string }> = [
     route: "Recent",
   },
 
-  {
-    default: "mage:notification-bell",
-    active: "mage:notification-bell-fill",
-    route: "Notification",
+    {
+    default: "mage:heart",
+    active: "mage:heart-fill",
+    route: "Favourites",
   },
+
+  // {
+  //   default: "mage:notification-bell",
+  //   active: "mage:notification-bell-fill",
+  //   route: "Notification",
+  // },
   {
     active: "mage:settings-fill",
     default: "mage:settings",

@@ -1,4 +1,4 @@
-FROM rust:1.86.0
+FROM rust:latest
 
 ENV CARGO_TARGET_DIR=/cargo-target 
 
@@ -31,7 +31,6 @@ RUN cargo install cargo-watch
 RUN cargo build 
 
 VOLUME ["/app", "/cargo-target", "/usr/local/cargo/registry"]
-
 CMD ["cargo", "watch", \
      "--why", \
      "--ignore", ".git/", \

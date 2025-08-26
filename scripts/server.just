@@ -27,7 +27,7 @@ DOCKER_CMD := "docker compose -f server/docker-compose.yaml"
     cargo fmt && cargo fix 
 
 @server-watch: 
-    {{DOCKER_CMD}} up -d 
+    {{DOCKER_CMD}} up -d
     @just sl
 
 @server-logs:
@@ -45,7 +45,7 @@ DOCKER_CMD := "docker compose -f server/docker-compose.yaml"
 
 @server-rebuild:
     docker compose -f server/docker-compose.yaml up --build 
-
+[working-directory:'server']
 @server-build-production target:
-    docker build . -t aers-0.6.8 --file docker/prod/Dockerfile
+    docker build . -t aers-{{target}} --file docker/prod/Dockerfile
     docker run aers-{{target}}

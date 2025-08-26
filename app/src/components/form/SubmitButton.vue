@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="loading"
-    class="w-full h-full bg-stone-900/60 absolute left-0 bottom-0 flex justify-center items-center z-500"
+    class="w-full h-[105vh] overflow-y-scroll bg-stone-900/60 absolute left-0 bottom-0 flex justify-center items-center z-500"
   >
     <Transition>
       <FormLoader />
@@ -10,15 +10,24 @@
   <AppButton
     type="submit"
     class="text-app-dark rounded-lg font-medium bg-app-orange/90 dark:text-white"
+    :disabled="loading || diabaled"
+    :class="{
+      'opacity-50 cursor-not-allowed': loading || diabaled,
+    }"
   >
-    Continue
+    {{ text || "Continue" }}
   </AppButton>
 </template>
 
 <script setup lang="ts">
-  import AppButton from '../button/AppButton.vue';
-  import FormLoader from './FormLoader.vue';
-  defineProps({
-    loading: Boolean,
-  });
+import AppButton from "../button/AppButton.vue";
+import FormLoader from "./FormLoader.vue";
+defineProps({
+  loading: Boolean,
+  diabaled: Boolean,
+  text: {
+    type: String,
+    default: "Continue",
+  },
+});
 </script>

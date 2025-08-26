@@ -1,24 +1,24 @@
 <template>
-  <div
-    class="px-8 py-2 relative flex flex-col h-screen justify-center items-center w-screen layout"
-  >
-    <img src="/add-file-2.svg" alt="" class="h-[50vh]" />
+  <div class="relative flex flex-col h-screen max-w-screen walkthrough_layout">
+    <img src="../../assets/illustrations/upload.svg" alt="" class="h-[50vh]" />
     <h1
-      class="text-2xl mt-8 font-extrabold leading-loose text-center dark:text-white/70 w-[90%]"
+      class="text-2xl mt-2 font-extrabold leading-loose text-center dark:text-white/70 w-[90%]"
       style="line-height: 20px; font-weight: 800"
     >
       Upload document
     </h1>
-    <p class="text-center text-150 w-[90%]">
+    <p class="text-center text-150 text-gray-400">
       Upload a new PDF document to our high frequency servers
     </p>
 
-  <SensationalTint class="absolute inset-x-2 bottom-1 -z-10 transform-gpu overflow-hidden blur-3xl opacity-30 " />
+    <SensationalTint
+      class="absolute inset-x-2 bottom-1 -z-10 transform-gpu overflow-hidden blur-3xl opacity-30"
+    />
 
-    <div class="flex justify-between w-full mt-8 absolute px-8 bottom-7">
+    <div class="flex justify-between w-full mt-24 absolute px-8 bottom-7">
       <RouterLink
         :to="{ name: 'Login' }"
-        class="text-app-dark dark:text-gray-400 font-medium bg-transparent rounded-lg py-4 text-center hover:animate-pulse h-fit"
+        class="text-gray-400 dark:text-gray-400 font-medium bg-transparent rounded-lg py-4 text-center hover:animate-pulse h-fit"
       >
         Skip
       </RouterLink>

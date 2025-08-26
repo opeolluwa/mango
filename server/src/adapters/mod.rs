@@ -9,3 +9,4 @@ pub mod pagination;
 pub mod playlist;
 pub mod repository;
 pub mod users;
+pub mod profile;

@@ -22,9 +22,11 @@ where
 #[derive(Debug, Error)]
 pub enum DbError {
     #[error("Database error: {0}")]
-    Database(String),
+    OperationFailed(String),
     #[error("Record not found")]
     NotFound,
     #[error("Failed to execute")]
     QueryFailed,
+    #[error(transparent)]
+    SqlxError(#[from] sqlx::Error),
 }

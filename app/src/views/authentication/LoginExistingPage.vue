@@ -6,7 +6,7 @@
     />
 
     <AuthScreenHeaderText
-      >Welcome back, {{ cachedUser?.firstName }}!</AuthScreenHeaderText
+      >Welcome back, {{ cachedUser?.firstName.trim() }}!</AuthScreenHeaderText
     >
     <p class="small text-gray-400">Login with your password to continue</p>
     <ErrorOutlet v-if="formSubmitError">{{ formSubmitError }}</ErrorOutlet>
@@ -39,19 +39,18 @@
 </template>
 
 <script lang="ts" setup>
-import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
-import { useRouter } from "vue-router";
-import SubmitButton from "../../components/form/SubmitButton.vue";
-import { onBeforeMount, ref } from "vue";
-import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
-import { useCachedUserStore } from "../../stores/cachedUser";
-import { CachedUser } from "../../../src-tauri/bindings/CachedUser";
-import { useUserInformation } from "../../stores/user";
-import axios from "axios";
-import * as yup from "yup";
 import { useForm } from "vee-validate";
+import { onBeforeMount, ref } from "vue";
+import { useRouter } from "vue-router";
+import * as yup from "yup";
+import { CachedUser } from "../../../src-tauri/bindings/CachedUser";
+import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
+import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
+import SubmitButton from "../../components/form/SubmitButton.vue";
+import { useLogin } from "../../composibles/useLogin";
+import { useCachedUserStore } from "../../stores/cachedUser";
 
 const router = useRouter();
 
@@ -64,45 +63,29 @@ const { defineField, errors, handleSubmit } = useForm({
 });
 
 const cachedUserStore = useCachedUserStore();
-const userStore = useUserInformation();
-
 const cachedUser = ref<CachedUser>();
 
 const processingRequest = ref(false);
 const [password, passwordProps] = defineField("password");
 const formSubmitError = ref<string | null>(null);
-
 const submitForm = handleSubmit(async (values) => {
+  formSubmitError.value = null;
+  processingRequest.value = true;
+
   try {
-    const { password } = values;
-    processingRequest.value = true;
-    console.log({ email: cachedUser.value?.email, password });
-    const response = await axios.post(
-      "/auth/login",
-      { email: cachedUser.value?.email, password },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (response.status !== 200) {
-      formSubmitError.value = "Failed to login. Please try again";
-    }
-    const token = response.data.data.accessToken;
-    const userInformation = await userStore.fetchUserInformation(token);
-
-    await cachedUserStore.cacheUserData({
-      email: userInformation.email,
-      firstName: userInformation.firstName,
-      lastName: userInformation.lastName,
-      avatarUrl: userInformation.profilePicture,
+    const { success, message } = await useLogin({
+      email: String(cachedUser.value?.email),
+      password: values.password,
     });
-    router.push({ name: "Home" });
+    if (success) {
+      router.push({ name: "Home" });
+    } else {
+      formSubmitError.value = message;
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    formSubmitError.value = error.response.data.message;
+  } catch (err: any) {
+    formSubmitError.value =
+      err.message || "Something went wrong. Please try again.";
   } finally {
     processingRequest.value = false;
   }

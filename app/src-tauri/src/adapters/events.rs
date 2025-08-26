@@ -6,11 +6,11 @@ use ts_rs::TS;
 #[ts(export)]
 pub enum Events {
     #[serde(rename = "processing-audio")]
-    ProcessingAudio,
+    Processing,
     #[serde(rename = "finished-processing-audio")]
-    FinishedProcessingAudio,
+    FinishedProcessing,
     #[serde(rename = "currently-playing-audio")]
-    CurrentlyPlayingAudio,
+    CurrentlyPlaying,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]

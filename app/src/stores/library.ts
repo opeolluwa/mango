@@ -1,31 +1,25 @@
-import {invoke} from "@tauri-apps/api/core";
-import {defineStore} from "pinia";
-import {type AudioLibrary} from "../../src-tauri/bindings/AudioLibrary";
-import {AudioBook} from "../../src-tauri/bindings/AudioBook";
-
+import { defineStore } from "pinia";
+import api from "../plugins/api";
+import { AudioBookEntity } from "../types/audioBook";
 
 interface State {
-    audioLibrary: AudioLibrary;
-    audioBooks: AudioBook[];
-    isProcessingPdf: boolean;
-
+  audioBooks: AudioBookEntity[];
+//   stats: 
 }
 
-export const useAudioBookLibrary = defineStore("musicLibrary", {
-    state: (): State => ({
-        audioLibrary: {} as AudioLibrary,
-        audioBooks: [] as AudioBook[],
-        isProcessingPdf: false,
-    }),
-    actions: {
-        async loadMusicLibrary() {
-            const library: AudioLibrary = await invoke("read_library");
-            this.audioLibrary = library;
-            this.audioBooks = library.audioBooks
-            console.log({lib: this.audioLibrary});
-        },
+export const useBookStore = defineStore("book_store", {
+  state: (): State => ({
+    audioBooks: [],
+    
+  }),
+  actions: {
+    async fetchBooks(): Promise<AudioBookEntity[]> {
+      const response = await api.get("/books");
+      this.audioBooks = response.data.data.data;
+      console.log(JSON.stringify(this.audioBooks, null, 2));
+      return this.audioBooks;
     },
-    getters: {
-        // processingPdf: (state) => state.isProcessingPdf,
-    },
+  },
+  getters: {},
+  persist: true,
 });

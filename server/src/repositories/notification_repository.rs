@@ -26,16 +26,23 @@ pub trait NotificationRepositoryExt {
         &self,
         notification: &CreateNotification,
     ) -> impl std::future::Future<Output = Result<Uuid, RepositoryError>> + Send;
+
     fn mark_read(
         &self,
         user_identifier: &Uuid,
         notification_identifier: &Uuid,
     ) -> impl std::future::Future<Output = Result<(), RepositoryError>> + Send;
+
     fn fetch_all(
         &self,
         user_identifier: &Uuid,
         pagination: PaginationParams,
     ) -> impl std::future::Future<Output = Result<Vec<Notification>, RepositoryError>> + Send;
+
+    fn fetch_one(
+        &self,
+        notification_identifier: &Uuid,
+    ) -> impl std::future::Future<Output = Option<Notification>> + Send;
 }
 
 impl NotificationRepositoryExt for NotificationRepository {
@@ -86,5 +93,16 @@ impl NotificationRepositoryExt for NotificationRepository {
             .map_err(RepositoryError::SqlxError)?;
 
         Ok(())
+    }
+
+    async fn fetch_one(&self, notification_identifier: &Uuid) -> Option<Notification> {
+        
+        sqlx::query_as::<_, Notification>("SELECT * FROM notifications WHERE identifier = $1")
+                .bind(notification_identifier)
+                .fetch_optional(self.pool.as_ref())
+                .await
+                .map_err(RepositoryError::SqlxError)
+                .ok()
+                .flatten()
     }
 }

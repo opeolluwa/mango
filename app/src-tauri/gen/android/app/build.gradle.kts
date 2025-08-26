@@ -1,9 +1,11 @@
 import java.util.Properties
 import java.io.FileInputStream
 
+
 val keyPropertiesFile = rootProject.file("key.properties")
 val keyProperties = Properties()
 keyProperties.load(FileInputStream(keyPropertiesFile))
+
 
 plugins {
     id("com.android.application")
@@ -18,18 +20,19 @@ val tauriProperties = Properties().apply {
     }
 }
 
+
 android {
-    compileSdk = 34
-    namespace = "com.eckko.app"
+    compileSdk = 36
+    namespace = "com.mango.app"
     defaultConfig {
         manifestPlaceholders["usesCleartextTraffic"] = "false"
-        applicationId = "com.eckko.app"
+        applicationId = "com.mango.app"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 36
         versionCode = tauriProperties.getProperty("tauri.android.versionCode", "1").toInt()
         versionName = tauriProperties.getProperty("tauri.android.versionName", "1.0")
     }
-     signingConfigs {
+    signingConfigs {
      create("release") {
             keyAlias = keyProperties["keyAlias"] as String
             keyPassword = keyProperties["keyPassword"] as String
@@ -37,7 +40,6 @@ android {
             storePassword = keyProperties["storePassword"] as String
         }
 
-        
     buildTypes {
         getByName("debug") {
             manifestPlaceholders["usesCleartextTraffic"] = "true"
@@ -51,7 +53,7 @@ android {
             }
         }
         getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
+           signingConfig = signingConfigs.getByName("release")
         }
     }
     kotlinOptions {
@@ -67,13 +69,13 @@ rust {
 }
 
 dependencies {
-    implementation("androidx.webkit:webkit:1.6.1")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.8.0")
+    implementation("androidx.webkit:webkit:1.14.0")
+    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("androidx.activity:activity-ktx:1.10.1")
+    implementation("com.google.android.material:material:1.12.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.4")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
 }
-
 }
 apply(from = "tauri.build.gradle.kts")

@@ -33,7 +33,6 @@ services:
   postgres:
     image: postgres:15-alpine 
     restart: always
-    # container_name: postgres
     environment:
       - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
@@ -43,7 +42,7 @@ services:
     networks:
       - internal
     volumes:
-      - postgres-data:/data
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
       interval: 10s
@@ -64,10 +63,10 @@ services:
         condition: service_healthy
     networks:
       - internal
-  rabbitmq:
-    image: bitnami/rabbitmq:latest
-    networks:
-      - internal
+  # rabbitmq:
+  #   image: bitnami/rabbitmq:latest
+  #   networks:
+  #     - internal
   redis:
     image: redis:latest
     container_name: redis
@@ -82,17 +81,17 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  mailtutan: 
-    image: mailtutan/mailtutan:latest 
-    ports:
-      - 1080:1080
-      - 1025:1025 
-    environment:
-      - SMTP_AUTH_USERNAME=${SMTP_AUTH_USERNAME}
-      - SMTP_AUTH_PASSWORD=${SMTP_AUTH_PASSWORD}
-    platform: linux/amd64
-    networks:
-      - internal
+  # mailtutan: 
+  #   image: mailtutan/mailtutan:latest 
+  #   ports:
+  #     - 1080:1080
+  #     - 1025:1025 
+  #   environment:
+  #     - SMTP_AUTH_USERNAME=${SMTP_AUTH_USERNAME}
+  #     - SMTP_AUTH_PASSWORD=${SMTP_AUTH_PASSWORD}
+  #   platform: linux/amd64
+  #   networks:
+  #     - internal
 
 volumes:
   cargo-target:
