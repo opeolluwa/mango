@@ -1,6 +1,12 @@
 import java.util.Properties
 import java.io.FileInputStream
 
+
+val keyPropertiesFile = rootProject.file("key.properties")
+val keyProperties = Properties()
+keyProperties.load(FileInputStream(keyPropertiesFile))
+
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -13,10 +19,6 @@ val tauriProperties = Properties().apply {
         propFile.inputStream().use { load(it) }
     }
 }
-
-val keyPropertiesFile = rootProject.file("key.properties")
-val keyProperties = Properties()
-keyProperties.load(FileInputStream(keyPropertiesFile))
 
 
 android {
@@ -51,12 +53,7 @@ android {
             }
         }
         getByName("release") {
-            isMinifyEnabled = true
-            proguardFiles(
-                *fileTree(".") { include("**/*.pro") }
-                    .plus(getDefaultProguardFile("proguard-android-optimize.txt"))
-                    .toList().toTypedArray()
-            )
+           signingConfig = signingConfigs.getByName("release")
         }
     }
     kotlinOptions {
