@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 use validator::Validate;
 
 use crate::adapters::jwt::Claims;
@@ -86,4 +87,13 @@ pub struct OnboardingRequest {
     pub first_name: String,
     #[validate(length(min = 1, message = "last name cannot be empty "))]
     pub last_name: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Validate, TS)]
+#[serde(rename_all = "camelCase")]
+#[ts(export, export_to = "updatePassword.d.ts")]
+pub struct ChangePasswordRequest {
+    pub current_password: String,
+    pub new_password: String,
+    pub confirm_password: String,
 }

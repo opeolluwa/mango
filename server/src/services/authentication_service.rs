@@ -3,6 +3,7 @@ use std::time::Duration;
 use sqlx::{Pool, Postgres};
 use uuid::Uuid;
 
+use crate::adapters::authentication::ChangePasswordRequest;
 use crate::adapters::authentication::CreateUserResponse;
 use crate::adapters::authentication::OnboardingRequest;
 use crate::adapters::authentication::VerifyAccountRequest;
@@ -100,6 +101,12 @@ pub trait AuthenticationServiceTrait {
         claims: &Claims,
         request: &VerifyAccountRequest,
     ) -> impl std::future::Future<Output = Result<VerifyAccountResponse, ServiceError>> + Send;
+
+    fn change_password(
+        &self,
+        request: &ChangePasswordRequest,
+        claims: &Claims,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 }
 
 impl AuthenticationServiceTrait for AuthenticationService {
@@ -370,5 +377,38 @@ impl AuthenticationServiceTrait for AuthenticationService {
         let token = self.validate_otp(claims, request).await?;
 
         Ok(VerifyAccountResponse { token })
+    }
+
+    async fn change_password(
+        &self,
+        request: &ChangePasswordRequest,
+        claims: &Claims,
+    ) -> Result<(), ServiceError> {
+        let Some(user) = self
+            .user_repository
+            .find_by_identifier(&claims.user_identifier)
+            .await
+        else {
+            return Err(ServiceError::AuthenticationError(
+                AuthenticationError::InvalidToken,
+            ));
+        };
+
+        let valid_password = self
+            .user_helper_service
+            .validate_password(&request.current_password, &user.password)?;
+        if !valid_password {
+            return Err(AuthenticationError::WrongCredentials.into());
+        }
+
+        let new_password_hash = self
+            .user_helper_service
+            .hash_password(&request.new_password)?;
+
+        self.user_repository
+            .update_password(&claims.user_identifier, &new_password_hash)
+            .await?;
+
+        Ok(())
     }
 }
