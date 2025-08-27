@@ -50,11 +50,11 @@ import { useForm } from "vee-validate";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import * as yup from "yup";
-import axios from "../../plugins/axios";
 import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
 import SubmitButton from "../../components/form/SubmitButton.vue";
+import { useForgottenPassword } from "../../composibles/useForgottenPassword";
 
 const validationSchema = yup.object({
   email: yup.string().required().email(),
@@ -72,25 +72,11 @@ const processingRequest = ref(false);
 
 const submitForm = handleSubmit(async (values) => {
   processingRequest.value = true;
-
-  try {
-    const response = await axios.post("/auth/forgotten-password", {
-      email: values.email,
-      password: values.password,
-    });
-
-    if (response.status === 200) {
-      const token = response.data.data.token;
-      router.push({ name: "VerifyAccountRecovery", query: { token } });
-    } else {
-      formSubmitError.value = response.data.message || "Failed to create user";
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    console.log(error);
-    // formSubmitError.value = error.response.data.message;
-  } finally {
+  const { email } = values;
+  await useForgottenPassword(email)
+  
+  .finally(() => {
     processingRequest.value = false;
-  }
+  });
 });
 </script>
