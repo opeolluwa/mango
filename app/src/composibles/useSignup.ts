@@ -1,22 +1,15 @@
 import axios from "axios";
-import { useRouter } from "vue-router";
-
+import { message } from "@tauri-apps/plugin-dialog";
+import router from "../router";
 interface SignupPayload {
   email: string;
   password: string;
 }
 
-interface SignupResult {
-  success: boolean;
-  message: string;
-  token?: string;
-}
-
 export const useSignup = async ({
   email,
   password,
-}: SignupPayload): Promise<SignupResult> => {
-  const router = useRouter();
+}: SignupPayload): Promise<void> => {
   try {
     const { data, status } = await axios.post(
       "/auth/signup",
@@ -25,27 +18,27 @@ export const useSignup = async ({
     );
 
     if (status !== 201 || !data?.data?.token) {
-      return {
-        success: false,
-        message: data?.message || "Failed to create user",
-      };
+      const errorMessage = data?.data?.message || "Failed to create user";
+      await message(errorMessage, { title: "Sign up failed", kind: "error" });
+      return;
     }
 
     const token = data.data.token;
 
-    // Navigate to confirm OTP page
     router.push({ name: "ConfirmOtp", query: { token } });
-
-    return { success: true, message: "Signup successful", token };
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      return {
-        success: false,
-        message:
-          error.response?.data?.message ||
-          "An unexpected error occurred during signup.",
-      };
+      await message(
+        error.response?.data?.message ||
+          "An unexpected error occurred during sign up.",
+        { title: "sign up failed", kind: "error" }
+      );
+      return;
     }
-    return { success: false, message: "Something went wrong." };
+    await message("Something went wrong.", {
+      title: "Sign up failed",
+      kind: "error",
+    });
+    return;
   }
 };

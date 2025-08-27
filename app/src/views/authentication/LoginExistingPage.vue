@@ -72,23 +72,17 @@ const submitForm = handleSubmit(async (values) => {
   formSubmitError.value = null;
   processingRequest.value = true;
 
-  try {
-    const { success, message } = await useLogin({
-      email: String(cachedUser.value?.email),
-      password: values.password,
+  await useLogin({
+    email: String(cachedUser.value?.email),
+    password: values.password,
+  })
+    .then(async () => {
+      await router.push({ name: "Home" });
+      processingRequest.value = false;
+    })
+    .finally(() => {
+      processingRequest.value = false;
     });
-    if (success) {
-      router.push({ name: "Home" });
-    } else {
-      formSubmitError.value = message;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (err: any) {
-    formSubmitError.value =
-      err.message || "Something went wrong. Please try again.";
-  } finally {
-    processingRequest.value = false;
-  }
 });
 
 onBeforeMount(async () => {

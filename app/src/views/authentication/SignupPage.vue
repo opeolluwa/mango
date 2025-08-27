@@ -70,14 +70,13 @@ import { ArrowLongLeftIcon } from "@heroicons/vue/24/solid";
 import { message } from "@tauri-apps/plugin-dialog";
 import { useForm } from "vee-validate";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import * as yup from "yup";
-import axios from "../../plugins/axios.ts";
 import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
 import SubmitButton from "../../components/form/SubmitButton.vue";
 import { useGoBack } from "../../composibles/useRouter.ts";
+import { useSignup } from "../../composibles/useSignup.ts";
 
 const validationSchema = yup.object({
   email: yup.string().required().email(),
@@ -94,7 +93,6 @@ const [password, passwordProps] = defineField("password");
 const acceptTerms = ref(true);
 const processingRequest = ref(false);
 const formSubmitError = ref("");
-const router = useRouter();
 
 const submitForm = handleSubmit(async (values) => {
   processingRequest.value = true;
@@ -108,17 +106,7 @@ const submitForm = handleSubmit(async (values) => {
       processingRequest.value = false;
       return;
     }
-    const response = await axios.post("/auth/signup", {
-      email: values.email,
-      password: values.password,
-    });
-
-    if (response.status === 201) {
-      const token = response.data.data.token;
-      router.push({ name: "ConfirmOtp", query: { token } });
-    } else {
-      formSubmitError.value = response.data.message || "Failed to create user";
-    }
+    await useSignup({ email: values.email, password: values.password });
   } catch (error) {
     console.log(error);
   } finally {

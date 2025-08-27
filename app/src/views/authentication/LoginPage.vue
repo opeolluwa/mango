@@ -95,12 +95,13 @@ const submitForm = handleSubmit(async (values) => {
   processingRequest.value = true;
 
   const { email, password } = values;
-  const { success, message } = await useLogin({ email, password });
-  if (!success) {
-    formSubmitError.value = message;
-    return;
-  }
-  await router.push({name: "Home"});
-  processingRequest.value = false;
+  await useLogin({ email, password })
+    .then(async () => {
+      await router.push({ name: "Home" });
+      processingRequest.value = false;
+    })
+    .finally(() => {
+      processingRequest.value = false;
+    });
 });
 </script>

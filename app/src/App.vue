@@ -12,7 +12,6 @@
 <script lang="ts" setup>
 import { onMounted } from "vue";
 import { RouterView } from "vue-router";
-import { ModalsContainer } from "vue-final-modal";
 
 onMounted(() => {
   const splash = document.getElementById("splashscreen");

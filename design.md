@@ -50,18 +50,5 @@ https://dribbble.com/shots/23169812-Ebook-and-Audio-Book-App-UI-Design-UIUX-Figm
 
 
 
-
-I've spend the last couple of weeks pouring out Vue, Rust and Typescript into my submission for @RevenueCat
-  shipathon.
-
-Mango let's you stream  document as audio books, share and collaborate
-
-I'm thrilled to proceed to Play's Store internal testing after so much work.
-
-
-@Vinylchi
- @VictorAdeleye_
- @HAKSOAT
- @DevEmmy_
- @thanipro
- Help retweet to your network and engage.
+notification 
+https://dribbble.com/shots/25312637-HR-Management-Navigation
