@@ -20,7 +20,7 @@ export const useForgottenPassword = async (email: string): Promise<void> => {
     }
     const token = data.data.token;
 
-    router.push({ name: "ConfirmOtp", query: { token } });
+    router.push({ name: "VerifyAccountRecovery", query: { token } });
     return;
   } catch (error: unknown) {
     console.error(error);

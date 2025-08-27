@@ -49,6 +49,9 @@
   --color-app-orange-800: oklch(32.499% 0.08923 47.471);
   --color-app-orange-900: oklch(18.017% 0.04269 58.969);
   --color-app-orange-950: oklch(7.5348% 0.01676 66.154);
+
+  /* --ui-primary: var(--color-app-orange-500); */
+
 }
 
 @media (prefers-color-scheme: light) {
@@ -78,8 +81,6 @@
 .icon {
   @apply size-5 lg:size-5 cursor-pointer hover:text-app-orange;
 }
-
-
 
 .layout {
   @apply pt-12 px-6 h-screen overflow-scroll scroll-smooth;
