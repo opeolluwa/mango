@@ -65,7 +65,7 @@ import { useGoToPreviousRoute, usePush } from "../../composibles/useRouter";
 
 const route = useRoute();
 const label = ref<string>("") || "";
-const showSideNav = ref(true);
+const showSideNav = ref(false);
 
 const toggleNav = () => {
   showSideNav.value = !showSideNav.value;

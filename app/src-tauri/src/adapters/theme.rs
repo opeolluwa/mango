@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 #[derive(Debug, Serialize, Deserialize, Clone, TS)]
-#[ts(export)]
+#[ts(export, export_to="theme.d.ts")]
 #[serde(rename_all = "camelCase")]
 pub enum Theme {
     Light,

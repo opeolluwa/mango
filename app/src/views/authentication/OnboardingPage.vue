@@ -14,7 +14,7 @@
           class="app-form-input"
           type="text"
           placeholder="firstname"
-          v-bind="firstnameAttr"
+          v-bind="firstnameProps"
         />
         <ErrorOutlet v-if="errors.firstname">{{
           errors.firstname
@@ -29,9 +29,22 @@
           class="app-form-input"
           type="text"
           placeholder="lastname"
-          v-bind="lastnameAttr"
+          v-bind="lastnameProps"
         />
         <ErrorOutlet v-if="errors.firstname">{{ errors.lastname }}</ErrorOutlet>
+      </div>
+
+      <div class="flex flex-col w-full">
+        <AppFormLabel for="username" text="Username" />
+        <input
+          id="username"
+          v-model="username"
+          class="app-form-input"
+          type="text"
+          placeholder="username"
+          v-bind="usernameProps"
+        />
+        <ErrorOutlet v-if="errors.username">{{ errors.username }}</ErrorOutlet>
       </div>
 
       <SubmitButton :loading="processingRequest" />
@@ -50,12 +63,15 @@ import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
 import SubmitButton from "../../components/form/SubmitButton.vue";
 import { useCachedUserStore } from "../../stores/cachedUser";
-import { UserInformation } from "../../types/userProfile";
+
 import { useUserInformationStore } from "../../stores/user";
+import { UserProfile } from "../../types/userProfile";
+import { message } from "@tauri-apps/plugin-dialog";
 
 const formSchema = yup.object({
   firstname: yup.string().required(),
   lastname: yup.string().required(),
+  username: yup.string().required(),
 });
 
 const { defineField, errors, handleSubmit } = useForm({
@@ -68,20 +84,27 @@ const route = useRoute();
 const cachedUserStore = useCachedUserStore();
 const userStore = useUserInformationStore();
 
-const [firstname, firstnameAttr] = defineField("firstname");
-const [lastname, lastnameAttr] = defineField("lastname");
+const [firstname, firstnameProps] = defineField("firstname");
+const [lastname, lastnameProps] = defineField("lastname");
+const [username, usernameProps] = defineField("username");
 
 const processingRequest = ref(false);
 const formSubmitError = ref("");
 
+const refreshData = (profile: UserProfile) => {
+  firstname.value = profile.firstName;
+  lastname.value = profile.lastName;
+  username.value = profile.username;
+};
+
 const onSubmit = handleSubmit(async (values) => {
   processingRequest.value = true;
   try {
-    const { firstname: firstName, lastname: lastName } = values;
+    const { firstname: firstName, lastname: lastName, username } = values;
     const token = route.query["token"];
     const response = await axios.post(
       "/auth/onboard",
-      { firstName, lastName },
+      { firstName, lastName, username },
       {
         headers: {
           "Content-Type": "application/json",
@@ -90,21 +113,25 @@ const onSubmit = handleSubmit(async (values) => {
       }
     );
 
-    if (response.status === 200) {
-      const userProfile: UserInformation = await userStore.fetchUserInformation(
-        token as string
-      );
-      cachedUserStore.cacheUserData({
-        firstName: userProfile.firstName,
-        lastName: lastName.lastname,
-        email: userProfile.email,
-        avatarUrl: userProfile.profilePicture,
-        // identifier: userProfile.identifier //TODO:
+    if (response.status !== 200) {
+      await message(response.data.data?.message, {
+        kind: "error",
+        title: "Request failed",
       });
-      router.replace({ name: "Home" });
-    } else {
-      formSubmitError.value = response.data.error || "Failed to onboard user";
     }
+
+    const userProfile: UserProfile = response.data.data;
+
+    userStore.updateProfile(userProfile);
+    refreshData(userProfile);
+
+    cachedUserStore.cacheUserData({
+      firstName: String(userProfile.firstName),
+      lastName: lastName.lastname,
+      email: userProfile.email,
+      avatarUrl: String(userProfile.profilePicture),
+    });
+    router.replace({ name: "Home" });
   } catch (error) {
     console.log(error);
   } finally {

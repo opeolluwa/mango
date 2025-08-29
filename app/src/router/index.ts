@@ -186,7 +186,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = useTokenStore().accessToken;
   if (to.path.startsWith("/app") && !token) {
-    next({ name: "LoginExisting" });
+    next({ name: "ExistingUserLogin" });
     return;
   }
   if (from.path.startsWith("/app") && token && to.path.startsWith("/auth")) {

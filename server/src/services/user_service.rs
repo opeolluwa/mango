@@ -10,7 +10,7 @@ use crate::adapters::profile::UploadProfilePictureRequest;
 use crate::config::AppConfig;
 
 use crate::adapters::authentication::SetNewPasswordRequest;
-use crate::adapters::users::{PartialUserProfile, UserDto};
+use crate::adapters::users::{PartialUserProfile, UserProfile};
 use crate::errors::service_error::ServiceError;
 use crate::errors::user_service_error::UserServiceError;
 use crate::repositories::user_repository::{UserRepository, UserRepositoryTrait};
@@ -36,7 +36,7 @@ pub(crate) trait UserServiceTrait {
     async fn retrieve_information(
         &self,
         user_identifier: Uuid,
-    ) -> Result<UserDto, UserServiceError>;
+    ) -> Result<UserProfile, UserServiceError>;
 
     async fn update_password(
         &self,
@@ -62,7 +62,7 @@ impl UserServiceTrait for UserService {
     async fn retrieve_information(
         &self,
         user_identifier: Uuid,
-    ) -> Result<UserDto, UserServiceError> {
+    ) -> Result<UserProfile, UserServiceError> {
         self.user_repository
             .retrieve_information(&user_identifier)
             .await

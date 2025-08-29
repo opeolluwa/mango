@@ -5,7 +5,7 @@ use ts_rs::TS;
 use uuid::Uuid;
 
 #[derive(Debug, Serialize, Deserialize, Clone, TS, FromRow, Default)]
-#[ts(export)]
+#[ts(export, export_to="cachedUser.d.ts")]
 #[serde(rename_all = "camelCase")]
 pub struct CachedUser {
     #[ts(type = "string")]

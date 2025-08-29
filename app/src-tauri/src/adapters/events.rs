@@ -1,9 +1,9 @@
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-#[derive(Debug, Serialize, Deserialize, Clone, TS)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "kebab-case")]
-#[ts(export)]
+
 pub enum Events {
     #[serde(rename = "processing-audio")]
     Processing,
@@ -15,8 +15,6 @@ pub enum Events {
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 #[serde(rename_all = "camelCase")]
-#[derive(TS)]
-#[ts(export)]
 pub struct CurrentAudioMetadata {
     pub volume: f32,
     pub speed: f32,
@@ -25,8 +23,6 @@ pub struct CurrentAudioMetadata {
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 #[serde(rename_all = "camelCase")]
-#[derive(TS)]
-#[ts(export)]
 pub struct AudioSynthesisEvent {
     pub file_name: String,
     pub audio_src: String,

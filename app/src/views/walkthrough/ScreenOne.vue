@@ -36,7 +36,7 @@ import SensationalTint from "@/components/uiBlocks/SensationalTint.vue";
 import { invoke } from "@tauri-apps/api/core";
 import { onMounted, ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
-import { AppSettings } from "../../../src-tauri/bindings/AppSettings";
+import { AppSettings } from "../../types/appSettings";
 
 const settings = ref<AppSettings>();
 const router = useRouter();

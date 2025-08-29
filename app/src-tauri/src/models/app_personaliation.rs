@@ -4,7 +4,7 @@ use sqlx::{FromRow, Pool, Sqlite};
 use ts_rs::TS;
 
 #[derive(Debug, Serialize, Deserialize, Clone, TS, FromRow, Default)]
-#[ts(export)]
+#[ts(export, export_to="appPersonalizaton.d.ts")]
 #[serde(rename_all = "camelCase")]
 pub struct AppPersonalization {
     pub theme: Option<String>,
