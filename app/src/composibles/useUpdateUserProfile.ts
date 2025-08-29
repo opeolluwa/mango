@@ -1,20 +1,17 @@
 import api from "../plugins/api";
-
-interface ProfileUpdate {
-  email?: string;
-  firstName?: string;
-  lastName?: string;
-}
+import { PartialUserProfile } from "../types/partialUserProfile";
 
 export const useUpdateUserProfile = async ({
   email,
   firstName,
   lastName,
-}: ProfileUpdate) => {
+  username
+}: PartialUserProfile) => {
   const response = await api.put("/user/profile", {
     email,
     firstName,
     lastName,
+    username
   });
 
   const updatedProfile = response.data.data;

@@ -1,19 +1,12 @@
 import { invoke } from "@tauri-apps/api/core";
 import { defineStore } from "pinia";
-import { type CachedUser } from "../../src-tauri/bindings/CachedUser";
-import { type CreateCachedUser } from "../../src-tauri/bindings/CreateCachedUser";
+import { CachedUser } from "../types/cachedUser";
+import { CreateCachedUser } from "../types/createCachedUSer";
 
-type Store = CachedUser;
-export type UserCache = CreateCachedUser;
+
 
 export const useCachedUserStore = defineStore("cached_user", {
-  state: (): Store => ({
-    identifier: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    avatarUrl: "",
-  }),
+  state: (): CachedUser => ({} as CachedUser),
 
   getters: {
     firstName: (state) => state.firstName,
@@ -34,7 +27,7 @@ export const useCachedUserStore = defineStore("cached_user", {
   },
 
   actions: {
-    async cacheUserData(user: UserCache) {
+    async cacheUserData(user: CreateCachedUser) {
       try {
         await invoke("set_cached_user", { user });
       } catch (error) {

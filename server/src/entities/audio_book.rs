@@ -7,7 +7,7 @@ use uuid::Uuid;
 
 #[derive(Debug, Serialize, Deserialize, FromRow, Default, TS)]
 #[serde(rename_all = "camelCase")]
-#[ts(export, export_to = "audioBook.d.ts")]
+#[ts(export, export_to = "audioBookEntity.d.ts")]
 pub struct AudioBookEntity {
     #[ts(type = "string")]
     pub identifier: Uuid,

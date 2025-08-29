@@ -24,18 +24,18 @@ download-models:
 #     keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
 
 
-[working-directory:'server']
+[working-directory:'.']
 export-server-types:
-    cargo test
-    cp "src/bindings/*.ts" "../app/src/types"
+    cargo test --manifest-path server/Cargo.toml
+    cargo test --manifest-path app/src-tauri/Cargo.toml
+
+    cp -r "server/bindings/" "app/src/types/"
+    cp -r "app/src-tauri//bindings/" "app/src/types/"
+    rm -r "app/src-tauri//bindings/"
+    rm -r "server/bindings/"
 
 
 
-[working-directory:'app/src-tauri']
-export-tauri-types:
-    cargo test
-    cp "src/bindings/*.ts" "../src/types"
 
 export-types:
     @just export-server-types
-    @just export-tauri-types

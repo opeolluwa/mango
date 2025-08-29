@@ -3,7 +3,7 @@ use axum_typed_multipart::TypedMultipart;
 
 use crate::{
     adapters::{
-        api_request::AuthenticatedRequest, api_response::{ApiResponse, ApiResponseBuilder}, authentication::SetNewPasswordRequest, jwt::Claims, profile::UploadProfilePictureRequest, users::{PartialUserProfile, UserDto}
+        api_request::AuthenticatedRequest, api_response::{ApiResponse, ApiResponseBuilder}, authentication::SetNewPasswordRequest, jwt::Claims, profile::UploadProfilePictureRequest, users::{PartialUserProfile, UserProfile}
     },
     errors::{service_error::ServiceError, user_service_error::UserServiceError},
     services::user_service::UserService,
@@ -14,7 +14,7 @@ use crate::services::user_service::UserServiceTrait;
 pub async fn retrieve_information(
     State(user_service): State<UserService>,
     claims: Claims,
-) -> Result<ApiResponse<UserDto>, UserServiceError> {
+) -> Result<ApiResponse<UserProfile>, UserServiceError> {
     let user_data = user_service
         .retrieve_information(claims.user_identifier)
         .await?;
@@ -42,7 +42,7 @@ pub async fn update_profile_picture(
     State(user_service): State<UserService>,
     claims: Claims,
     request: TypedMultipart<UploadProfilePictureRequest>,
-) -> Result<ApiResponse<UserDto>, ServiceError> {
+) -> Result<ApiResponse<UserProfile>, ServiceError> {
     user_service
         .update_profile_picture(request, &claims.user_identifier)
         .await?;
@@ -60,7 +60,7 @@ pub async fn update_profile_picture(
 pub async fn update_profile(
     State(user_service): State<UserService>,
     AuthenticatedRequest { data, claims }: AuthenticatedRequest<PartialUserProfile>,
-) -> Result<ApiResponse<UserDto>, ServiceError> {
+) -> Result<ApiResponse<UserProfile>, ServiceError> {
     user_service
         .update_profile(&data, &claims.user_identifier)
         .await?;

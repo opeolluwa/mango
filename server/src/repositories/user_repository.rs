@@ -7,7 +7,7 @@ use crate::{
     adapters::{
         authentication::{CreateUserRequest, OnboardingRequest},
         repository::DatabaseInsertResult,
-        users::{PartialUserProfile, UserDto},
+        users::{PartialUserProfile, UserProfile},
     },
     entities::user::UserEntity,
     errors::{
@@ -59,7 +59,7 @@ pub trait UserRepositoryTrait {
     fn retrieve_information(
         &self,
         identifier: &Uuid,
-    ) -> impl std::future::Future<Output = Result<UserDto, UserServiceError>> + Send;
+    ) -> impl std::future::Future<Output = Result<UserProfile, UserServiceError>> + Send;
 
     fn set_avatar_url(
         &self,
@@ -142,8 +142,11 @@ impl UserRepositoryTrait for UserRepository {
 
         Ok(())
     }
-    async fn retrieve_information(&self, identifier: &Uuid) -> Result<UserDto, UserServiceError> {
-        sqlx::query_as::<_, UserDto>(r#"SELECT * FROM users  WHERE identifier = $1"#)
+    async fn retrieve_information(
+        &self,
+        identifier: &Uuid,
+    ) -> Result<UserProfile, UserServiceError> {
+        sqlx::query_as::<_, UserProfile>(r#"SELECT * FROM users  WHERE identifier = $1"#)
             .bind(identifier)
             .fetch_one(self.pool.as_ref())
             .await
@@ -171,6 +174,7 @@ impl UserRepositoryTrait for UserRepository {
             email,
             first_name,
             last_name,
+            username,
         }: &PartialUserProfile,
         user_identifier: &Uuid,
     ) -> Result<(), ServiceError> {
@@ -181,7 +185,7 @@ impl UserRepositoryTrait for UserRepository {
             .map_err(ServiceError::from)?;
 
         sqlx::query(
-            r#"UPDATE users SET email = $1, first_name = $2, last_name = $3 WHERE identifier = $4"#,
+            r#"UPDATE users SET email = $1, first_name = $2, last_name = $3, username = $4 WHERE identifier = $5"#,
         )
         .bind(email.clone().unwrap_or_else(|| user.email.clone()))
         .bind(
@@ -193,6 +197,11 @@ impl UserRepositoryTrait for UserRepository {
             last_name
                 .clone()
                 .unwrap_or_else(|| user.last_name.clone().unwrap()),
+        )
+         .bind(
+            username
+                .clone()
+                .unwrap_or_else(|| user.username.clone().unwrap()),
         )
         .bind(user_identifier)
         .execute(self.pool.as_ref())
@@ -207,9 +216,10 @@ impl UserRepositoryTrait for UserRepository {
         user_identifier: &Uuid,
         request: &OnboardingRequest,
     ) -> Result<(), ServiceError> {
-        sqlx::query(r#"UPDATE users SET first_name = $1, last_name =$2  WHERE identifier = $3"#)
+        sqlx::query(r#"UPDATE users SET first_name = $1, last_name =$2 , username = $3 WHERE identifier = $4"#)
             .bind(&request.first_name)
             .bind(&request.last_name)
+            .bind(&request.username)
             .bind(user_identifier)
             .execute(self.pool.as_ref())
             .await

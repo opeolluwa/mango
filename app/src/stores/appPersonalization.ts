@@ -1,13 +1,11 @@
 import { defineStore } from "pinia";
-import { type AppPersonalization } from "../../src-tauri/bindings/AppPersonalization";
+import { type AppPersonalization } from "../types/appPersonalizaton";
 
-interface Store extends AppPersonalization {}
 
 export const useAppPersonalization = defineStore("app_peronalization", {
-  state: (): Store => ({
+  state: (): AppPersonalization => ({
     theme: null,
     language: null,
     preferredVoice: null,
   }),
-  
 });

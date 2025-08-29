@@ -6,6 +6,11 @@
 
   <form class="mt-6 flex flex-col gap-8" @submit.prevent="submitForm">
     <div class="flex flex-col w-full">
+      <div class="flex flex-col w-full">
+        <AppFormLabel for="firstname" text="Email" />
+        <input v-model="email" class="app-form-input" type="email" />
+      </div>
+
       <AppFormLabel for="firstname" text="First name" />
       <input v-model="firstName" class="app-form-input" type="text" />
     </div>
@@ -15,8 +20,8 @@
     </div>
 
     <div class="flex flex-col w-full">
-      <AppFormLabel for="firstname" text="Email" />
-      <input v-model="email" class="app-form-input" type="email" />
+      <AppFormLabel for="username" text="Username" />
+      <input v-model="username" class="app-form-input" type="text" />
     </div>
 
     <SubmitButton
@@ -41,13 +46,15 @@ const fullName = computed(() => userInformationStore.fullName);
 const email = ref(userInformationStore.email);
 const firstName = ref(userInformationStore.firstName);
 const lastName = ref(userInformationStore.lastName);
+const username = ref(userInformationStore.username);
 
 const formSubmitted = ref(false);
 const dataUnchanged = computed(() => {
   return (
     email.value === userInformationStore.email &&
     firstName.value === userInformationStore.firstName &&
-    lastName.value === userInformationStore.lastName
+    lastName.value === userInformationStore.lastName &&
+    username.value === userInformationStore.username
   );
 });
 
@@ -56,8 +63,9 @@ const submitForm = async () => {
   try {
     const updatedProfile = await useUpdateUserProfile({
       email: email.value,
-      firstName: firstName.value,
-      lastName: lastName.value,
+      firstName: firstName.value ?? "",
+      lastName: lastName.value ?? "",
+      username: username.value ?? "",
     });
 
     useUserInformationStore().$patch({
@@ -71,7 +79,6 @@ const submitForm = async () => {
       firstName: updatedProfile.firstName,
       lastName: updatedProfile.lastName,
     });
-    
   } catch (error) {
     console.error("Error updating profile:", error);
   } finally {

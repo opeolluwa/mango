@@ -3,7 +3,7 @@ use ts_rs::TS;
 
 #[derive(Serialize, TS)]
 #[serde(rename_all = "camelCase")]
-#[ts(export, export_to = "pagination.d.ts")]
+#[ts(export, export_to = "paginatedResponse.d.ts")]
 pub struct PaginatedResponse<T> {
     pub data: T,
     pub page: u32,

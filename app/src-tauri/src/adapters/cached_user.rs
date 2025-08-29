@@ -1,8 +1,9 @@
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 #[derive(Debug, Serialize, Deserialize, TS)]
-#[ts(export)]
+#[ts(export, export_to="createCachedUSer.d.ts")]
 #[serde(rename_all = "camelCase")]
+
 pub struct CreateCachedUser {
     pub first_name: Option<String>,
     pub last_name: Option<String>,

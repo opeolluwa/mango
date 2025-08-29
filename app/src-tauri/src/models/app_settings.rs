@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use ts_rs::TS;
 #[derive(Debug, Serialize, Deserialize, Clone, TS, FromRow, Default)]
-#[ts(export)]
+#[ts(export, export_to="appSettings.d.ts")]
 #[serde(rename_all = "camelCase")]
 pub struct AppSettings {
     pub app_initialized: bool,

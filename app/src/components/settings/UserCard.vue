@@ -38,7 +38,7 @@
     >
       <AvatarImage
         class="h-full w-full rounded-[inherit] object-cover"
-        :src="userInformation.profilePicture"
+        :src="userInformation.profilePicture??''"
         alt="Colm Tuite"
       />
       <AvatarFallback
@@ -131,8 +131,8 @@ const { showText, editable, avatarSize } = toRefs(props);
 const userInformation = computed(() => userInformationStore.user);
 const fullName = computed(() => userInformationStore.fullName);
 const initials = computed(() =>
-  userInformationStore.user.firstName[0].concat(
-    userInformationStore.user.lastName[0]
+  (userInformationStore.user.firstName?.[0] ?? "").concat(
+    userInformationStore.user.lastName?.[0] ?? ""
   )
 );
 

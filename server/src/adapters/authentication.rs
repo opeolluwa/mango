@@ -4,8 +4,9 @@ use validator::Validate;
 
 use crate::adapters::jwt::Claims;
 
-#[derive(Debug, Serialize, Deserialize, Validate)]
+#[derive(Debug, Serialize, Deserialize, Validate, TS)]
 #[serde(rename_all = "camelCase")]
+#[ts(export, export_to = "createUserRequest.d.ts")]
 pub struct CreateUserRequest {
     #[validate(email)]
     pub email: String,
@@ -13,8 +14,9 @@ pub struct CreateUserRequest {
     pub password: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Validate)]
+#[derive(Debug, Serialize, Deserialize, Validate, TS)]
 #[serde(rename_all = "camelCase")]
+#[ts(export, export_to = "loginRequest.d.ts")]
 pub struct LoginRequest {
     #[validate(email)]
     pub email: String,
@@ -22,8 +24,9 @@ pub struct LoginRequest {
     pub password: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Validate)]
+#[derive(Debug, Serialize, Deserialize, Validate, TS)]
 #[serde(rename_all = "camelCase")]
+#[ts(export, export_to = "forgottenPasswordRequest.d.ts")]
 pub struct ForgottenPasswordRequest {
     #[validate(email)]
     pub email: String,
@@ -87,11 +90,12 @@ pub struct OnboardingRequest {
     pub first_name: String,
     #[validate(length(min = 1, message = "last name cannot be empty "))]
     pub last_name: String,
+    pub username: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Validate, TS)]
 #[serde(rename_all = "camelCase")]
-#[ts(export, export_to = "updatePassword.d.ts")]
+#[ts(export, export_to = "changePasswordRequest.d.ts")]
 pub struct ChangePasswordRequest {
     pub current_password: String,
     pub new_password: String,

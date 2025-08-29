@@ -6,7 +6,7 @@
     />
 
     <AuthScreenHeaderText
-      >Welcome back, {{ cachedUser?.firstName.trim() }}!</AuthScreenHeaderText
+      >Welcome back, {{ cachedUser?.firstName?.trim() }}!</AuthScreenHeaderText
     >
     <p class="small text-gray-400">Login with your password to continue</p>
     <ErrorOutlet v-if="formSubmitError">{{ formSubmitError }}</ErrorOutlet>
@@ -44,13 +44,13 @@ import { useForm } from "vee-validate";
 import { onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
 import * as yup from "yup";
-import { CachedUser } from "../../../src-tauri/bindings/CachedUser";
 import AuthScreenHeaderText from "../../components/auth/AuthScreenHeaderText.vue";
 import AppFormLabel from "../../components/form/AppFormLabel.vue";
 import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
 import SubmitButton from "../../components/form/SubmitButton.vue";
 import { useLogin } from "../../composibles/useLogin";
 import { useCachedUserStore } from "../../stores/cachedUser";
+import { CachedUser } from "../../types/cachedUser";
 
 const router = useRouter();
 
