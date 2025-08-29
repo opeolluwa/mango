@@ -42,7 +42,7 @@
     </div>
   </template>
   <template v-else>
-    <AppScreenLayout>
+    <AppScreenLayout >
       <div class="flex flex-col overflow-x-hidden pb-48">
         <div class="flex justify-between">
           <div>

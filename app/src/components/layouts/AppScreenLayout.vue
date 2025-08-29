@@ -1,7 +1,7 @@
 <template>
-  <AppNavigation
-    class="fixed left-0 bottom-16 w-[70vw] z-[6000] dark:bg-app-dark bg-white hidden"
-  />
+  <Transition name="animate__slideInLeft">
+    <AppNavigation v-show="showSideNav" @click="showSideNav = false"  />
+  </Transition>
 
   <div
     class="flex gap-4 min-h-12 items-center justify-between absolute top-0 left-0 px-4 w-screen py-3 bg-white z-500 shadow-sm dark:bg-app-dark border-gray-100/50 backdrop-blur-md pt-12"
@@ -10,36 +10,14 @@
       <div
         class="flex gap-x-2 justify-between items-center align-center w-full"
       >
-        <USlideover
-          :close="{
-            color: 'primary',
-            variant: 'outline',
-            class: 'rounded-full',
-          }"
-        >
-          <Icon
-            icon="material-symbols:menu-rounded"
-            :class="['size-6 dark:text-white/90']"
-          />
-
-          <template #content>
-            <AppNavigation />
-          </template>
-        </USlideover>
-
-        <!-- <Icon
+        <Icon
           icon="material-symbols:menu-rounded"
           :class="['size-6 dark:text-white/90']"
-          @click="showSideNav != showSideNav"
-        /> -->
+          @click="toggleNav"
+        />
         <div class="flex gap-x-2 items-center justify-center">
           <RouterLink :to="{ name: '' }">
-            <UChip
-              size="3xl"
-              color="error"
-              text="5"
-
-            >
+            <UChip size="3xl" color="error" text="5">
               <UButton
                 icon="i-lucide-bell"
                 color=""
@@ -71,7 +49,7 @@
     <slot name="headerIcon" />
   </div>
 
-  <div class="mt-12 min-h-screen">
+  <div class="mt-12 min-h-screen" @click="showSideNav = false">
     <slot />
   </div>
 </template>
@@ -87,8 +65,11 @@ import { useGoToPreviousRoute, usePush } from "../../composibles/useRouter";
 
 const route = useRoute();
 const label = ref<string>("") || "";
-// const showSideNa÷v = ref(false);
+const showSideNav = ref(true);
 
+const toggleNav = () => {
+  showSideNav.value = !showSideNav.value;
+};
 watch(
   () => route.meta.label,
   (newLabel) => {
@@ -96,4 +77,6 @@ watch(
   },
   { immediate: true }
 );
+
+defineEmits(["close"]);
 </script>
