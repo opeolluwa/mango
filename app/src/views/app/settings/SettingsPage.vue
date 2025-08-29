@@ -84,7 +84,7 @@ const sections: Section[] = [
     title: "log out",
     description: "",
     icon: "material-symbols:logout",
-    isLogout: true, // New flag to identify the logout section
+    isLogout: true,
   },
 ];
 
