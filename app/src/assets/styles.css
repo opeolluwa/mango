@@ -2,7 +2,7 @@
 @import "@nuxt/ui";
 
 @plugin "@tailwindcss/typography";
-/* @plugin "daisyui"; */
+
 
 * {
   box-sizing: border-box;

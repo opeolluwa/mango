@@ -23,8 +23,6 @@ pub struct Notification {
     pub user_identifier: Uuid,
 }
 
-
-
 impl fmt::Display for Notification {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
@@ -41,4 +39,12 @@ impl fmt::Display for Notification {
             self.is_read
         )
     }
+}
+
+#[derive(Debug, Serialize, Deserialize, FromRow, Default, TS)]
+#[serde(rename_all = "camelCase")]
+#[ts(export, export_to = "paginatedNotification.d.ts")]
+pub struct PaginatedNotification {
+    pub notifications: Vec<Notification>,
+    pub total: i32,
 }

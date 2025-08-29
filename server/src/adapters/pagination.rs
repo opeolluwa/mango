@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, de::DeserializeOwned};
 use ts_rs::TS;
 
 #[derive(Serialize, TS)]
@@ -10,6 +10,21 @@ pub struct PaginatedResponse<T> {
     pub per_page: u32,
     pub total_count: u64,
     pub(crate) total_pages: u32,
+}
+
+impl<T> PaginatedResponse<T>
+where
+    T: Serialize + DeserializeOwned,
+{
+    pub fn new(data: T, params: &PaginationParams, total_count: u64) -> Self {
+        Self {
+            data,
+            page: params.page(),
+            per_page: params.per_page(),
+            total_count: total_count,
+            total_pages: (total_count / params.per_page() as u64) as u32,
+        }
+    }
 }
 
 #[derive(Deserialize, Serialize)]

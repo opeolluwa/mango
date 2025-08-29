@@ -5,7 +5,10 @@ use uuid::Uuid;
 
 use crate::{
     adapters::{notification::CreateNotification, pagination::PaginationParams},
-    entities::notifications::Notification,
+    entities::{
+        common::RowCount,
+        notifications::{Notification, PaginatedNotification},
+    },
     errors::repository_error::RepositoryError,
 };
 
@@ -36,13 +39,15 @@ pub trait NotificationRepositoryExt {
     fn fetch_all(
         &self,
         user_identifier: &Uuid,
-        pagination: PaginationParams,
-    ) -> impl std::future::Future<Output = Result<Vec<Notification>, RepositoryError>> + Send;
+        pagination: &PaginationParams,
+    ) -> impl std::future::Future<Output = Result<PaginatedNotification, RepositoryError>> + Send;
 
     fn fetch_one(
         &self,
         notification_identifier: &Uuid,
     ) -> impl std::future::Future<Output = Option<Notification>> + Send;
+
+    // async fn count(&self, user_identifier: &Uuid) -> u32;
 }
 
 impl NotificationRepositoryExt for NotificationRepository {
@@ -62,22 +67,58 @@ impl NotificationRepositoryExt for NotificationRepository {
     async fn fetch_all(
         &self,
         user_identifier: &Uuid,
-        pagination: PaginationParams,
-    ) -> Result<Vec<Notification>, RepositoryError> {
-        let limit = pagination.page.unwrap_or_default() - 1;
-        let offset = pagination.per_page.unwrap_or_default();
+        pagination: &PaginationParams,
+    ) -> Result<PaginatedNotification, RepositoryError> {
+        // let query = r#"
+        //     SELECT
+        //         JSONB_AGG(TO_JSONB(u)) AS notifications,
+        //         COUNT(identifier) AS total
+        //     FROM (
+        //         SELECT *
+        //         FROM notifications
+        //         WHERE user_identifier = $1
+        //         ORDER BY created_at DESC
+        //         LIMIT $2
+        //         OFFSET $3
+        //     ) u
+        // "#;
 
-        let notifications = sqlx::query_as::<_, Notification>(
-            "SELECT * FROM notifications WHERE user_identifier = $1 LIMIT $2 OFFSET $3",
+        let query = r#"
+    
+            SELECT *
+            FROM notifications
+            WHERE user_identifier = $1
+            ORDER BY created_at DESC
+            LIMIT $2
+            OFFSET $3
+     
+    "#;
+
+        let page = pagination.page.unwrap_or(1);
+        let per_page = pagination.per_page.unwrap_or(10);
+
+        let offset = (page - 1) * per_page;
+        let limit = per_page;
+
+        let notifications = sqlx::query_as::<_, Notification>(query)
+            .bind(user_identifier)
+            .bind(limit as i64)
+            .bind(offset as i64)
+            .fetch_all(self.pool.as_ref())
+            .await
+            .map_err(RepositoryError::SqlxError)?;
+
+        let RowCount { count: total } = sqlx::query_as::<_, RowCount>(
+            "SELECT COUNT(identifier) FROM notifications WHERE user_identifier = $1",
         )
         .bind(user_identifier)
-        .bind(limit.to_string())
-        .bind(offset.to_string())
-        .fetch_all(self.pool.as_ref())
-        .await
-        .map_err(RepositoryError::SqlxError)?;
+        .fetch_one(self.pool.as_ref())
+        .await?;
 
-        Ok(notifications)
+        Ok(PaginatedNotification {
+            notifications,
+            total,
+        })
     }
 
     async fn mark_read(
@@ -96,13 +137,12 @@ impl NotificationRepositoryExt for NotificationRepository {
     }
 
     async fn fetch_one(&self, notification_identifier: &Uuid) -> Option<Notification> {
-        
         sqlx::query_as::<_, Notification>("SELECT * FROM notifications WHERE identifier = $1")
-                .bind(notification_identifier)
-                .fetch_optional(self.pool.as_ref())
-                .await
-                .map_err(RepositoryError::SqlxError)
-                .ok()
-                .flatten()
+            .bind(notification_identifier)
+            .fetch_optional(self.pool.as_ref())
+            .await
+            .map_err(RepositoryError::SqlxError)
+            .ok()
+            .flatten()
     }
 }

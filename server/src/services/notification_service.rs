@@ -6,7 +6,11 @@ use sqlx::{Pool, Postgres};
 use uuid::Uuid;
 
 use crate::{
-    adapters::notification::CreateNotification,
+    adapters::{
+        jwt::Claims,
+        notification::CreateNotification,
+        pagination::{PaginatedResponse, PaginationParams},
+    },
     entities::notifications::Notification,
     errors::service_error::ServiceError,
     repositories::notification_repository::{NotificationRepository, NotificationRepositoryExt},
@@ -62,6 +66,14 @@ pub trait NotificationServiceExt {
         &self,
         notification_identifier: &Uuid,
     ) -> impl std::future::Future<Output = Option<Notification>> + Send;
+
+    fn fetch_notifications(
+        &self,
+        claims: &Claims,
+        pagination: &PaginationParams,
+    ) -> impl std::future::Future<
+        Output = Result<PaginatedResponse<Vec<Notification>>, ServiceError>,
+    > + Send;
 }
 
 impl NotificationServiceExt for NotifiactionService {
@@ -83,5 +95,25 @@ impl NotificationServiceExt for NotifiactionService {
 
     async fn fetch_one(&self, notification_identifier: &Uuid) -> Option<Notification> {
         self.repository.fetch_one(notification_identifier).await
+    }
+
+    async fn fetch_notifications(
+        &self,
+        claims: &Claims,
+        pagination: &PaginationParams,
+    ) -> Result<PaginatedResponse<Vec<Notification>>, ServiceError> {
+        let records = self
+            .repository
+            .fetch_all(&claims.user_identifier, &pagination)
+            .await?;
+
+        let paginated_result: PaginatedResponse<Vec<Notification>> = PaginatedResponse {
+            data: records.notifications,
+            page: pagination.page(),
+            per_page: pagination.per_page(),
+            total_count: records.total as u64,
+            total_pages: records.total as u32 / pagination.per_page(),
+        };
+        Ok(paginated_result)
     }
 }
