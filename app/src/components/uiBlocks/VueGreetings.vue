@@ -287,7 +287,6 @@ const generateGreeting = () => {
 // Initialize greeting on component mount
 onMounted(() => {
   greeting.value = generateGreeting();
-  console.log("Generated greeting:", greeting.value);
 });
 
 // Expose method to regenerate greeting (optional)

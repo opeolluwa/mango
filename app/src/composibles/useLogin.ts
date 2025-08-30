@@ -3,6 +3,7 @@ import { useCachedUserStore } from "../stores/cachedUser";
 import { useTokenStore } from "../stores/token";
 import { useUserInformationStore } from "../stores/user";
 import { message } from "@tauri-apps/plugin-dialog";
+import { useErrorHandler } from "../utils/handleError";
 
 interface LoginRequest {
   email: string;
@@ -53,18 +54,7 @@ export const useLogin = async (auth: LoginRequest): Promise<void> => {
     tokenStore.setAccessTokenExpiry(accessTokenExp);
     tokenStore.setRefreshTokenExpiry(refreshTokenExp);
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      await message(
-        error.response?.data?.message ||
-          "An unexpected error occurred during login.",
-        { title: "Login failed", kind: "error" }
-      );
-      return;
-    }
-    await message("Something went wrong.", {
-      title: "Login failed",
-      kind: "error",
-    });
+    await useErrorHandler(error);
     return;
   }
 };

@@ -16,7 +16,6 @@ export const useBookStore = defineStore("book_store", {
     async fetchBooks(): Promise<AudioBookEntity[]> {
       const response = await api.get("/books");
       this.audioBooks = response.data.data.data;
-      console.log(JSON.stringify(this.audioBooks, null, 2));
       return this.audioBooks;
     },
   },

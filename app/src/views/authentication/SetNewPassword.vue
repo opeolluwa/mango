@@ -89,14 +89,12 @@ const submitForm = handleSubmit(async (values) => {
       }
     );
 
-    console.log(response);
     if (response.status === 200) {
       router.replace({ name: "Login" });
     } else {
       throw new Error("Operation failed");
     }
   } catch (error) {
-    console.log(error);
     if (error) {
       formSubmitError.value = "Invalid credentials";
     }

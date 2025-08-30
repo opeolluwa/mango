@@ -42,7 +42,6 @@ export const useTokenStore = defineStore("token_store", {
       });
 
       const data = response.data.data;
-      console.log("Refresh token response", data);
       if (data?.data?.accessToken) {
         this.persistAccessToken(data.accessToken);
         this.setAccessTokenExpiry(data.exp);

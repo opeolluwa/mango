@@ -77,6 +77,7 @@ import ErrorOutlet from "../../components/form/ErrorOutlet.vue";
 import SubmitButton from "../../components/form/SubmitButton.vue";
 import { useGoBack } from "../../composibles/useRouter.ts";
 import { useSignup } from "../../composibles/useSignup.ts";
+import { useErrorHandler } from "../../utils/handleError.ts";
 
 const validationSchema = yup.object({
   email: yup.string().required().email(),
@@ -108,7 +109,8 @@ const submitForm = handleSubmit(async (values) => {
     }
     await useSignup({ email: values.email, password: values.password });
   } catch (error) {
-    console.log(error);
+   await  useErrorHandler(error);
+    return
   } finally {
     processingRequest.value = false;
   }

@@ -52,10 +52,7 @@ const fetchAppSettings = async () => {
 onMounted(async () => {
   await fetchAppSettings();
   if (settings.value?.appInitialized) {
-    console.log("App is already initialized, redirecting to home...");
     router.push({ name: "ExistingUserLogin" });
-  } else {
-    console.log("App is not initialized, staying on ScreenThree...");
   }
 });
 </script>

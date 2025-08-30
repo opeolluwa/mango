@@ -90,7 +90,6 @@ const submitForm = async () => {
         },
       }
     );
-    console.log(response);
     if (response.status === 200) {
       const { token } = response.data.data;
       router.push({ name: "Onboarding", query: { token } });

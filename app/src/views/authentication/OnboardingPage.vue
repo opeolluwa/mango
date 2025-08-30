@@ -67,6 +67,7 @@ import { useCachedUserStore } from "../../stores/cachedUser";
 import { useUserInformationStore } from "../../stores/user";
 import { UserProfile } from "../../types/userProfile";
 import { message } from "@tauri-apps/plugin-dialog";
+import { useErrorHandler } from "../../utils/handleError";
 
 const formSchema = yup.object({
   firstname: yup.string().required(),
@@ -133,7 +134,7 @@ const onSubmit = handleSubmit(async (values) => {
     });
     router.replace({ name: "Home" });
   } catch (error) {
-    console.log(error);
+    await useErrorHandler(error);
   } finally {
     processingRequest.value = false;
   }
