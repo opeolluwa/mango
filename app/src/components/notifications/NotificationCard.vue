@@ -2,6 +2,7 @@
   <div
     class="flex justify-between py-3 px-2 relative rounded overflow-x-hidden"
     :class="[isRead ? '' : 'bg-app-orange-50/10']"
+    @click="markRead(identifier)"
   >
     <span
       v-if="!isRead"
@@ -9,11 +10,11 @@
       :class="[isRead ? '' : 'bg-app-orange-400']"
     ></span>
     <div class="flex items-center gap-x-4 relative">
-      <UIcon
+      <!-- <UIcon
         name="i-lucide-check-check"
         class="size-5"
         :class="[isRead ? 'text-gray-400' : 'text-app-orange-300']"
-      />
+      /> -->
 
       <div class="flex flex-col gap-y-1">
         <div class="text dark:text-white/70">
@@ -34,10 +35,19 @@
 <script lang="ts" setup>
 import { useTimeAgo } from "@vueuse/core";
 import { Notification } from "../../types/notification";
+import { useNotificationStore } from "../../stores/notification";
 
 const props = defineProps<Notification>();
 
-const { subject, isRead, createdAt, body } = props;
-
+const { subject, createdAt, body } = props;
+let isRead = props.isRead;
 const timeAgo = useTimeAgo(new Date(createdAt));
+
+const markRead = async (identifier: string) => {
+  const notificationStore = useNotificationStore();
+  await notificationStore.markRead(identifier).then(async () => {
+    await notificationStore.refresh();
+    isRead = true;
+  });
+};
 </script>

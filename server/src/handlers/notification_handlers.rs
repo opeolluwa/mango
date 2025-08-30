@@ -1,7 +1,8 @@
 use axum::{
-    extract::{Query, State, WebSocketUpgrade},
+    extract::{Path, Query, State, WebSocketUpgrade},
     response::Response,
 };
+use uuid::Uuid;
 
 use crate::{
     adapters::{
@@ -48,4 +49,16 @@ pub async fn count_unread(
     let resp = notification_service.count_unread(&claims).await?;
 
     Ok(ApiResponse::builder().data(resp).build())
+}
+
+pub async fn mark_read(
+    State(notification_service): State<NotifiactionService>,
+    claims: Claims,
+    Path(notification_identifier): Path<Uuid>,
+) -> Result<ApiResponse<()>, ServiceError> {
+    notification_service
+        .mark_read(&claims, &notification_identifier)
+        .await?;
+
+    Ok(ApiResponse::builder().message("notifcation read").build())
 }

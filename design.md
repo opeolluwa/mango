@@ -52,3 +52,11 @@ https://dribbble.com/shots/23169812-Ebook-and-Audio-Book-App-UI-Design-UIUX-Figm
 
 notification 
 https://dribbble.com/shots/25312637-HR-Management-Navigation
+
+
+plyer 
+https://dribbble.com/shots/26296857-Music-App-Modern-Music-Player-UI-UX-Design-by-AmazingUI
+
+
+rust streaming
+https://users.rust-lang.org/t/audio-streaming/107584

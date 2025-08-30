@@ -1,6 +1,6 @@
 <template>
   <Transition name="animate__slideInLeft">
-    <AppNavigation v-show="showSideNav" @click="showSideNav = false"  />
+    <AppNavigation v-show="showSideNav" @click="showSideNav = false" />
   </Transition>
 
   <div
@@ -17,7 +17,11 @@
         />
         <div class="flex gap-x-2 items-center justify-center">
           <RouterLink :to="{ name: '' }">
-            <UChip size="3xl" color="error" text="5">
+            <UChip
+              size="3xl"
+              :color="{'error': Number(unreadNotification) >= 1}"
+              :text="unreadNotification"
+            >
               <UButton
                 icon="i-lucide-bell"
                 color=""
@@ -55,17 +59,21 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 
 import { Icon } from "@iconify/vue";
 import { useRoute } from "vue-router";
 import UserCard from "@components/settings/UserCard.vue";
 import AppNavigation from "@components/uiBlocks/AppNavigation.vue";
 import { useGoToPreviousRoute, usePush } from "../../composibles/useRouter";
+import { useNotificationStore } from "../../stores/notification";
 
 const route = useRoute();
 const label = ref<string>("") || "";
 const showSideNav = ref(false);
+
+const notificationStore = useNotificationStore();
+const unreadNotification = ref<number>();
 
 const toggleNav = () => {
   showSideNav.value = !showSideNav.value;
@@ -78,5 +86,10 @@ watch(
   { immediate: true }
 );
 
+onMounted(async () => {
+  await notificationStore.countUnreadNotification().then(() => {
+    unreadNotification.value = notificationStore.unreadCount;
+  });
+});
 defineEmits(["close"]);
 </script>

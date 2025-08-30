@@ -42,7 +42,7 @@
     </div>
   </template>
   <template v-else>
-    <AppScreenLayout 1>
+    <AppScreenLayout>
       <div class="flex flex-col overflow-x-hidden pb-48">
         <div class="flex justify-between">
           <div>
@@ -141,7 +141,7 @@ const handleUpload = async () => {
     return;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-   await useErrorHandler(error);
+    await useErrorHandler(error);
     return;
   } finally {
     uploading.value = false;
@@ -158,8 +158,8 @@ const fetchBooks = async () => {
   audioBooks.value = books;
 };
 
-onMounted(() => {
-  fetchBooks();
+onMounted(async () => {
+  await fetchBooks();
 });
 </script>
 
