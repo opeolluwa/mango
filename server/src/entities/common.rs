@@ -3,5 +3,5 @@ use sqlx::prelude::FromRow;
 
 #[derive(Debug, Serialize, Deserialize, FromRow)]
 pub struct RowCount {
-    pub count: i32,
+    pub count: i64,
 }

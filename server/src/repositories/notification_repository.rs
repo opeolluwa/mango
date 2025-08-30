@@ -47,7 +47,16 @@ pub trait NotificationRepositoryExt {
         notification_identifier: &Uuid,
     ) -> impl std::future::Future<Output = Option<Notification>> + Send;
 
-    // async fn count(&self, user_identifier: &Uuid) -> u32;
+    fn count_unread(
+        &self,
+        user_identifier: &Uuid,
+    ) -> impl std::future::Future<Output = Result<RowCount, RepositoryError>> + Send;
+
+    fn get_latest_unread_notifications(
+        &self,
+        user_identifier: &Uuid,
+        pagination: &PaginationParams,
+    ) -> impl std::future::Future<Output = Result<PaginatedNotification, RepositoryError>> + Send;
 }
 
 impl NotificationRepositoryExt for NotificationRepository {
@@ -126,7 +135,7 @@ impl NotificationRepositoryExt for NotificationRepository {
         user_identifier: &Uuid,
         notification_identifier: &Uuid,
     ) -> Result<(), RepositoryError> {
-        sqlx::query("UPDATE notifications WHERE user_identifier = $1  AND identifier = $2")
+        sqlx::query("UPDATE notifications SET is_read = true  WHERE user_identifier = $1  AND identifier = $2")
             .bind(user_identifier)
             .bind(notification_identifier)
             .execute(self.pool.as_ref())
@@ -144,5 +153,24 @@ impl NotificationRepositoryExt for NotificationRepository {
             .map_err(RepositoryError::SqlxError)
             .ok()
             .flatten()
+    }
+
+    async fn count_unread(&self, user_identifier: &Uuid) -> Result<RowCount, RepositoryError> {
+        let row_count = sqlx::query_as::<_, RowCount>(
+            "SELECT COUNT(identifier) FROM notifications WHERE user_identifier = $1 AND is_read = false",
+        )
+        .bind(user_identifier)
+        .fetch_one(self.pool.as_ref())
+        .await?;
+
+        Ok(row_count)
+    }
+
+    async fn get_latest_unread_notifications(
+        &self,
+        user_identifier: &Uuid,
+        pagination: &PaginationParams,
+    ) -> Result<PaginatedNotification, RepositoryError> {
+        todo!()
     }
 }

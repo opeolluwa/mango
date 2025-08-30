@@ -46,5 +46,5 @@ impl fmt::Display for Notification {
 #[ts(export, export_to = "paginatedNotification.d.ts")]
 pub struct PaginatedNotification {
     pub notifications: Vec<Notification>,
-    pub total: i32,
+    pub total: i64,
 }
