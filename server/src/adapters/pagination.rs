@@ -5,7 +5,7 @@ use ts_rs::TS;
 #[serde(rename_all = "camelCase")]
 #[ts(export, export_to = "paginatedResponse.d.ts")]
 pub struct PaginatedResponse<T> {
-    pub data: T,
+    pub records: T,
     pub page: u32,
     pub per_page: u32,
     pub total_count: u64,
@@ -16,9 +16,9 @@ impl<T> PaginatedResponse<T>
 where
     T: Serialize + DeserializeOwned,
 {
-    pub fn new(data: T, params: &PaginationParams, total_count: u64) -> Self {
+    pub fn new(records: T, params: &PaginationParams, total_count: u64) -> Self {
         Self {
-            data,
+            records,
             page: params.page(),
             per_page: params.per_page(),
             total_count: total_count,

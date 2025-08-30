@@ -16,7 +16,6 @@ api.interceptors.request.use(
   async (config) => {
     const tokenStore = useTokenStore();
     if (!tokenStore.isAccessTokenValid()) {
-      alert("Access token expired, refreshing...");
       await tokenStore.getRefeshToken();
     }
 
@@ -44,5 +43,4 @@ api.interceptors.response.use(
 export default api;
 
 // import api from "../plugins/api"; // 👈 use your instance
-
 // const { data, status } = await api.post("/auth/login", { email, password });

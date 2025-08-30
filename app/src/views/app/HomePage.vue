@@ -42,7 +42,7 @@
     </div>
   </template>
   <template v-else>
-    <AppScreenLayout >
+    <AppScreenLayout>
       <div class="flex flex-col overflow-x-hidden pb-48">
         <div class="flex justify-between">
           <div>
@@ -72,10 +72,7 @@
         class="size-12 bg-app-orange-500 z-[5000] absolute right-8 bottom-24 rounded-full shadow-xl"
         @click="openModal"
       >
-        <Icon
-          icon="ic:round-plus"
-          class="size-6 text-white mx-auto"
-        />
+        <Icon icon="ic:round-plus" class="size-6 text-white mx-auto" />
       </button>
     </AppScreenLayout>
   </template>
@@ -94,6 +91,8 @@ import { AudioBookEntity } from "../../types/audioBook";
 import { useBookStore } from "../../stores/library.ts";
 import AudioBook from "../../components/AudioBook.vue";
 import SectionLabel from "../../components/settings/SectionLabel.vue";
+import { message } from "@tauri-apps/plugin-dialog";
+import { useErrorHandler } from "../../utils/handleError.ts";
 
 const userInformationStore = useUserInformationStore();
 const firstName = computed(() => userInformationStore.firstName);
@@ -130,10 +129,20 @@ const handleUpload = async () => {
       },
     });
 
-    console.log("Upload success:", response.data);
+    if (response.status !== 200) {
+      await message(response.data.data.message || "Failed to upload", {
+        kind: "error",
+      });
+      return;
+    }
+    await message(response.data.data.message || "File is being processed", {
+      kind: "info",
+    });
+    return;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    uploadError.value = error.response?.data?.message || "Upload failed";
+    await useErrorHandler(error);
+    return;
   } finally {
     uploading.value = false;
     open.value = false;
@@ -149,8 +158,8 @@ const fetchBooks = async () => {
   audioBooks.value = books;
 };
 
-onMounted(() => {
-  fetchBooks();
+onMounted(async () => {
+  await fetchBooks();
 });
 </script>
 

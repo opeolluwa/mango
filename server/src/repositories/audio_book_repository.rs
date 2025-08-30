@@ -150,7 +150,7 @@ impl AudioBookRepositoryExt for AudioBookRepository {
         let total_pages = ((total_count as f64) / (per_page as f64)).ceil() as u32;
 
         // query paginated data
-        let data = sqlx::query_as::<_, AudioBookEntity>(
+        let records = sqlx::query_as::<_, AudioBookEntity>(
             r#"
             SELECT * 
             FROM audio_books 
@@ -167,7 +167,7 @@ impl AudioBookRepositoryExt for AudioBookRepository {
         .map_err(ServiceError::from)?;
 
         Ok(PaginatedResponse {
-            data,
+            records,
             page,
             per_page,
             total_count: total_count as u64,

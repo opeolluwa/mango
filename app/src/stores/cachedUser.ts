@@ -38,7 +38,6 @@ export const useCachedUserStore = defineStore("cached_user", {
     async fetchCachedUser(): Promise<CachedUser | null> {
       try {
         const cachedUser = await invoke<CachedUser>("fetch_cached_user");
-        console.log({ cachedUser });
         if (cachedUser) {
           this.$patch({
             identifier: cachedUser.identifier,

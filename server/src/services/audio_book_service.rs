@@ -236,13 +236,13 @@ impl AudioBooksServiceExt for AudioBooksService {
         user_identifier: &Uuid,
         pagination_params: &PaginationParams,
     ) -> Result<PaginatedResponse<Vec<AudioBookEntity>>, ServiceError> {
-        let data = self
+        let records = self
             .audio_book_repository
             .fetch_favourites(user_identifier, pagination_params)
             .await?;
 
         let response = PaginatedResponse {
-            data,
+            records,
             page: pagination_params.page.unwrap_or_default(),
             per_page: pagination_params.per_page.unwrap_or_default(),
             total_count: 5,

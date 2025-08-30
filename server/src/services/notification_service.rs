@@ -11,7 +11,7 @@ use crate::{
         notification::CreateNotification,
         pagination::{PaginatedResponse, PaginationParams},
     },
-    entities::notifications::Notification,
+    entities::{common::RowCount, notifications::Notification},
     errors::service_error::ServiceError,
     repositories::notification_repository::{NotificationRepository, NotificationRepositoryExt},
 };
@@ -59,8 +59,11 @@ pub trait NotificationServiceExt {
 
     fn listen_for_new_notifications(&self) -> impl std::future::Future<Output = Response> + Send;
 
-    fn get_latest_unread_notifications()
-    -> impl std::future::Future<Output = Result<Vec<Notification>, ServiceError>> + Send;
+    fn get_latest_unread_notifications(
+        &self,
+        claims: &Claims,
+        pagination: &PaginationParams,
+    ) -> impl std::future::Future<Output = Result<Vec<Notification>, ServiceError>> + Send;
 
     fn fetch_one(
         &self,
@@ -74,6 +77,17 @@ pub trait NotificationServiceExt {
     ) -> impl std::future::Future<
         Output = Result<PaginatedResponse<Vec<Notification>>, ServiceError>,
     > + Send;
+
+    fn count_unread(
+        &self,
+        claims: &Claims,
+    ) -> impl std::future::Future<Output = Result<RowCount, ServiceError>> + Send;
+
+    fn mark_read(
+        &self,
+        claims: &Claims,
+        notification_identifier: &Uuid,
+    ) -> impl std::future::Future<Output = Result<(), ServiceError>> + Send;
 }
 
 impl NotificationServiceExt for NotifiactionService {
@@ -89,7 +103,11 @@ impl NotificationServiceExt for NotifiactionService {
         // self.handle_web_socket_connection(socket).await
     }
 
-    async fn get_latest_unread_notifications() -> Result<Vec<Notification>, ServiceError> {
+    async fn get_latest_unread_notifications(
+        &self,
+        claims: &Claims,
+        pagination: &PaginationParams,
+    ) -> Result<Vec<Notification>, ServiceError> {
         todo!()
     }
 
@@ -108,12 +126,32 @@ impl NotificationServiceExt for NotifiactionService {
             .await?;
 
         let paginated_result: PaginatedResponse<Vec<Notification>> = PaginatedResponse {
-            data: records.notifications,
+            records: records.notifications,
             page: pagination.page(),
             per_page: pagination.per_page(),
             total_count: records.total as u64,
             total_pages: records.total as u32 / pagination.per_page(),
         };
         Ok(paginated_result)
+    }
+
+    async fn count_unread(&self, claims: &Claims) -> Result<RowCount, ServiceError> {
+        let result = self
+            .repository
+            .count_unread(&claims.user_identifier)
+            .await?;
+
+        Ok(result)
+    }
+
+    async fn mark_read(
+        &self,
+        claims: &Claims,
+        notification_identifier: &Uuid,
+    ) -> Result<(), ServiceError> {
+        self.repository
+            .mark_read(&claims.user_identifier, notification_identifier)
+            .await?;
+        Ok(())
     }
 }
