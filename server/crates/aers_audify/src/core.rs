@@ -3,7 +3,7 @@ use std::path::Path;
 use piper_rs::synth::PiperSpeechSynthesizer;
 use serde::{Deserialize, Serialize};
 
-use crate::{error::AudifyError, extractor::extract_pdf_source, languages::Languages};
+use crate::{error::AudifyError, extractor::extract_text, languages::Languages};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Audify {
@@ -84,7 +84,7 @@ impl Audify {
 
     /// generate audio from PDF
     pub fn synthesize_pdf(&self, pdf_path: &str, export_path: &str) -> Result<(), AudifyError> {
-        let text = extract_pdf_source(pdf_path)?;
+        let text = extract_text(pdf_path)?;
 
         let model = piper_rs::from_config_path(Path::new(&self.config_path))
             .map_err(AudifyError::ModelLoadError)?;

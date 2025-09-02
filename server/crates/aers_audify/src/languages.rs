@@ -6,3 +6,4 @@ pub enum Languages {
     #[default]
     English,
 }
+
