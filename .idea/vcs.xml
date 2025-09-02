@@ -2,5 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/server/target/debug/build/espeak-rs-sys-0db63030e4ca8e95/out/build/_deps/sonic-git-src" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/server/target/debug/build/espeak-rs-sys-dfb153f07eddbc04/out/build/_deps/sonic-git-src" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/server/target/debug/build/espeak-rs-sys-f7d854f30422be6d/out/build/_deps/sonic-git-src" vcs="Git" />
   </component>
 </project>

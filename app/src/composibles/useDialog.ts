@@ -1,3 +1,3 @@
-export const useDialog = (error: string) => {
+export const useDialog = () => {
 
 };
