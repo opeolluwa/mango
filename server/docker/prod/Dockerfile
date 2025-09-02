@@ -68,7 +68,7 @@ RUN wget https://github.com/thewh1teagle/piper-rs/releases/download/espeak-ng-fi
 RUN tar xf espeak-ng-data.tar.gz
 
 # Set environment variable for espeak-ng data directory
-ENV PIPER_ESPEAKNG_DATA_DIRECTORY=espeak-ng-data
+RUN export PIPER_ESPEAKNG_DATA_DIRECTORY=./espeak-ng-data
 
 # Register /usr/local/lib for runtime
 RUN echo "/usr/local/lib" >> /etc/ld.so.conf.d/tika.conf && ldconfig
