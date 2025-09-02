@@ -27,8 +27,7 @@ RUN cargo build --release
 RUN find target/release/build -name "libtika_native.so" -exec cp {} /usr/local/lib/ \;
 
 # Copy all found "espeak-ng-data" directories into one target location
-RUN mkdir -p espeak-ng-data && \
-    find target/release/build -name "espeak-ng-data" -exec cp -r {}/* espeak-ng-data/ \;
+RUN find target/release/build -name "espeak-ng-data" -exec cp -r {} espeak-ng-data \;
 
 
 
