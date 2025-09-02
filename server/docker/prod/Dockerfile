@@ -30,9 +30,10 @@ RUN find target/release/build -name "libtika_native.so" -exec cp {} /usr/local/l
 RUN mkdir -p espeak-ng-data && \
     find target/release/build -name "espeak-ng-data" -exec cp -r {}/* espeak-ng-data/ \;
 
-# Set environment variable for espeak-ng data directory
-ENV PIPER_ESPEAKNG_DATA_DIRECTORY=espeak-ng-data
 
+
+
+FROM debian:bookworm-slim AS final
 
 RUN apt-get update && \
     apt-get install -y libssl-dev && \
@@ -58,6 +59,12 @@ COPY --from=build /app/resources ./resources
 #copy the migrations
 COPY --from=build /app/migrations ./migrations
 COPY --from=build /usr/local/lib/libtika_native.so /usr/local/lib
+
+
+COPY --from=build /app/espeak-ng-data ./espeak-ng-data
+
+# Set environment variable for espeak-ng data directory
+ENV PIPER_ESPEAKNG_DATA_DIRECTORY=espeak-ng-data
 
 # Register /usr/local/lib for runtime
 RUN echo "/usr/local/lib" >> /etc/ld.so.conf.d/tika.conf && ldconfig
