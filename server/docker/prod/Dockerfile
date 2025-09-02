@@ -26,12 +26,18 @@ RUN cargo build --release
 # copy native deps for extractous lib https://crates.io/crates/extractous
 RUN find target/release/build -name "libtika_native.so" -exec cp {} /usr/local/lib/ \;
 
-FROM debian:bookworm-slim AS final
+# Copy all found "espeak-ng-data" directories into one target location
+RUN mkdir -p espeak-ng-data && \
+    find target/release/build -name "espeak-ng-data" -exec cp -r {}/* espeak-ng-data/ \;
+
+# Set environment variable for espeak-ng data directory
+ENV PIPER_ESPEAKNG_DATA_DIRECTORY=espeak-ng-data
+
 
 RUN apt-get update && \
     apt-get install -y libssl-dev && \
-    apt-get install -y openjdk-17-jre-headless && \
-    apt-get install -y tesseract-ocr && \
+    # apt-get install -y openjdk-17-jre-headless && \
+    # apt-get install -y tesseract-ocr && \
     apt-get install -y ca-certificates && update-ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
