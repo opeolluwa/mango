@@ -38,6 +38,7 @@ RUN apt-get update && \
     apt-get install -y libssl-dev && \
     # apt-get install -y openjdk-17-jre-headless && \
     # apt-get install -y tesseract-ocr && \
+    apt-get install -y wget && \
     apt-get install -y ca-certificates && update-ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
