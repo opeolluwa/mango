@@ -60,7 +60,11 @@ COPY --from=build /app/migrations ./migrations
 COPY --from=build /usr/local/lib/libtika_native.so /usr/local/lib
 
 
-COPY --from=build /app/espeak-ng-data .
+# Downlaod the espeak files 
+RUN wget https://github.com/thewh1teagle/piper-rs/releases/download/espeak-ng-files/espeak-ng-data.tar.gz
+
+#extract the downloaded files 
+RUN tar xf espeak-ng-data.tar.gz
 
 # Set environment variable for espeak-ng data directory
 ENV PIPER_ESPEAKNG_DATA_DIRECTORY=espeak-ng-data
