@@ -26,10 +26,6 @@ RUN cargo build --release
 # copy native deps for extractous lib https://crates.io/crates/extractous
 RUN find target/release/build -name "libtika_native.so" -exec cp {} /usr/local/lib/ \;
 
-# Copy all found "espeak-ng-data" directories into one target location
-RUN find target/release/build -name "espeak-ng-data" -exec cp -r {} espeak-ng-data \;
-
-
 
 
 FROM debian:bookworm-slim AS final
