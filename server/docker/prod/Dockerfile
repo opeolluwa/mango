@@ -60,7 +60,7 @@ COPY --from=build /app/migrations ./migrations
 COPY --from=build /usr/local/lib/libtika_native.so /usr/local/lib
 
 
-COPY --from=build /app/espeak-ng-data ./espeak-ng-data
+COPY --from=build /app/espeak-ng-data .
 
 # Set environment variable for espeak-ng data directory
 ENV PIPER_ESPEAKNG_DATA_DIRECTORY=espeak-ng-data
